@@ -16,4 +16,4 @@ token.txt
 .classpath
 
 # Ignore settings
-.settings
+.settings/
