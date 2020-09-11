@@ -48,7 +48,7 @@ public class RuutuTest {
         assertEquals(0, r.getY());
 
         r.setX(1);
-        r.setX(7);
+        r.setY(7);
         assertEquals(1, r.getX());
         assertEquals(7, r.getY());
     }
