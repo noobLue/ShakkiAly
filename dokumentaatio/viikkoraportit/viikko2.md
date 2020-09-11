@@ -18,5 +18,5 @@ Olemassa olevalle koodi kommentoitu (javadoc). Luokille luotu testejä junitilla
    
         2.5 tuntia - Shakkilaudan rakenteen suunnittelu ja teko, sekä javadocin kirjoittaminen
 
-        2.5 tuntia - jacocon tutkiskelu, ensimmäiset testit, circle-ci integraatio
+        3 tuntia - jacocon tutkiskelu, ensimmäiset testit, circle-ci integraatio
 

@@ -1,4 +1,5 @@
 # ShakkiAly
+[![CircleCI](https://circleci.com/gh/noobLue/ShakkiAly.svg?style=shield)](https://circleci.com/gh/noobLue/ShakkiAly)
 
 Shakkitekoälyn toteutus Javalla. 
 
@@ -12,3 +13,5 @@ Shakkitekoälyn toteutus Javalla.
 * [Viikko 1](./dokumentaatio/viikkoraportit/viikko1.md)
 
 * [Viikko 2](./dokumentaatio/viikkoraportit/viikko2.md)
+
+
