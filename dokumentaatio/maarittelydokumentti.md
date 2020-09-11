@@ -4,7 +4,7 @@ Projektin tarkoituksena on luoda shakkiin tekoäly joka käyttää tekniikkana a
 
 ## Algoritmit ja tietorakenteet
 
-Tekoälyn logiikka tulee pyörimaan alpha-beta karsinnalla (Alpha-beta pruning). Valitsin alpha-beta karsinnan, sillä se soveltuu hyvin kaksinpeleihin suunnatuille tekoälyille.
+Tekoälyn logiikka tulee pyörimaan minmax algoritmilla, lisäyksenä alpha-beta karsinta. Valitsin tämän, sillä se soveltuu hyvin kaksinpeleihin suunnatuille tekoälyille.
 
 Tarvitsen tietorakenteen shakkilaudan tilan säilyttämiseen. Tarvitsen myös tietorakenteet, jotka sisältävät pelinappuloiden tiedot.
 
