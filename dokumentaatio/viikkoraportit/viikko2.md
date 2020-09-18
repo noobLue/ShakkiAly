@@ -4,7 +4,7 @@ Loin tälläviikolla pelilaudalle, siirroille ja nappuloille tietorakenteet. Nap
 Olemassa olevalle koodi kommentoitu (javadoc). Luokille luotu testejä junitilla ja koodikattavuus näkyy jacoco:lla. 
 
 
-    Tunnit:
+    Tunnit: 8.5
 
     Maanantai: 
     

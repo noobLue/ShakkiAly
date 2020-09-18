@@ -14,10 +14,22 @@ public class Siirto {
      * @param alku siiron alkuruutu
      * @param kohde siirron kohderuutu
      */
-    public Siirto(Ruutu alku, Ruutu kohde){
+    public Siirto(Ruutu alku, Ruutu kohde) {
         this.alku = alku;
         this.kohde = kohde;
-        ylennys = EI_YLENNYSTA;
+        this.ylennys = EI_YLENNYSTA;
+    }
+
+    public Siirto(int x, int y, int x2, int y2) {
+        this.alku = new Ruutu(x, y);
+        this.kohde = new Ruutu(x2, y2);
+        this.ylennys = EI_YLENNYSTA;
+    }
+    
+    public Siirto(int x, int y, int x2, int y2, char ylennys) {
+        this.alku = new Ruutu(x, y);
+        this.kohde = new Ruutu(x2, y2);
+        this.ylennys = ylennys;
     }
 
     /**
@@ -26,7 +38,7 @@ public class Siirto {
      * @param kohde siirron kohderuutu
      * @param ylennys mahdollisen ylennyksen merkki UCI-formaatissa
      */
-    public Siirto(Ruutu alku, Ruutu kohde, char ylennys){
+    public Siirto(Ruutu alku, Ruutu kohde, char ylennys) {
         this.alku = alku;
         this.kohde = kohde;
         this.ylennys = ylennys;
@@ -36,17 +48,21 @@ public class Siirto {
      * 
      * @param siirto UCI-formaatin mukaisesti
      */
-    public Siirto(String siirto){
+    public Siirto(String siirto) {
         alku = new Ruutu(siirto.substring(0, 2));
         kohde = new Ruutu(siirto.substring(2, 4));
         ylennys = siirto.length() == 5 ? siirto.charAt(4) : EI_YLENNYSTA;
+    }
+
+    public String getUCIString() {
+        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : "");
     }
 
     /**
      * 
      * @return sisaltaako tama siirto ylennyksen
      */
-    public boolean onkoYlennysSiirto(){
+    public boolean onkoYlennysSiirto() {
         return ylennys != EI_YLENNYSTA;
     }
 
@@ -62,4 +78,10 @@ public class Siirto {
         return kohde;
     }
 
+    @Override
+    public String toString() {
+        return getUCIString();
+    }
+
+    
 }

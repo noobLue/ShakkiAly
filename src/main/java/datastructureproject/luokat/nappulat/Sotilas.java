@@ -1,11 +1,63 @@
 package datastructureproject.luokat.nappulat;
 
+import java.util.ArrayList;
+
 import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.Siirto;
 
 public class Sotilas extends Nappula {
-    public Sotilas(Side puoli, Ruutu ruutu){
+    public Sotilas(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
+    }
+
+    public Nappula kopioi() {
+        return new Sotilas(getPuoli(), getRuutu().kopioi());
+    }
+
+    @Override
+    public ArrayList<Siirto> kaikkiSiirrot(Pelilauta lauta) {
+        ArrayList<Siirto> siirrot = new ArrayList();
+
+        //Liiku yksi eteen
+        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));
+        if (yksiEteen.olenLaudalla(lauta) && lauta.getNappula(yksiEteen) == null) {
+            boolean ylennys = yksiEteen.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);
+            if (ylennys) {
+                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'q'));
+            } else {
+                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));
+            }
+        }
+
+        //Liiku kaksi eteen
+        Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));
+        if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
+            siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));
+        }
+
+        //Syö viistoon
+        int[] viistot = new int[] {1, -1};
+        for (int x: viistot) {
+            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));
+            if (!vRuutu.olenLaudalla(lauta)) {
+                continue;
+            }
+            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];
+            if (vNappula != null && vNappula.getPuoli() != this.getPuoli()) {
+                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));
+            }
+        }
+
+        //En passant
+        
+        return siirrot;
+    }
+
+    @Override
+    public String toString() {
+        return "p";
     }
 
 }
