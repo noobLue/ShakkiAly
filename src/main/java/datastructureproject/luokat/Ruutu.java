@@ -67,6 +67,7 @@ public class Ruutu {
      * Palauttaa nappulan y-akselin sijainnnin, kun sitä liikutetaan eteenpäin y-askelta
      * (toimii molemmilla puolilla)
      * 
+     * @param puoli kumman puolen pelaajan kannalta katsotaan suuntaa
      * @param y y-akselin askeleiden määrä
      * @return y-akselin koordinaatti
      */

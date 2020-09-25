@@ -32,6 +32,12 @@ public class SiirtoTest {
     }
 
     @Test
+    public void ylennysTest3(){
+        Siirto siirto = new Siirto(0,0,1,1,'q');
+        assertEquals("a1b2q", siirto.getUCIString());
+    }
+    
+    @Test
     public void merkkijonoJasennysTest(){
         Siirto siirto = new Siirto("a1a7q");
         assertTrue(siirto.onkoYlennysSiirto());

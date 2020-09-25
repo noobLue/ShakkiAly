@@ -10,15 +10,15 @@ public class ShakkiTemplaatti {
     /**
      * "Universal Chess Interface" - protokollan merkiston (ie. 'r'=Rook) mukainen Shakkilaudan templaatti
      */
-    private final char[][] shakkiTemplaatti = new char[][] { 
-        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' } , 
-        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
-        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
+    private final char[][] shakkiTemplaatti = new char[][] {
+        {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+        {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
     };
 
     public ShakkiTemplaatti() {
@@ -50,7 +50,7 @@ public class ShakkiTemplaatti {
      * @return kumman puolen pelaajalle rivi kuuluu
      */
     public Side kummanRivi(final int y) {
-        if (valkoinenAlhaalla){
+        if (valkoinenAlhaalla) {
             return (y < shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
         } else {
             return (y >= shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;

@@ -33,7 +33,8 @@ public class Sotilas extends Nappula {
 
             //Liiku kaksi eteen (yksiEteen pitää olla myös validi kohta)
             Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));
-            if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
+            if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null 
+                    && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
                 siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));
             }
         }

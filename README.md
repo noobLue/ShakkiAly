@@ -22,7 +22,7 @@ xBoard ja Lichess ohjeet löytyvät englanniksi [projektipohjan dokumentaatiosta
 
 ## Testikattavuus
 
-[Jacoco-report](./dokumentaatio/test/html/index.html)
+[Jacoco-testiraportti](https://nooblue.github.io/ShakkiAly/)
 
 ## Dokumentaatio
 

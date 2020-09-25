@@ -225,4 +225,32 @@ public class PelilautaTest {
         assertTrue(contains1);
         assertTrue(contains2);
     }
+
+    @Test 
+    public void ylennysTest(){
+        char[][] alku = new char[][]{
+            { '0', '0', '0', 'p', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+        };
+        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        for(int i = 0; i < 6; i++){
+            lauta = lauta.toteutaSiirto(new Siirto(new Ruutu(3,i), new Ruutu(3,i+1)));
+        }
+        
+        Pelilauta kuningatarLauta = lauta.toteutaSiirto(new Siirto("d7d8q"));
+        Pelilauta ratsuLauta = lauta.toteutaSiirto(new Siirto("d7d8n"));
+        Pelilauta lahettiLauta = lauta.toteutaSiirto(new Siirto("d7d8b"));
+        Pelilauta torniLauta = lauta.toteutaSiirto(new Siirto("d7d8r"));
+
+        assertTrue(kuningatarLauta.getNappula(new Ruutu("d8")) instanceof Kuningatar);
+        assertTrue(ratsuLauta.getNappula(new Ruutu("d8")) instanceof Ratsu);
+        assertTrue(lahettiLauta.getNappula(new Ruutu("d8")) instanceof Lahetti);
+        assertTrue(torniLauta.getNappula(new Ruutu("d8")) instanceof Torni);
+    }
 }

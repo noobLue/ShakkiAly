@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import chess.engine.GameState;
 import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.ShakkiTemplaatti;
 
 public class ShakkiAlyTest {
     @Test
@@ -27,5 +29,24 @@ public class ShakkiAlyTest {
 
         assertNotEquals("a0a0", valkoisenLiike);
         assertNotEquals("0000", valkoisenLiike);
+    }
+
+    @Test
+    public void heurestiikkaNayttaaPelinLoppumisTilanteen(){
+        char[][] alku = new char[][]{
+            { '0', '0', '0', 'k', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+        };
+
+        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+
+        assertTrue(ShakkiAly.laudanArvo(lauta, Side.WHITE) > 0);
+        assertTrue(ShakkiAly.laudanArvo(lauta, Side.BLACK) < 0);
     }
 }

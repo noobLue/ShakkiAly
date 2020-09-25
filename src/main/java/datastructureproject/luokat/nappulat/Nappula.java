@@ -87,7 +87,7 @@ public abstract class Nappula {
     }
 
     protected int arvo = 1;
-    public int getArvo(){
+    public int getArvo() {
         return arvo;
     }
 }

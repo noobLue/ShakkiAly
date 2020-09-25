@@ -22,24 +22,26 @@ public class ShakkiAly implements ChessBot {
 
     @Override
     public String nextMove(GameState gamestate) {
-        if(gamestate.getMoveCount() > 0){
+        if (gamestate.getMoveCount() > 0) {
             Siirto siirto = new Siirto(gamestate.getLatestMove());
             lauta = lauta.toteutaSiirto(siirto);
         }
-        //Haetaan kaikki meidan mahdolliset liikkeet ja karsitaan niistä pois tilanteet jotka johtavat oman kuninkaan shakitukseen
+        //Haetaan kaikki meidan mahdolliset liikkeet 
+        //ja karsitaan niistä pois tilanteet jotka johtavat oman kuninkaan shakitukseen
         ArrayList<Siirto> siirrot = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);
-        if(siirrot.isEmpty()){
+        if (siirrot.isEmpty()) {
             return "a0a0"; //luovutus
         }
 
         //Alustetaan parasSiirto johonkin satunnaiseen siirtoon
-        Siirto parasSiirto = siirrot.get((int)(System.currentTimeMillis() % siirrot.size()));
+        Siirto parasSiirto = siirrot.get((int) (System.currentTimeMillis() % siirrot.size()));
         int parasArvo = Integer.MIN_VALUE;
         //Käydään läpi mahdolliset siirrot ja aloitetaan siirroille minmax vastustajan nakokulmasta
-        for(Siirto seuraava: siirrot){
+        for (Siirto seuraava: siirrot) {
             Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);
-            int maxArvo = minValue(uusiLauta, gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-            if(maxArvo > parasArvo){
+            Side vastustaja = gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE;
+            int maxArvo = minValue(uusiLauta, vastustaja, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+            if (maxArvo > parasArvo) {
                 parasSiirto = seuraava;
                 parasArvo = maxArvo;
             }
@@ -82,21 +84,23 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return max-pelaajan valitseman haaran 'arvo'
      */
-    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
+    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
         ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
-        if(kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS)
+        if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli);
+        }
 
         int value = Integer.MIN_VALUE;
-        for(Siirto siirto: kaikkiSiirrot){
+        for (Siirto siirto: kaikkiSiirrot) {
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
             int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 
             value = value > minVal ? value : minVal;
             alpha = alpha > minVal ? alpha : minVal;
 
-            if(alpha >= beta)
+            if (alpha >= beta) {
                 return value;
+            }
         }
 
         return value;
@@ -112,21 +116,23 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return min-pelaajan valitseman haaran 'arvo'
      */
-    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
+    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
         ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
-        if(kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS)
+        if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);
+        }
 
         int value = Integer.MAX_VALUE;
-        for(Siirto siirto: kaikkiSiirrot){
+        for (Siirto siirto: kaikkiSiirrot) {
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
             int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 
             value = value < minVal ? value : minVal;
             beta = beta < minVal ? beta : minVal;
 
-            if(alpha >= beta)
+            if (alpha >= beta) {
                 return value;
+            }
         }
 
         return value;
@@ -140,14 +146,14 @@ public class ShakkiAly implements ChessBot {
      * @param puoli kumman puolen pelaajan kannalta tilannetta tarkastellaan
      * @return laudan arvo kokonaislukuna. Jos arvo isompi kuin 0, niin tilanne on hyvä
      */
-    public int laudanArvo(Pelilauta peliLauta, Side puoli){
+    public static int laudanArvo(Pelilauta peliLauta, Side puoli) {
         int i = 0;
-
-        for(int y = 0; y < peliLauta.getKoko(); y++){
-            for(int x = 0; x < peliLauta.getKoko(); x++){
+        for (int y = 0; y < peliLauta.getKoko(); y++) {
+            for (int x = 0; x < peliLauta.getKoko(); x++) {
                 Nappula nappula = peliLauta.lauta[y][x];
-                if(nappula != null)
+                if (nappula != null) {
                     i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();
+                }
             }
         }
         return i;
@@ -156,7 +162,7 @@ public class ShakkiAly implements ChessBot {
     /**
      * Laudan tulostus (debugausta varten)
      */
-    public void printtaa(){
+    public void printtaa() {
         lauta.printtaa();
     }
     
