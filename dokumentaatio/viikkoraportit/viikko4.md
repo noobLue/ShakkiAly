@@ -14,7 +14,7 @@ Opin minmax algoritmin periaatteen. Huomasin samalla kuinka paljon aikaa se vie,
 
 ### Mikä jäi epäselväksi
 
-Tekoälyn suorituskyvyn testauksen toteutustapa on jäänyt vähän epäselväksi.
+Tekoälyn suorituskyvyn testauksen toteutustapa on jäänyt vähän epäselväksi. Tulisiko testata esim. päätösnopeutta jollain päätetyllä minmax syvyydellä? Vai verrata heurestiikkaa johonkin toiseen tekoälyyn esim. kumpi voittaa kumman?
 
 ### Seuraavaksi
 
