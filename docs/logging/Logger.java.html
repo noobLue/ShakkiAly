@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Logger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">logging</a> &gt; <span class="el_source">Logger.java</span></div><h1>Logger.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package logging;
+
+import java.io.FileWriter;
+import java.io.IOException;
+// import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.logging.Level;
+
+/**
+ * A logger for errors and messages
+ */
+public class Logger {
+    private static final String ANSI_RESET = &quot;\u001B[0m&quot;;
+    private static final String ANSI_RED = &quot;\u001B[31m&quot;;
+    private static final String ANSI_GREEN = &quot;\u001B[32m&quot;;
+    
+    private boolean useStdOut;
+    private boolean useLogFile;
+    private boolean useMemory;
+    private String filePath;
+    
+    public ArrayList&lt;String&gt; inMemoryLog;
+    
+    /**
+     * Default constructor, will not log until logging features are manually enabled
+     */
+<span class="fc" id="L33">    public Logger() {</span>
+<span class="fc" id="L34">        useStdOut = false;</span>
+<span class="fc" id="L35">        useLogFile = false;</span>
+<span class="fc" id="L36">        useMemory = false;</span>
+        
+<span class="fc" id="L38">        this.inMemoryLog = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">        filePath = &quot;./log.txt&quot;;</span>
+<span class="fc" id="L40">    }</span>
+    
+    /**
+     * Turn on logging to standard output
+     * @return Self
+     */
+    public Logger useStdOut() {
+<span class="fc" id="L47">        this.useStdOut = true;</span>
+        
+<span class="fc" id="L49">        return this;</span>
+    }
+    
+    /**
+     * Turn on logging to a text file
+     * @return 
+     */
+    public Logger useMemory() {
+<span class="fc" id="L57">        this.useMemory = true;</span>
+        
+<span class="fc" id="L59">        return this;</span>
+    }
+    
+    /**
+     * Turn on logging to a text file
+     * @return 
+     */
+    public Logger useLogFile() {
+<span class="fc" id="L67">        this.useLogFile = true;</span>
+        
+<span class="fc" id="L69">        return this;</span>
+    }
+    
+    /**
+     * Set an alternate path for the log file
+     * @param path Path to a file
+     * @return Self
+     */
+    public Logger alternatePath(String path) {
+<span class="nc" id="L78">        this.filePath = path;</span>
+        
+<span class="nc" id="L80">        return this;</span>
+    }
+    
+    /**
+     * Logs a message, used for general status notifications
+     * @param message Message to be logged
+     */
+    public void logMessage(String message) {
+        String messageWithDate;
+        
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (useStdOut) {</span>
+<span class="fc" id="L91">            messageWithDate = LocalDateTime.now().toString() + textInGreen(&quot; MESSAGE: &quot;) + message;</span>
+<span class="fc" id="L92">            System.out.println(messageWithDate);</span>
+        }
+        
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (useMemory) {</span>
+<span class="fc" id="L96">            messageWithDate = LocalDateTime.now().toString() + &quot; MESSAGE: &quot; + message;</span>
+<span class="fc" id="L97">            inMemoryLog.add(messageWithDate);</span>
+        }
+        
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        if (useLogFile) {</span>
+<span class="fc" id="L101">            messageWithDate = LocalDateTime.now().toString() + &quot; MESSAGE: &quot; + message;</span>
+            
+<span class="fc" id="L103">            FileWriter out = null;</span>
+            try {
+<span class="fc" id="L105">                out = new FileWriter(filePath, true);</span>
+<span class="fc" id="L106">                out.write(messageWithDate + &quot;\n&quot;);</span>
+<span class="fc" id="L107">                out.close();</span>
+<span class="nc" id="L108">            } catch (IOException ex) {</span>
+<span class="nc" id="L109">                java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.SEVERE, null, ex);</span>
+            } finally {
+                try {
+<span class="fc" id="L112">                    out.close();</span>
+<span class="nc" id="L113">                } catch (IOException ex) {</span>
+<span class="nc" id="L114">                    java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L115">                }</span>
+            }
+        }
+<span class="fc" id="L118">    }</span>
+    
+    /**
+     * Logs an error, used for when encountering an exceptional or a fatal situation
+     * @param message Error message to be logged
+     */
+    public void logError(String message) {
+        String messageWithDate;
+        
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (useStdOut) {</span>
+<span class="nc" id="L128">            messageWithDate = LocalDateTime.now().toString() + textInRed(&quot; ERROR: &quot;) + message;</span>
+<span class="nc" id="L129">            System.out.println(messageWithDate);</span>
+        }
+        
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (useMemory) {</span>
+<span class="fc" id="L133">            messageWithDate = LocalDateTime.now().toString() + &quot; ERROR: &quot; + message;</span>
+<span class="fc" id="L134">            inMemoryLog.add(messageWithDate);</span>
+        }
+        
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (useLogFile) {</span>
+<span class="fc" id="L138">            messageWithDate = LocalDateTime.now().toString() + &quot; ERROR: &quot; + message;</span>
+            
+<span class="fc" id="L140">            FileWriter out = null;</span>
+            try {
+<span class="fc" id="L142">                out = new FileWriter(filePath, true);</span>
+<span class="fc" id="L143">                out.write(messageWithDate + &quot;\n&quot;);</span>
+<span class="fc" id="L144">                out.close();</span>
+<span class="nc" id="L145">            } catch (IOException ex) {</span>
+<span class="nc" id="L146">                java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.SEVERE, null, ex);</span>
+            } finally {
+                try {
+<span class="fc" id="L149">                    out.close();</span>
+<span class="nc" id="L150">                } catch (IOException ex) {</span>
+<span class="nc" id="L151">                    java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L152">                }</span>
+            }
+        }
+<span class="fc" id="L155">    }</span>
+    
+    /**
+     * Surrounds given text with ANSI colour codes indicating red
+     * @param text
+     * @return 
+     */
+    private String textInRed(String text) {
+<span class="nc" id="L163">        return ANSI_RED + text + ANSI_RESET;</span>
+    }
+    
+    /**
+     * Surrounds text with ANSI colour codes indicating green
+     * @param text
+     * @return 
+     */
+    private String textInGreen(String text) {
+<span class="fc" id="L172">        return ANSI_GREEN + text + ANSI_RESET;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

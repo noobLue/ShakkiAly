@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ruutu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat</a> &gt; <span class="el_source">Ruutu.java</span></div><h1>Ruutu.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat;
+
+import chess.model.Side;
+
+/**
+ * Kuvaa shakkiruutua sijaintina
+ */
+public class Ruutu {
+<span class="fc" id="L9">    private final char alkuMerkki = 'a';</span>
+    private int x;
+    private int y;
+
+    /**
+     * 
+     * @param x shakkiruudun vaakatason sijainti indeksina alkaen nollasta.
+     * @param y shakkiruudun pystytason sijainti indeksina alkaen nollasta.
+     */
+<span class="fc" id="L18">    public Ruutu(final int x, final int y) {</span>
+<span class="fc" id="L19">        this.x = x;</span>
+<span class="fc" id="L20">        this.y = y;</span>
+<span class="fc" id="L21">    }</span>
+    /**
+     * 
+     * @param pos UCI protokollan mukainen representaatio shakkiruudusta
+     */
+<span class="fc" id="L26">    public Ruutu(final String pos) { //ex. &quot;a1&quot;</span>
+<span class="fc" id="L27">        x = (int) pos.toLowerCase().charAt(0) - (int) alkuMerkki;</span>
+<span class="fc" id="L28">        y = Integer.parseInt(pos.substring(1, 2)) - 1;</span>
+<span class="fc" id="L29">    }</span>
+
+    public Ruutu kopioi() {
+<span class="fc" id="L32">        return new Ruutu(x, y);</span>
+    }
+
+    public String getAsString() {
+<span class="fc" id="L36">        char eka = (char) ((int) alkuMerkki + x);</span>
+<span class="fc" id="L37">        int toka = y + 1;</span>
+<span class="fc" id="L38">        return &quot;&quot; + eka + toka;</span>
+    }
+
+    public int getX() {
+<span class="fc" id="L42">        return x;</span>
+    }
+
+    public void setX(final int x) {
+<span class="fc" id="L46">        this.x = x;</span>
+<span class="fc" id="L47">    }</span>
+
+    public int getY() {
+<span class="fc" id="L50">        return y;</span>
+    }
+
+    public void setY(final int y) {
+<span class="fc" id="L54">        this.y = y;</span>
+<span class="fc" id="L55">    }</span>
+    
+    /**
+     * Kertoo onko ruutu sallittu ruutu laudalla. 
+     * @param lauta lauta jota tutkitaan
+     * @return onko ruutu laudan dimensioiden sisÃ¤llÃ¤.
+     */
+    public boolean olenLaudalla(Pelilauta lauta) {
+<span class="fc bfc" id="L63" title="All 8 branches covered.">        return getX() &gt;= 0 &amp;&amp; getY() &gt;= 0 &amp;&amp; getX() &lt; lauta.getKoko() &amp;&amp; getY() &lt; lauta.getKoko();</span>
+    }
+
+    /**
+     * Palauttaa nappulan y-akselin sijainnnin, kun sitÃ¤ liikutetaan eteenpÃ¤in y-askelta
+     * (toimii molemmilla puolilla)
+     * 
+     * @param puoli kumman puolen pelaajan kannalta katsotaan suuntaa
+     * @param y y-akselin askeleiden mÃ¤Ã¤rÃ¤
+     * @return y-akselin koordinaatti
+     */
+    public int getEteenpainY(Side puoli, int y) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        return getY() + (puoli == Side.WHITE ? y : -y);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L80">        return getAsString();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

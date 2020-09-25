@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Lahetti.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Lahetti.java</span></div><h1>Lahetti.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
+
+import java.util.ArrayList;
+
+import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.Siirto;
+
+public class Lahetti extends Nappula {
+    public Lahetti(Side puoli, Ruutu ruutu) {
+<span class="fc" id="L12">        super(puoli, ruutu);</span>
+<span class="fc" id="L13">        this.arvo = 6;</span>
+<span class="fc" id="L14">    }</span>
+
+    public Nappula kopioi() {
+<span class="fc" id="L17">        return new Lahetti(getPuoli(), getRuutu().kopioi());</span>
+    }
+
+    public ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L21">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L22" title="All 4 branches covered.">        for (int i = 1; getX() + i &lt; lauta.getKoko() &amp;&amp; getY() + i &lt; lauta.getKoko(); i++) {</span>
+<span class="fc" id="L23">            Ruutu kohde1 = new Ruutu(getX() + i, getY() + i);</span>
+<span class="fc" id="L24">            Nappula n = lauta.getNappula(kohde1.getX(), kohde1.getY());</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            if (n == null) {</span>
+<span class="fc" id="L26">                siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+            } else {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">                if (n.getPuoli() != getPuoli()) {</span>
+<span class="fc" id="L29">                    siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+                }
+                break;
+            }
+        }
+
+<span class="fc bfc" id="L35" title="All 4 branches covered.">        for (int i = 1; getX() + i &lt; lauta.getKoko() &amp;&amp; getY() - i &gt;= 0; i++) {</span>
+<span class="fc" id="L36">            Ruutu kohde1 = new Ruutu(getX() + i, getY() - i);</span>
+<span class="fc" id="L37">            Nappula n = lauta.getNappula(kohde1.getX(), kohde1.getY());</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            if (n == null) {</span>
+<span class="fc" id="L39">                siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+            } else {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                if (n.getPuoli() != getPuoli()) {</span>
+<span class="fc" id="L42">                    siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+                }
+                break;
+            }
+        }
+
+<span class="fc bfc" id="L48" title="All 4 branches covered.">        for (int i = 1; getX() - i &gt;= 0 &amp;&amp; getY() + i &lt; lauta.getKoko(); i++) {</span>
+<span class="fc" id="L49">            Ruutu kohde1 = new Ruutu(getX() - i, getY() + i);</span>
+<span class="fc" id="L50">            Nappula n = lauta.getNappula(kohde1.getX(), kohde1.getY());</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (n == null) {</span>
+<span class="fc" id="L52">                siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+            } else {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                if (n.getPuoli() != getPuoli()) {</span>
+<span class="fc" id="L55">                    siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+                }
+                break;
+            }
+        }
+
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        for (int i = 1; getX() - i &gt;= 0 &amp;&amp; getY() - i &gt;= 0; i++) {</span>
+<span class="fc" id="L62">            Ruutu kohde1 = new Ruutu(getX() - i, getY() - i);</span>
+<span class="fc" id="L63">            Nappula n = lauta.getNappula(kohde1.getX(), kohde1.getY());</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (n == null) {</span>
+<span class="fc" id="L65">                siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+            } else {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                if (n.getPuoli() != getPuoli()) {</span>
+<span class="fc" id="L68">                    siirrot.add(new Siirto(getX(), getY(), kohde1.getX(), kohde1.getY()));</span>
+                }
+                break;
+            }
+        }
+
+<span class="fc" id="L74">        return siirrot;</span>
+    }
+
+    
+    @Override
+    public String toString() {
+<span class="fc" id="L80">        return &quot;b&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Kuningas.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Kuningas.java</span></div><h1>Kuningas.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
+
+import java.util.ArrayList;
+
+import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.Siirto;
+
+public class Kuningas extends Nappula {
+    public Kuningas(Side puoli, Ruutu ruutu) {
+<span class="fc" id="L12">        super(puoli, ruutu);</span>
+<span class="fc" id="L13">        this.arvo = Integer.MAX_VALUE;</span>
+<span class="fc" id="L14">    }</span>
+
+    public Nappula kopioi() {
+<span class="fc" id="L17">        return new Kuningas(getPuoli(), getRuutu().kopioi());</span>
+    }
+
+    @Override
+    public ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L22">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList&lt;Siirto&gt;();</span>
+
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for (int y = -1; y &lt;= 1; y++) {</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            for (int x = -1; x &lt;= 1; x++) {</span>
+<span class="fc bfc" id="L26" title="All 4 branches covered.">                if (y == 0 &amp;&amp; x == 0) {</span>
+<span class="fc" id="L27">                    continue;</span>
+                }
+<span class="fc" id="L29">                Ruutu r = new Ruutu(getX() + x, getY() + y);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                if (!r.olenLaudalla(lauta)) {</span>
+<span class="fc" id="L31">                    continue;</span>
+                }
+<span class="fc" id="L33">                Nappula n = lauta.lauta[r.getY()][r.getX()];</span>
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">                if (n == null || n.getPuoli() != this.getPuoli()) {</span>
+<span class="fc" id="L35">                    siirrot.add(new Siirto(getX(), getY(), r.getX(), r.getY()));</span>
+                }
+            }
+        }
+        //Tornitus?
+
+
+<span class="fc" id="L42">        return siirrot;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L47">        return &quot;k&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
