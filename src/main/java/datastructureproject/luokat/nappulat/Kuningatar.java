@@ -10,6 +10,7 @@ import datastructureproject.luokat.Siirto;
 public class Kuningatar extends Nappula {
     public Kuningatar(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
+        this.arvo = 8;
     }
 
     public Nappula kopioi() {

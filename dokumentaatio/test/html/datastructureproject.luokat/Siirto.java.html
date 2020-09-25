@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Siirto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat</a> &gt; <span class="el_source">Siirto.java</span></div><h1>Siirto.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat;
+
+/**
+ * Kuvaa shakissa yhden nappulan siirtoa
+ */
+public class Siirto {
+    private static final char EI_YLENNYSTA = '0';
+    private char ylennys;
+    private Ruutu alku;
+    private Ruutu kohde;
+
+    /**
+     * 
+     * @param alku siiron alkuruutu
+     * @param kohde siirron kohderuutu
+     */
+<span class="fc" id="L17">    public Siirto(Ruutu alku, Ruutu kohde) {</span>
+<span class="fc" id="L18">        this.alku = alku;</span>
+<span class="fc" id="L19">        this.kohde = kohde;</span>
+<span class="fc" id="L20">        this.ylennys = EI_YLENNYSTA;</span>
+<span class="fc" id="L21">    }</span>
+
+<span class="fc" id="L23">    public Siirto(int x, int y, int x2, int y2) {</span>
+<span class="fc" id="L24">        this.alku = new Ruutu(x, y);</span>
+<span class="fc" id="L25">        this.kohde = new Ruutu(x2, y2);</span>
+<span class="fc" id="L26">        this.ylennys = EI_YLENNYSTA;</span>
+<span class="fc" id="L27">    }</span>
+    
+<span class="nc" id="L29">    public Siirto(int x, int y, int x2, int y2, char ylennys) {</span>
+<span class="nc" id="L30">        this.alku = new Ruutu(x, y);</span>
+<span class="nc" id="L31">        this.kohde = new Ruutu(x2, y2);</span>
+<span class="nc" id="L32">        this.ylennys = ylennys;</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * 
+     * @param alku siirron lahtoruutu
+     * @param kohde siirron kohderuutu
+     * @param ylennys mahdollisen ylennyksen merkki UCI-formaatissa
+     */
+<span class="fc" id="L41">    public Siirto(Ruutu alku, Ruutu kohde, char ylennys) {</span>
+<span class="fc" id="L42">        this.alku = alku;</span>
+<span class="fc" id="L43">        this.kohde = kohde;</span>
+<span class="fc" id="L44">        this.ylennys = ylennys;</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * 
+     * @param siirto UCI-formaatin mukaisesti
+     */
+<span class="fc" id="L51">    public Siirto(String siirto) {</span>
+<span class="fc" id="L52">        alku = new Ruutu(siirto.substring(0, 2));</span>
+<span class="fc" id="L53">        kohde = new Ruutu(siirto.substring(2, 4));</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        ylennys = siirto.length() == 5 ? siirto.charAt(4) : EI_YLENNYSTA;</span>
+<span class="fc" id="L55">    }</span>
+
+    public String getUCIString() {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : &quot;&quot;);</span>
+    }
+
+    /**
+     * 
+     * @return sisaltaako tama siirto ylennyksen
+     */
+    public boolean onkoYlennysSiirto() {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        return ylennys != EI_YLENNYSTA;</span>
+    }
+
+    public char getYlennys() {
+<span class="nc" id="L70">        return ylennys;</span>
+    }
+
+    public Ruutu getAlku() {
+<span class="fc" id="L74">        return alku;</span>
+    }
+
+    public Ruutu getKohde() {
+<span class="fc" id="L78">        return kohde;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L83">        return getUCIString();</span>
+    }
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -10,6 +10,7 @@ import datastructureproject.luokat.Siirto;
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
+        this.arvo = 1;
     }
 
     public Nappula kopioi() {
@@ -29,12 +30,12 @@ public class Sotilas extends Nappula {
             } else {
                 siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));
             }
-        }
 
-        //Liiku kaksi eteen
-        Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));
-        if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
-            siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));
+            //Liiku kaksi eteen (yksiEteen pitää olla myös validi kohta)
+            Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));
+            if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
+                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));
+            }
         }
 
         //Syö viistoon
@@ -51,6 +52,7 @@ public class Sotilas extends Nappula {
         }
 
         //En passant
+
         
         return siirrot;
     }

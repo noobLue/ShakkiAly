@@ -10,6 +10,7 @@ import datastructureproject.luokat.Siirto;
 public class Lahetti extends Nappula {
     public Lahetti(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
+        this.arvo = 6;
     }
 
     public Nappula kopioi() {

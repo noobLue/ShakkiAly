@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Nappula.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Nappula.java</span></div><h1>Nappula.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
+
+import java.util.ArrayList;
+
+import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.Siirto;
+
+/**
+ * Kuvaa shakkinappulaa
+ */
+public abstract class Nappula {
+    private Ruutu ruutu;
+    protected Side puoli;
+
+    /**
+     * 
+     * @param puoli kumpi pelaaja omistaa taman nappulan
+     * @param positio nappulan sijainti pelilaudalla
+     */
+<span class="fc" id="L22">    public Nappula(Side puoli, Ruutu positio) {</span>
+<span class="fc" id="L23">        this.puoli = puoli;</span>
+<span class="fc" id="L24">        this.ruutu = positio;</span>
+<span class="fc" id="L25">    }</span>
+
+    public Side getPuoli() {
+<span class="fc" id="L28">        return puoli;</span>
+    }
+
+    public int getX() {
+<span class="fc" id="L32">        return ruutu.getX();</span>
+    }
+
+    public int getY() {
+<span class="fc" id="L36">        return ruutu.getY();</span>
+    }
+
+    public void setRuutu(int x, int y) {
+<span class="fc" id="L40">        this.ruutu.setX(x);</span>
+<span class="fc" id="L41">        this.ruutu.setY(y);</span>
+<span class="fc" id="L42">    }</span>
+
+    public Ruutu getRuutu() {
+<span class="fc" id="L45">        return ruutu;</span>
+    }
+
+    /**
+     * Palauttaa nappulan y-akselin sijainnnin, kun sitÃ¤ liikutetaan eteenpÃ¤in y-askelta
+     * (toimii molemmilla puolilla)
+     * 
+     * @param y y-akselin askeleiden mÃ¤Ã¤rÃ¤
+     * @return y-akselin koordinaatti
+     */
+    protected int getEteenpainY(int y) {
+<span class="fc" id="L56">        return getRuutu().getEteenpainY(getPuoli(), y);</span>
+    }
+
+    /**
+     * 
+     * @param lauta pelilaudan tilanne
+     * @return mahdolliset siirrot tÃ¤ssÃ¤ pelitilanteessa
+     */
+    public abstract ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta);
+
+    /**
+     * Kopioi nappulan, niin ettÃ¤ kopio ja alkuperÃ¤inen eivÃ¤t vaikuta toisiinsa (deep copy)
+     * @return kopio tÃ¤stÃ¤ nappulasta
+     */
+    public abstract Nappula kopioi();
+
+    /**
+     * 
+     * 
+     * @param lauta katseltava pelitilanne
+     * @return onko tÃ¤mÃ¤ nappula uhattuna tÃ¤ssÃ¤ tilanteessa
+     */
+    public boolean olenUhattuna(Pelilauta lauta) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        ArrayList&lt;Siirto&gt; vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (Siirto s: vastustajanLiikkeet) {</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">            if (s.getKohde().getX() == getX() &amp;&amp;  s.getKohde().getY() == getY()) {</span>
+<span class="fc" id="L82">                return true;</span>
+            }
+<span class="fc" id="L84">        }</span>
+
+<span class="fc" id="L86">        return false;</span>
+    }
+
+<span class="fc" id="L89">    protected int arvo = 1;</span>
+    public int getArvo(){
+<span class="fc" id="L91">        return arvo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

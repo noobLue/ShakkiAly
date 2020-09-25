@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LichessAPI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">chess.connection</a> &gt; <span class="el_source">LichessAPI.java</span></div><h1>LichessAPI.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package chess.connection;
+
+import chess.bot.ChessBot;
+import chess.model.Event;
+import chess.engine.GameState;
+import chess.model.Profile;
+import chess.model.Side;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.logging.Level;
+import logging.Logger;
+
+/**
+ * Java implementation of the Lichess.org HTTP API for chess bots
+ */
+public class LichessAPI {
+
+    private final String token;
+    private ChessBot bot;
+    private String gameId;
+    private String playerId;
+    private Logger logger;
+    private HTTPIOFactory httpFactory;
+
+    private HashMap&lt;String, String&gt; headers;
+
+    /**
+     * Create a LichessAPI object with a given bot and a bot token
+     *
+     * @param bot ChessBot implementation to be used for this Lichess session
+     * @param token Lichess API token with bot permission
+     */
+    public LichessAPI(ChessBot bot, String token) {
+<span class="nc" id="L40">        this(bot, token, new Logger().useStdOut(), new HTTPStreamFactory());</span>
+<span class="nc" id="L41">    }</span>
+
+    /**
+     * Base constructor for a LichessAPI object
+     *
+     * Allows injecting a custom HTTPIOFactory for mocking the API
+     * and a logger for custom logging
+     *
+     * @param bot ChessBot implementation to be used
+     * @param token Lichess API token with bot permission
+     * @param logger Pre-configured Logger for logging to files etc.
+     * @param httpFactory HTTPIOFactory that can generate HTTPIO objects, used for API mocking
+     */
+<span class="fc" id="L54">    public LichessAPI(ChessBot bot, String token, Logger logger, HTTPIOFactory httpFactory) {</span>
+<span class="fc" id="L55">        this.bot = bot;</span>
+<span class="fc" id="L56">        this.logger = logger;</span>
+<span class="fc" id="L57">        this.httpFactory = httpFactory;</span>
+
+<span class="fc" id="L59">        this.token = token;</span>
+
+<span class="fc" id="L61">        headers = new HashMap&lt;&gt;();</span>
+
+        // Add token to HTTP headers
+<span class="fc" id="L64">        headers.put(&quot;Authorization&quot;, &quot;Bearer &quot; + token);</span>
+<span class="fc" id="L65">    }</span>
+            
+    /**
+     * Get Lichess account information
+     *
+     * @return Profile for the account associated with the given Lichess token
+     */
+    public Profile getAccount() {
+        String json;
+<span class="fc" id="L74">        HTTPIO stream = httpFactory.createNew()</span>
+<span class="fc" id="L75">                .get(&quot;https://lichess.org/api/account&quot;)</span>
+<span class="fc" id="L76">                .setHeaders(headers)</span>
+<span class="fc" id="L77">                .connect();</span>
+        
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (stream.getHTTPStatus() != 200) {</span>
+<span class="fc" id="L80">            logger.logError(&quot;Lichess returned Error code &quot; + stream.getHTTPStatus() </span>
+                    + &quot;: your Lichess token might be invalid.&quot;);
+            
+<span class="fc" id="L83">            return null;</span>
+        }
+        
+<span class="fc" id="L86">        json = stream.toString();</span>
+
+        try {
+<span class="fc" id="L89">            stream.close();</span>
+<span class="nc" id="L90">        } catch (IOException ex) {</span>
+<span class="nc" id="L91">            java.util.logging.Logger.getLogger(LichessAPI.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L92">        }</span>
+
+<span class="fc" id="L94">        Profile profile = Profile.parseFromJson(json);</span>
+
+<span class="fc" id="L96">        return profile;</span>
+    }
+
+    /**
+     * Open a JSON event stream to Lichess.org and begin listening to events
+     */
+    public void beginEventLoop() {
+<span class="fc" id="L103">        HTTPIO eventStream = httpFactory.createNew()</span>
+<span class="fc" id="L104">                .get(&quot;https://lichess.org/api/stream/event&quot;)</span>
+<span class="fc" id="L105">                .setHeaders(headers)</span>
+<span class="fc" id="L106">                .connect();</span>
+        
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (eventStream.getHTTPStatus() != 200) {</span>
+<span class="fc" id="L109">            logger.logError(&quot;Lichess returned Error code &quot; + eventStream.getHTTPStatus() </span>
+                    + &quot;: your Lichess token might be invalid.&quot;);
+            
+<span class="fc" id="L112">            return;</span>
+        }
+        
+<span class="fc" id="L115">        handleEventLoop(eventStream.getIterator());</span>
+
+        try {
+<span class="fc" id="L118">            eventStream.close();</span>
+<span class="nc" id="L119">        } catch (IOException ex) {</span>
+<span class="nc" id="L120">            java.util.logging.Logger.getLogger(LichessAPI.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L121">        }</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Iterator handler for handling individual event JSON objects in an iterator
+     *
+     * &lt;p&gt;This method has been separated from beginEventLoop() for mocking purposes&lt;/p&gt;
+     *
+     * @param eventStream An iterator that produces Strings of JSON according to lichess.org API
+     */
+    public void handleEventLoop(Iterator&lt;String&gt; eventStream) {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        while (eventStream.hasNext()) {</span>
+<span class="fc" id="L133">            logger.logMessage(&quot;Waiting for Lichess events... (press Ctrl-C if you want to quit playing)&quot;);</span>
+            
+<span class="fc" id="L135">            String line = eventStream.next();</span>
+
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">            if (!line.isEmpty()) {</span>
+<span class="fc" id="L138">                Event event = Event.parseFromJson(line);</span>
+
+<span class="fc" id="L140">                logger.logMessage(&quot;New event: &quot; + event.type + &quot; id: &quot; + event.id);</span>
+
+<span class="pc bpc" id="L142" title="1 of 3 branches missed.">                switch (event.type) {</span>
+                    case Challenge:
+<span class="fc" id="L144">                        logger.logMessage(&quot;Accepting challenge: &quot; + event.id);</span>
+<span class="fc" id="L145">                        System.out.println(acceptChallenge(event.id));</span>
+<span class="fc" id="L146">                        break;</span>
+                    case GameStart:
+<span class="fc" id="L148">                        this.gameId = event.id;</span>
+
+<span class="fc" id="L150">                        openGame();</span>
+
+<span class="fc" id="L152">                        break;</span>
+                    default:
+                        break;
+                }
+            }
+<span class="fc" id="L157">        }</span>
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Opens the game event stream from lichess.org and initiates a gameplay loop with the current bot
+     */
+    public void openGame() {
+<span class="fc" id="L164">        this.playerId = this.getAccount().id;</span>
+
+<span class="fc" id="L166">        logger.logMessage(&quot;Game starting: &quot; + gameId);</span>
+
+<span class="fc" id="L168">        HTTPIO gameStream = httpFactory.createNew()</span>
+<span class="fc" id="L169">                .get(&quot;https://lichess.org/api/bot/game/stream/&quot; + gameId)</span>
+<span class="fc" id="L170">                .setHeaders(headers)</span>
+<span class="fc" id="L171">                .connect();</span>
+        
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (gameStream.getHTTPStatus() != 200) {</span>
+<span class="fc" id="L174">            logger.logError(&quot;Lichess returned Error code &quot; + gameStream.getHTTPStatus() </span>
+                    + &quot;: your Lichess token might be invalid.&quot;);
+            
+<span class="fc" id="L177">            return;</span>
+        }
+        
+<span class="fc" id="L180">        playGame(gameStream.getIterator());</span>
+
+        try {
+<span class="fc" id="L183">            gameStream.close();</span>
+<span class="nc" id="L184">        } catch (IOException ex) {</span>
+<span class="nc" id="L185">            java.util.logging.Logger.getLogger(LichessAPI.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L186">        }</span>
+<span class="fc" id="L187">    }</span>
+
+    /**
+     * Process gameplay events from a given Iterator, update the game state and call bot
+     *
+     * @param gameStream Iterator that produces Strings of JSON data according to lichess.org spec
+     */
+    public void playGame(Iterator&lt;String&gt; gameStream) {
+<span class="fc" id="L195">        GameState gs = new GameState();</span>
+
+<span class="fc" id="L197">        boolean gameRunning = true;</span>
+
+<span class="fc bfc" id="L199" title="All 4 branches covered.">        while (gameRunning &amp;&amp; gameStream.hasNext()) {</span>
+<span class="fc" id="L200">            String line = gameStream.next();</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">            if (!line.isEmpty()) {</span>
+                // Update game state and call the bot
+<span class="fc" id="L203">                String move = getNextMove(line, gs, playerId);</span>
+                
+<span class="fc bfc" id="L205" title="All 2 branches covered.">                if (move == null) {</span>
+<span class="fc" id="L206">                    gameRunning = false;</span>
+<span class="fc" id="L207">                    logger.logMessage(&quot;Bot returned null move - Game ends.&quot;);</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">                } else if (!move.equals(&quot;nomove&quot;)) {</span>
+<span class="fc" id="L209">                    int statusCode = makeMove(move);</span>
+
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">                    if (statusCode != 200) {</span>
+<span class="nc" id="L212">                        logger.logError(&quot;Lichess returned Bad Request status code, illegal move? Move was: &quot; + move </span>
+                                + &quot; Statuscode: &quot; + statusCode);
+                    }
+                }
+            }
+<span class="fc" id="L217">        }</span>
+
+<span class="fc" id="L219">    }</span>
+
+    /**
+     * Updates gamestate based on given JSON and plays a bot move
+     *
+     * @param jsonLine A line of JSON data according to
+     * https://lichess.org/api#operation/botGameStream
+     * @param gamestate The state of the currently running game
+     * @param playerId The Lichess ID of the bot
+     * @return The move made by the bot in UCI format or &quot;nomove&quot; if the bot
+     * cannot make a move
+     */
+    public String getNextMove(String jsonLine, GameState gamestate, String playerId) {
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (!jsonLine.isEmpty()) {</span>
+<span class="fc" id="L233">            gamestate.updateFromJson(jsonLine);</span>
+            
+<span class="fc bfc" id="L235" title="All 2 branches covered.">            if (gamestate.playing == null) {</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">                if (gamestate.playingWhite.equals(playerId)) {</span>
+<span class="fc" id="L237">                    gamestate.playing = Side.WHITE;</span>
+                } else {
+<span class="fc" id="L239">                    gamestate.playing = Side.BLACK;</span>
+                }
+            }
+        }
+<span class="fc" id="L243">        logger.logMessage(&quot;Moves: &quot; + gamestate.moves.toString());</span>
+        
+        // White moves are even numbered, black moves are odd numbered
+<span class="fc bfc" id="L246" title="All 2 branches covered.">        if (gamestate.getMoveCount() % 2 == 0) {</span>
+<span class="fc" id="L247">            gamestate.turn = Side.WHITE;</span>
+        } else {
+<span class="fc" id="L249">            gamestate.turn = Side.BLACK;</span>
+        }
+        
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (gamestate.turn == gamestate.playing) {</span>
+            // Call the bot
+<span class="fc" id="L254">            String move = bot.nextMove(gamestate);</span>
+
+<span class="fc bfc" id="L256" title="All 2 branches covered.">            if (move == null) {</span>
+<span class="fc" id="L257">                logger.logMessage(&quot;Bot returned no moves.&quot;);</span>
+
+<span class="fc" id="L259">                return null;</span>
+            } else {
+<span class="fc" id="L261">                logger.logMessage(&quot;Bot made move: &quot; + move);</span>
+<span class="fc" id="L262">                return move;</span>
+            }
+        } else {
+<span class="fc" id="L265">            return &quot;nomove&quot;;</span>
+        }
+    }
+
+    /**
+     * Accept a Lichess challenge
+     *
+     * @param id The ID of the challenge event
+     * @return The HTTP status code of the POST request response
+     */
+    public int acceptChallenge(String id) {
+<span class="fc" id="L276">        HTTPIO stream = httpFactory.createNew()</span>
+<span class="fc" id="L277">                .post(&quot;https://lichess.org/api/challenge/&quot; + id + &quot;/accept&quot;, &quot;&quot;)</span>
+<span class="fc" id="L278">                .setHeaders(headers)</span>
+<span class="fc" id="L279">                .connect();</span>
+
+<span class="fc" id="L281">        return stream.getHTTPStatus();</span>
+    }
+
+    /**
+     * Decline a Lichess challenge
+     *
+     * @param id The ID of the challenge event
+     * @return The HTTP status code of the POST request response
+     */
+    public int declineChallenge(String id) {
+<span class="fc" id="L291">        HTTPIO stream = httpFactory.createNew()</span>
+<span class="fc" id="L292">                .post(&quot;https://lichess.org/api/challenge/&quot; + id + &quot;/decline&quot;, &quot;&quot;)</span>
+<span class="fc" id="L293">                .setHeaders(headers)</span>
+<span class="fc" id="L294">                .connect();</span>
+
+<span class="fc" id="L296">        return stream.getHTTPStatus();</span>
+    }
+
+    /**
+     * Make a move in the current Lichess game
+     *
+     * @param move The chess move in UCI format
+     * @return The HTTP status code of the POST request response
+     */
+    public int makeMove(String move) {
+<span class="fc" id="L306">        HTTPIO stream = httpFactory.createNew()</span>
+<span class="fc" id="L307">                .post(&quot;https://lichess.org/api/bot/game/&quot; + this.gameId + &quot;/move/&quot; + move, &quot;&quot;)</span>
+<span class="fc" id="L308">                .setHeaders(headers)</span>
+<span class="fc" id="L309">                .connect();</span>
+
+<span class="fc" id="L311">        return stream.getHTTPStatus();</span>
+    }
+
+    /**
+     * Set the player's ID (profile name)
+     * Used for mocking and testing purposes
+     *
+     * @param newPlayerId A Lichess profile name
+     */
+    public void setPlayerId(String newPlayerId) {
+<span class="fc" id="L321">        this.playerId = newPlayerId;</span>
+<span class="fc" id="L322">    }</span>
+
+    /**
+     * Get the player's ID (profile name)
+     */
+    public String getPlayerId() {
+<span class="fc" id="L328">        return this.playerId;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

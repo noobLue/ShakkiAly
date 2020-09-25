@@ -81,16 +81,15 @@ public class Pelilauta {
             lauta[siirto.getAlku().getY()][torniUusiX] = torni;
         }
 
-        //Prosessoi En passant - liike
-        //Tarvitaan edellisen liikkeen tieto!
-        if (viimeSiirto != null
-            && getNappula(viimeSiirto.getKohde()) instanceof Sotilas 
-            && Math.abs(viimeSiirto.getAlku().getY() - viimeSiirto.getKohde().getY()) > 1) {
-
-            throw new Error("En passant ei ole vielä implementoitu");
+        //Prosessoi En passant - liike, olettaen ettei vastustaja tee laittomia liikkeitä
+        if(Math.abs(siirto.getAlku().getY() - siirto.getKohde().getY()) >= 1
+                && Math.abs(siirto.getAlku().getX() - siirto.getKohde().getX()) >= 1
+                && siirrettava instanceof Sotilas
+                && getNappula(siirto.getKohde()) == null){
+            int uusiY = siirto.getKohde().getEteenpainY(siirrettava.getPuoli(), -1);
+            lauta[uusiY][siirto.getKohde().getX()] = null;
         }
 
-        
         //Prosessoi ylennys
         if (siirrettava instanceof Sotilas
             && siirto.onkoYlennysSiirto()) {

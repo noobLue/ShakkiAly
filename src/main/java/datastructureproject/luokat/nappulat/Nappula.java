@@ -53,7 +53,7 @@ public abstract class Nappula {
      * @return y-akselin koordinaatti
      */
     protected int getEteenpainY(int y) {
-        return getY() + (getPuoli() == Side.WHITE ? y : -y);
+        return getRuutu().getEteenpainY(getPuoli(), y);
     }
 
     /**
@@ -84,5 +84,10 @@ public abstract class Nappula {
         }
 
         return false;
+    }
+
+    protected int arvo = 1;
+    public int getArvo(){
+        return arvo;
     }
 }

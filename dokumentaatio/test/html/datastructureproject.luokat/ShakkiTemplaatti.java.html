@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShakkiTemplaatti.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat</a> &gt; <span class="el_source">ShakkiTemplaatti.java</span></div><h1>ShakkiTemplaatti.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat;
+
+import chess.model.Side;
+
+public class ShakkiTemplaatti {
+    /**
+     * Kertoo kummalla puolella lautaa valkoinen pelaaja pelaa
+     */
+<span class="fc" id="L9">    public final boolean valkoinenAlhaalla = true;</span>
+    /**
+     * &quot;Universal Chess Interface&quot; - protokollan merkiston (ie. 'r'=Rook) mukainen Shakkilaudan templaatti
+     */
+<span class="fc" id="L13">    private final char[][] shakkiTemplaatti = new char[][] { </span>
+        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' } , 
+        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
+        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
+        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
+        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
+        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
+        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
+        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
+    };
+
+<span class="fc" id="L24">    public ShakkiTemplaatti() {</span>
+
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Luo uuden templaatin
+     * @param templaatti 2-dimensionaalinen array shakkinappuloita merkkeinÃ¤
+     */
+<span class="fc" id="L32">    public ShakkiTemplaatti(char[][] templaatti) {</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (int y = 0; y &lt; templaatti.length; y++) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (int x = 0; x &lt; templaatti[y].length; x++) {</span>
+<span class="fc" id="L35">                shakkiTemplaatti[y][x] = templaatti[y][x];</span>
+            }
+        }
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * 
+     * @return templaatin koko
+     */
+    public int getKoko() {
+<span class="nc" id="L45">        return shakkiTemplaatti.length;</span>
+    }
+
+    /** 
+     * @param y rivi, jota tarkastellaan
+     * @return kumman puolen pelaajalle rivi kuuluu
+     */
+    public Side kummanRivi(final int y) {
+        if (valkoinenAlhaalla){
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            return (y &lt; shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;</span>
+        } else {
+            return (y &gt;= shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
+        }
+    }
+
+    public char[][] getTemplaatti() {
+<span class="fc" id="L61">        return shakkiTemplaatti;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -10,6 +10,7 @@ import datastructureproject.luokat.Siirto;
 public class Kuningas extends Nappula {
     public Kuningas(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
+        this.arvo = Integer.MAX_VALUE;
     }
 
     public Nappula kopioi() {
@@ -36,6 +37,7 @@ public class Kuningas extends Nappula {
             }
         }
         //Tornitus?
+
 
         return siirrot;
     }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Sotilas.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Sotilas.java</span></div><h1>Sotilas.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
+
+import java.util.ArrayList;
+
+import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.Siirto;
+
+public class Sotilas extends Nappula {
+    public Sotilas(Side puoli, Ruutu ruutu) {
+<span class="fc" id="L12">        super(puoli, ruutu);</span>
+<span class="fc" id="L13">        this.arvo = 1;</span>
+<span class="fc" id="L14">    }</span>
+
+    public Nappula kopioi() {
+<span class="fc" id="L17">        return new Sotilas(getPuoli(), getRuutu().kopioi());</span>
+    }
+
+    @Override
+    public ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L22">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList();</span>
+
+        //Liiku yksi eteen
+<span class="fc" id="L25">        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));</span>
+<span class="pc bpc" id="L26" title="1 of 4 branches missed.">        if (yksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(yksiEteen) == null) {</span>
+<span class="pc bpc" id="L27" title="1 of 4 branches missed.">            boolean ylennys = yksiEteen.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">            if (ylennys) {</span>
+<span class="nc" id="L29">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'q'));</span>
+            } else {
+<span class="fc" id="L31">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));</span>
+            }
+
+            //Liiku kaksi eteen (yksiEteen pitÃ¤Ã¤ olla myÃ¶s validi kohta)
+<span class="fc" id="L35">            Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));</span>
+<span class="pc bpc" id="L36" title="1 of 8 branches missed.">            if (kaksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(kaksiEteen) == null &amp;&amp; getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {</span>
+<span class="fc" id="L37">                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));</span>
+            }
+        }
+
+        //SyÃ¶ viistoon
+<span class="fc" id="L42">        int[] viistot = new int[] {1, -1};</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int x: viistot) {</span>
+<span class="fc" id="L44">            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (!vRuutu.olenLaudalla(lauta)) {</span>
+<span class="fc" id="L46">                continue;</span>
+            }
+<span class="fc" id="L48">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
+<span class="fc" id="L50">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
+            }
+        }
+
+        //En passant
+
+        
+<span class="fc" id="L57">        return siirrot;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L62">        return &quot;p&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

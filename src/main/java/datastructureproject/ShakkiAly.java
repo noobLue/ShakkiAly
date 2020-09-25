@@ -9,8 +9,11 @@ import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.ShakkiTemplaatti;
 import datastructureproject.luokat.Siirto;
 import datastructureproject.luokat.nappulat.Kuningas;
+import datastructureproject.luokat.nappulat.Nappula;
 
 public class ShakkiAly implements ChessBot {
+    private static final int SYVYYS = 3;
+
     private Pelilauta lauta;
 
     public ShakkiAly() {
@@ -19,13 +22,33 @@ public class ShakkiAly implements ChessBot {
 
     @Override
     public String nextMove(GameState gamestate) {
-        Siirto siirto = new Siirto(gamestate.getLatestMove());
-        lauta = lauta.toteutaSiirto(siirto);
+        if(gamestate.getMoveCount() > 0){
+            Siirto siirto = new Siirto(gamestate.getLatestMove());
+            lauta = lauta.toteutaSiirto(siirto);
+        }
+        //Haetaan kaikki meidan mahdolliset liikkeet ja karsitaan niistä pois tilanteet jotka johtavat oman kuninkaan shakitukseen
+        ArrayList<Siirto> siirrot = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);
+        if(siirrot.isEmpty()){
+            return "a0a0"; //luovutus
+        }
 
+        //Alustetaan parasSiirto johonkin satunnaiseen siirtoon
+        Siirto parasSiirto = siirrot.get((int)(System.currentTimeMillis() % siirrot.size()));
+        int parasArvo = Integer.MIN_VALUE;
+        //Käydään läpi mahdolliset siirrot ja aloitetaan siirroille minmax vastustajan nakokulmasta
+        for(Siirto seuraava: siirrot){
+            Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);
+            int maxArvo = minValue(uusiLauta, gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+            if(maxArvo > parasArvo){
+                parasSiirto = seuraava;
+                parasArvo = maxArvo;
+            }
+        }
 
-        Siirto s = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing).get(0);
-        lauta = lauta.toteutaSiirto(s);
-        return s.getUCIString();
+        //Toteutetaan siirto omalla laudalla
+        lauta = lauta.toteutaSiirto(parasSiirto);
+        //Palautetaan siirto rajapinnan mukaan
+        return parasSiirto.getUCIString();
     }
 
     /**
@@ -36,8 +59,7 @@ public class ShakkiAly implements ChessBot {
      * @return listan siirroista josta on filtteröity pois shakkitilanteen säilyttävät / aiheuttavat siirrot
      */
     public ArrayList<Siirto> filtteroiInvaliditSiirrot(Pelilauta lauta, ArrayList<Siirto> kaikkiSiirrot, Side puoli) {
-        ArrayList<Siirto> siirrot = new ArrayList();
-
+        ArrayList<Siirto> siirrot = new ArrayList<>();
 
         for (Siirto s: kaikkiSiirrot) {
             Pelilauta sLauta = lauta.toteutaSiirto(s);
@@ -48,6 +70,94 @@ public class ShakkiAly implements ChessBot {
         }
 
         return siirrot;
+    }
+
+    /**
+     * Simuloidaan omaa vuoroa minmaxissa
+     * 
+     * @param peliLauta tamanhetkinen pelitilanne
+     * @param puoli max-pelaajan puoli
+     * @param alpha alphabeta karsinnan alpha-arvo
+     * @param beta alphabeta karsinnan beta-arvo
+     * @param syvyys syvyys jota tarkastellaan pelipuussa
+     * @return max-pelaajan valitseman haaran 'arvo'
+     */
+    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
+        ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
+        if(kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS)
+            return laudanArvo(peliLauta, puoli);
+
+        int value = Integer.MIN_VALUE;
+        for(Siirto siirto: kaikkiSiirrot){
+            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
+            int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
+
+            value = value > minVal ? value : minVal;
+            alpha = alpha > minVal ? alpha : minVal;
+
+            if(alpha >= beta)
+                return value;
+        }
+
+        return value;
+    }
+
+    /**
+     * Simuloidaan vastustajan vuoroa minmaxissa
+     * 
+     * @param peliLauta tamanhetkinen pelitilanne
+     * @param puoli min-pelaajan puoli
+     * @param alpha alphabeta karsinnan alpha-arvo
+     * @param beta alphabeta karsinnan beta-arvo
+     * @param syvyys syvyys jota tarkastellaan pelipuussa
+     * @return min-pelaajan valitseman haaran 'arvo'
+     */
+    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
+        ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
+        if(kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS)
+            return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);
+
+        int value = Integer.MAX_VALUE;
+        for(Siirto siirto: kaikkiSiirrot){
+            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
+            int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
+
+            value = value < minVal ? value : minVal;
+            beta = beta < minVal ? beta : minVal;
+
+            if(alpha >= beta)
+                return value;
+        }
+
+        return value;
+    }
+
+    /**
+     * Heurestiikka jolla arvioidaan pelitilanteen 'arvoa'
+     * jommankumman puolen pelaajan kannalta
+     * 
+     * @param peliLauta pelilaudan tilanne, jota tarkastellaan
+     * @param puoli kumman puolen pelaajan kannalta tilannetta tarkastellaan
+     * @return laudan arvo kokonaislukuna. Jos arvo isompi kuin 0, niin tilanne on hyvä
+     */
+    public int laudanArvo(Pelilauta peliLauta, Side puoli){
+        int i = 0;
+
+        for(int y = 0; y < peliLauta.getKoko(); y++){
+            for(int x = 0; x < peliLauta.getKoko(); x++){
+                Nappula nappula = peliLauta.lauta[y][x];
+                if(nappula != null)
+                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();
+            }
+        }
+        return i;
+    }
+
+    /**
+     * Laudan tulostus (debugausta varten)
+     */
+    public void printtaa(){
+        lauta.printtaa();
     }
     
 }

@@ -174,6 +174,40 @@ public class PelilautaTest {
     }
 
     @Test
+    public void enPassantTest(){
+        char[][] alku = new char[][]{
+            { 'r', '0', '0', '0', 'k', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', 'p', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', 'p', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+        };
+
+        char[][] kohde = new char[][]{
+            { 'r', '0', '0', '0', 'k', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', 'p', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+        };
+
+
+        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        
+        lauta = lauta.toteutaSiirto(new Siirto("f5f4"));
+        lauta = lauta.toteutaSiirto(new Siirto("g2g4"));
+        lauta = lauta.toteutaSiirto(new Siirto("f4g3"));
+
+        assertTrue(vertaaLautaaOdotettuun(lauta, kohde));
+    }
+
+    @Test
     public void kaksoisAskelTest(){
         Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti());
         ArrayList<Siirto> siirrot = lauta.kaikkiLiikeet(Side.WHITE);

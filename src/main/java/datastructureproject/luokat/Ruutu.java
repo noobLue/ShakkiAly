@@ -1,5 +1,7 @@
 package datastructureproject.luokat;
 
+import chess.model.Side;
+
 /**
  * Kuvaa shakkiruutua sijaintina
  */
@@ -59,6 +61,17 @@ public class Ruutu {
      */
     public boolean olenLaudalla(Pelilauta lauta) {
         return getX() >= 0 && getY() >= 0 && getX() < lauta.getKoko() && getY() < lauta.getKoko();
+    }
+
+    /**
+     * Palauttaa nappulan y-akselin sijainnnin, kun sitä liikutetaan eteenpäin y-askelta
+     * (toimii molemmilla puolilla)
+     * 
+     * @param y y-akselin askeleiden määrä
+     * @return y-akselin koordinaatti
+     */
+    public int getEteenpainY(Side puoli, int y) {
+        return getY() + (puoli == Side.WHITE ? y : -y);
     }
 
     @Override

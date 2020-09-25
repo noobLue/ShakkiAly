@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XBoardHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">chess.connection</a> &gt; <span class="el_source">XBoardHandler.java</span></div><h1>XBoardHandler.java</h1><pre class="source lang-java linenums">package chess.connection;
+
+import chess.bot.ChessBot;
+import chess.engine.GameState;
+import java.io.BufferedReader;
+import java.io.IOException;
+import chess.model.Side;
+import logging.Logger;
+/**
+ * Class for handling game input coming from XBoard
+ */
+public class XBoardHandler {
+    private ChessBot bot;
+    private GameState gamestate;
+    private BufferedReader in;
+
+    private Logger logger;
+    
+    /**
+     * Initializes XBoardHandler with a given Bot and a reader to the input pipe
+     * @param bot A chess bot 
+     * @param in Reader for the input pipe (standard input)
+     */
+<span class="fc" id="L24">    public XBoardHandler(ChessBot bot, BufferedReader in) {</span>
+<span class="fc" id="L25">        this.bot = bot;</span>
+<span class="fc" id="L26">        this.in = in;</span>
+<span class="fc" id="L27">        String input = &quot;&quot;;</span>
+<span class="fc" id="L28">        this.logger = new Logger().useLogFile();</span>
+<span class="fc" id="L29">        this.gamestate = new GameState();</span>
+        
+        while (true) {
+            try {
+<span class="fc" id="L33">                input = this.in.readLine();</span>
+
+                // Configure XBoard with desired options
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                if (input.startsWith(&quot;protover&quot;)) {</span>
+<span class="fc" id="L37">                    System.out.println(&quot;feature done=0 sigint=0 sigterm=0 reuse=0 &quot;</span>
+                            + &quot;usermove=1 myname=\&quot;tira-chess\&quot; done=1\n&quot;);
+<span class="fc" id="L39">                    System.out.flush();</span>
+<span class="fc" id="L40">                    break;</span>
+                }
+<span class="nc" id="L42">            } catch (IOException e) {</span>
+<span class="nc" id="L43">                logger.logError(e.toString());</span>
+<span class="pc" id="L44">            }</span>
+        }
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     * Executes the game loop for XBoard
+     *
+     * &lt;p&gt;On each iteration, reads the input from the reader and parses
+     * XBoard commands and updates the gamestate accordingly. When XBoard
+     * indicates player turn, calls the bot and passes the bot move back
+     * to XBoard.&lt;/p&gt;
+     */
+    public void run() {
+<span class="fc" id="L57">        Boolean run = true;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        while (run) {            </span>
+            try {
+<span class="fc" id="L60">                String command = this.in.readLine();</span>
+<span class="fc" id="L61">                logger.logMessage(command);</span>
+<span class="fc bfc" id="L62" title="All 7 branches covered.">                switch (command.split(&quot; &quot;)[0]) {</span>
+                    case &quot;new&quot;:
+<span class="fc" id="L64">                        this.gamestate = new GameState();</span>
+<span class="fc" id="L65">                        gamestate.playing = Side.BLACK;</span>
+<span class="fc" id="L66">                        break;</span>
+                    
+                    case &quot;white&quot;: 
+                        //tells the engine to start playing as white
+<span class="fc" id="L70">                        gamestate.playing = Side.WHITE;</span>
+<span class="fc" id="L71">                        System.out.println(&quot;move &quot; + nextMove() + &quot;\n&quot;);</span>
+<span class="fc" id="L72">                        System.out.flush(); </span>
+<span class="fc" id="L73">                        break;</span>
+
+                    case &quot;usermove&quot;: 
+<span class="fc" id="L76">                        handleMove(command.split(&quot; &quot;)[1]);</span>
+<span class="fc" id="L77">                        System.out.println(&quot;move &quot; + nextMove() + &quot;\n&quot;);</span>
+<span class="fc" id="L78">                        System.out.flush();</span>
+<span class="fc" id="L79">                        break;</span>
+                    
+                    case &quot;time&quot;:
+<span class="fc" id="L82">                        gamestate.setTimePlayer(10 * Long.parseLong(command.split(&quot; &quot;)[1]));</span>
+<span class="fc" id="L83">                        break;</span>
+
+                    case &quot;otim&quot;:
+<span class="fc" id="L86">                        gamestate.setTimeOpponent(10 * Long.parseLong(command.split(&quot; &quot;)[1]));</span>
+<span class="fc" id="L87">                        break;</span>
+
+                    // This is used for tests
+                    case &quot;endloop&quot;:
+<span class="fc" id="L91">                        run = false;</span>
+<span class="fc" id="L92">                        break;</span>
+                        
+                    default:
+<span class="fc" id="L95">                        continue;</span>
+                }
+                
+<span class="nc" id="L98">            } catch (IOException e) { </span>
+<span class="nc" id="L99">                logger.logError(e.toString());</span>
+<span class="pc" id="L100">            }</span>
+        }
+<span class="fc" id="L102">    }</span>
+    
+    /**
+     * Processes a single move from XBoard and updates GameState
+     * @param move XBoard-supplied move
+     */
+    public void handleMove(String move) {
+<span class="fc" id="L109">        this.gamestate.moves.add(move);</span>
+<span class="fc" id="L110">        this.logger.logMessage(gamestate.moves.toString());</span>
+<span class="fc" id="L111">    }</span>
+    
+    /**
+     * Asks the chess bot for a move and updates the GameState
+     * @return Bot's move in UCI format
+     */
+    public String nextMove() {
+<span class="fc" id="L118">        String move = bot.nextMove(gamestate);</span>
+<span class="fc" id="L119">        gamestate.moves.add(move);</span>
+<span class="fc" id="L120">        return move;</span>
+    }
+
+    /**
+     * Getter for the current GameState
+     * @return Current gamestate
+     */
+    public GameState getGameState() {
+<span class="fc" id="L128">        return this.gamestate;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
