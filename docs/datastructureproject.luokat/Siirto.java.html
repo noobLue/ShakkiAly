@@ -26,11 +26,11 @@ public class Siirto {
 <span class="fc" id="L26">        this.ylennys = EI_YLENNYSTA;</span>
 <span class="fc" id="L27">    }</span>
     
-<span class="nc" id="L29">    public Siirto(int x, int y, int x2, int y2, char ylennys) {</span>
-<span class="nc" id="L30">        this.alku = new Ruutu(x, y);</span>
-<span class="nc" id="L31">        this.kohde = new Ruutu(x2, y2);</span>
-<span class="nc" id="L32">        this.ylennys = ylennys;</span>
-<span class="nc" id="L33">    }</span>
+<span class="fc" id="L29">    public Siirto(int x, int y, int x2, int y2, char ylennys) {</span>
+<span class="fc" id="L30">        this.alku = new Ruutu(x, y);</span>
+<span class="fc" id="L31">        this.kohde = new Ruutu(x2, y2);</span>
+<span class="fc" id="L32">        this.ylennys = ylennys;</span>
+<span class="fc" id="L33">    }</span>
 
     /**
      * 
@@ -55,7 +55,7 @@ public class Siirto {
 <span class="fc" id="L55">    }</span>
 
     public String getUCIString() {
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : &quot;&quot;);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : &quot;&quot;);</span>
     }
 
     /**
@@ -67,7 +67,7 @@ public class Siirto {
     }
 
     public char getYlennys() {
-<span class="nc" id="L70">        return ylennys;</span>
+<span class="fc" id="L70">        return ylennys;</span>
     }
 
     public Ruutu getAlku() {
@@ -85,4 +85,4 @@ public class Siirto {
 
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -33,34 +33,35 @@ public class Sotilas extends Nappula {
 
             //Liiku kaksi eteen (yksiEteen pitÃ¤Ã¤ olla myÃ¶s validi kohta)
 <span class="fc" id="L35">            Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));</span>
-<span class="pc bpc" id="L36" title="1 of 8 branches missed.">            if (kaksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(kaksiEteen) == null &amp;&amp; getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {</span>
-<span class="fc" id="L37">                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));</span>
+<span class="pc bpc" id="L36" title="1 of 4 branches missed.">            if (kaksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(kaksiEteen) == null </span>
+<span class="fc bfc" id="L37" title="All 4 branches covered.">                    &amp;&amp; getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {</span>
+<span class="fc" id="L38">                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));</span>
             }
         }
 
         //SyÃ¶ viistoon
-<span class="fc" id="L42">        int[] viistot = new int[] {1, -1};</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int x: viistot) {</span>
-<span class="fc" id="L44">            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (!vRuutu.olenLaudalla(lauta)) {</span>
-<span class="fc" id="L46">                continue;</span>
+<span class="fc" id="L43">        int[] viistot = new int[] {1, -1};</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int x: viistot) {</span>
+<span class="fc" id="L45">            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (!vRuutu.olenLaudalla(lauta)) {</span>
+<span class="fc" id="L47">                continue;</span>
             }
-<span class="fc" id="L48">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
-<span class="fc bfc" id="L49" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
-<span class="fc" id="L50">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
+<span class="fc" id="L49">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
+<span class="fc bfc" id="L50" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
+<span class="fc" id="L51">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
             }
         }
 
         //En passant
 
         
-<span class="fc" id="L57">        return siirrot;</span>
+<span class="fc" id="L58">        return siirrot;</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L62">        return &quot;p&quot;;</span>
+<span class="fc" id="L63">        return &quot;p&quot;;</span>
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

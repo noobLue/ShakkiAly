@@ -22,33 +22,35 @@ public class ShakkiAly implements ChessBot {
 
     @Override
     public String nextMove(GameState gamestate) {
-<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if(gamestate.getMoveCount() &gt; 0){</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if (gamestate.getMoveCount() &gt; 0) {</span>
 <span class="fc" id="L26">            Siirto siirto = new Siirto(gamestate.getLatestMove());</span>
 <span class="fc" id="L27">            lauta = lauta.toteutaSiirto(siirto);</span>
         }
-        //Haetaan kaikki meidan mahdolliset liikkeet ja karsitaan niistÃ¤ pois tilanteet jotka johtavat oman kuninkaan shakitukseen
-<span class="fc" id="L30">        ArrayList&lt;Siirto&gt; siirrot = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);</span>
-<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if(siirrot.isEmpty()){</span>
-<span class="nc" id="L32">            return &quot;a0a0&quot;; //luovutus</span>
+        //Haetaan kaikki meidan mahdolliset liikkeet 
+        //ja karsitaan niistÃ¤ pois tilanteet jotka johtavat oman kuninkaan shakitukseen
+<span class="fc" id="L31">        ArrayList&lt;Siirto&gt; siirrot = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (siirrot.isEmpty()) {</span>
+<span class="nc" id="L33">            return &quot;a0a0&quot;; //luovutus</span>
         }
 
         //Alustetaan parasSiirto johonkin satunnaiseen siirtoon
-<span class="fc" id="L36">        Siirto parasSiirto = siirrot.get((int)(System.currentTimeMillis() % siirrot.size()));</span>
-<span class="fc" id="L37">        int parasArvo = Integer.MIN_VALUE;</span>
+<span class="fc" id="L37">        Siirto parasSiirto = siirrot.get((int) (System.currentTimeMillis() % siirrot.size()));</span>
+<span class="fc" id="L38">        int parasArvo = Integer.MIN_VALUE;</span>
         //KÃ¤ydÃ¤Ã¤n lÃ¤pi mahdolliset siirrot ja aloitetaan siirroille minmax vastustajan nakokulmasta
-<span class="fc bfc" id="L39" title="All 2 branches covered.">        for(Siirto seuraava: siirrot){</span>
-<span class="fc" id="L40">            Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">            int maxArvo = minValue(uusiLauta, gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">            if(maxArvo &gt; parasArvo){</span>
-<span class="fc" id="L43">                parasSiirto = seuraava;</span>
-<span class="fc" id="L44">                parasArvo = maxArvo;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (Siirto seuraava: siirrot) {</span>
+<span class="fc" id="L41">            Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            Side vastustaja = gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE;</span>
+<span class="fc" id="L43">            int maxArvo = minValue(uusiLauta, vastustaja, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (maxArvo &gt; parasArvo) {</span>
+<span class="fc" id="L45">                parasSiirto = seuraava;</span>
+<span class="fc" id="L46">                parasArvo = maxArvo;</span>
             }
-<span class="fc" id="L46">        }</span>
+<span class="fc" id="L48">        }</span>
 
         //Toteutetaan siirto omalla laudalla
-<span class="fc" id="L49">        lauta = lauta.toteutaSiirto(parasSiirto);</span>
+<span class="fc" id="L51">        lauta = lauta.toteutaSiirto(parasSiirto);</span>
         //Palautetaan siirto rajapinnan mukaan
-<span class="fc" id="L51">        return parasSiirto.getUCIString();</span>
+<span class="fc" id="L53">        return parasSiirto.getUCIString();</span>
     }
 
     /**
@@ -59,17 +61,17 @@ public class ShakkiAly implements ChessBot {
      * @return listan siirroista josta on filtterÃ¶ity pois shakkitilanteen sÃ¤ilyttÃ¤vÃ¤t / aiheuttavat siirrot
      */
     public ArrayList&lt;Siirto&gt; filtteroiInvaliditSiirrot(Pelilauta lauta, ArrayList&lt;Siirto&gt; kaikkiSiirrot, Side puoli) {
-<span class="fc" id="L62">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L64">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (Siirto s: kaikkiSiirrot) {</span>
-<span class="fc" id="L65">            Pelilauta sLauta = lauta.toteutaSiirto(s);</span>
-<span class="fc" id="L66">            Kuningas k = sLauta.etsiKuningas(puoli);</span>
-<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (!(k.olenUhattuna(sLauta))) {</span>
-<span class="fc" id="L68">                siirrot.add(s);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (Siirto s: kaikkiSiirrot) {</span>
+<span class="fc" id="L67">            Pelilauta sLauta = lauta.toteutaSiirto(s);</span>
+<span class="fc" id="L68">            Kuningas k = sLauta.etsiKuningas(puoli);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (!(k.olenUhattuna(sLauta))) {</span>
+<span class="fc" id="L70">                siirrot.add(s);</span>
             }
-<span class="fc" id="L70">        }</span>
+<span class="fc" id="L72">        }</span>
 
-<span class="fc" id="L72">        return siirrot;</span>
+<span class="fc" id="L74">        return siirrot;</span>
     }
 
     /**
@@ -82,24 +84,26 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return max-pelaajan valitseman haaran 'arvo'
      */
-    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
-<span class="fc" id="L86">        ArrayList&lt;Siirto&gt; kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);</span>
-<span class="pc bpc" id="L87" title="2 of 4 branches missed.">        if(kaikkiSiirrot.isEmpty() || syvyys &gt;= SYVYYS)</span>
-<span class="nc" id="L88">            return laudanArvo(peliLauta, puoli);</span>
+    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
+<span class="fc" id="L88">        ArrayList&lt;Siirto&gt; kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);</span>
+<span class="pc bpc" id="L89" title="2 of 4 branches missed.">        if (kaikkiSiirrot.isEmpty() || syvyys &gt;= SYVYYS) {</span>
+<span class="nc" id="L90">            return laudanArvo(peliLauta, puoli);</span>
+        }
 
-<span class="fc" id="L90">        int value = Integer.MIN_VALUE;</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">        for(Siirto siirto: kaikkiSiirrot){</span>
-<span class="fc" id="L92">            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">            int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);</span>
+<span class="fc" id="L93">        int value = Integer.MIN_VALUE;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (Siirto siirto: kaikkiSiirrot) {</span>
+<span class="fc" id="L95">            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);</span>
 
-<span class="fc bfc" id="L95" title="All 2 branches covered.">            value = value &gt; minVal ? value : minVal;</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">            alpha = alpha &gt; minVal ? alpha : minVal;</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            value = value &gt; minVal ? value : minVal;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            alpha = alpha &gt; minVal ? alpha : minVal;</span>
 
-<span class="fc bfc" id="L98" title="All 2 branches covered.">            if(alpha &gt;= beta)</span>
-<span class="fc" id="L99">                return value;</span>
-<span class="fc" id="L100">        }</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">            if (alpha &gt;= beta) {</span>
+<span class="fc" id="L102">                return value;</span>
+            }
+<span class="fc" id="L104">        }</span>
 
-<span class="fc" id="L102">        return value;</span>
+<span class="fc" id="L106">        return value;</span>
     }
 
     /**
@@ -112,24 +116,26 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return min-pelaajan valitseman haaran 'arvo'
      */
-    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys){
-<span class="fc" id="L116">        ArrayList&lt;Siirto&gt; kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);</span>
-<span class="pc bpc" id="L117" title="1 of 4 branches missed.">        if(kaikkiSiirrot.isEmpty() || syvyys &gt;= SYVYYS)</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">            return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
+    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
+<span class="fc" id="L120">        ArrayList&lt;Siirto&gt; kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);</span>
+<span class="pc bpc" id="L121" title="1 of 4 branches missed.">        if (kaikkiSiirrot.isEmpty() || syvyys &gt;= SYVYYS) {</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
+        }
 
-<span class="fc" id="L120">        int value = Integer.MAX_VALUE;</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        for(Siirto siirto: kaikkiSiirrot){</span>
-<span class="fc" id="L122">            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">            int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);</span>
+<span class="fc" id="L125">        int value = Integer.MAX_VALUE;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (Siirto siirto: kaikkiSiirrot) {</span>
+<span class="fc" id="L127">            Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">            int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);</span>
 
-<span class="fc bfc" id="L125" title="All 2 branches covered.">            value = value &lt; minVal ? value : minVal;</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">            beta = beta &lt; minVal ? beta : minVal;</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            value = value &lt; minVal ? value : minVal;</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            beta = beta &lt; minVal ? beta : minVal;</span>
 
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">            if(alpha &gt;= beta)</span>
-<span class="nc" id="L129">                return value;</span>
-<span class="fc" id="L130">        }</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            if (alpha &gt;= beta) {</span>
+<span class="nc" id="L134">                return value;</span>
+            }
+<span class="fc" id="L136">        }</span>
 
-<span class="fc" id="L132">        return value;</span>
+<span class="fc" id="L138">        return value;</span>
     }
 
     /**
@@ -140,25 +146,26 @@ public class ShakkiAly implements ChessBot {
      * @param puoli kumman puolen pelaajan kannalta tilannetta tarkastellaan
      * @return laudan arvo kokonaislukuna. Jos arvo isompi kuin 0, niin tilanne on hyvÃ¤
      */
-    public int laudanArvo(Pelilauta peliLauta, Side puoli){
-<span class="fc" id="L144">        int i = 0;</span>
+    public int laudanArvo(Pelilauta peliLauta, Side puoli) {
+<span class="fc" id="L150">        int i = 0;</span>
 
-<span class="fc bfc" id="L146" title="All 2 branches covered.">        for(int y = 0; y &lt; peliLauta.getKoko(); y++){</span>
-<span class="fc bfc" id="L147" title="All 2 branches covered.">            for(int x = 0; x &lt; peliLauta.getKoko(); x++){</span>
-<span class="fc" id="L148">                Nappula nappula = peliLauta.lauta[y][x];</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">                if(nappula != null)</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for (int y = 0; y &lt; peliLauta.getKoko(); y++) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            for (int x = 0; x &lt; peliLauta.getKoko(); x++) {</span>
+<span class="fc" id="L154">                Nappula nappula = peliLauta.lauta[y][x];</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">                if (nappula != null) {</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();</span>
+                }
             }
         }
-<span class="fc" id="L153">        return i;</span>
+<span class="fc" id="L160">        return i;</span>
     }
 
     /**
      * Laudan tulostus (debugausta varten)
      */
-    public void printtaa(){
-<span class="nc" id="L160">        lauta.printtaa();</span>
-<span class="nc" id="L161">    }</span>
+    public void printtaa() {
+<span class="nc" id="L167">        lauta.printtaa();</span>
+<span class="nc" id="L168">    }</span>
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

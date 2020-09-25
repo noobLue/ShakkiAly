@@ -10,15 +10,15 @@ public class ShakkiTemplaatti {
     /**
      * &quot;Universal Chess Interface&quot; - protokollan merkiston (ie. 'r'=Rook) mukainen Shakkilaudan templaatti
      */
-<span class="fc" id="L13">    private final char[][] shakkiTemplaatti = new char[][] { </span>
-        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' } , 
-        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { '0', '0', '0', '0', '0', '0', '0', '0' } , 
-        { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' } , 
-        { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
+<span class="fc" id="L13">    private final char[][] shakkiTemplaatti = new char[][] {</span>
+        {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+        {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
     };
 
 <span class="fc" id="L24">    public ShakkiTemplaatti() {</span>
@@ -50,7 +50,7 @@ public class ShakkiTemplaatti {
      * @return kumman puolen pelaajalle rivi kuuluu
      */
     public Side kummanRivi(final int y) {
-        if (valkoinenAlhaalla){
+        if (valkoinenAlhaalla) {
 <span class="fc bfc" id="L54" title="All 2 branches covered.">            return (y &lt; shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;</span>
         } else {
             return (y &gt;= shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
@@ -61,4 +61,4 @@ public class ShakkiTemplaatti {
 <span class="fc" id="L61">        return shakkiTemplaatti;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

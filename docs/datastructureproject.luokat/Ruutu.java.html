@@ -67,17 +67,18 @@ public class Ruutu {
      * Palauttaa nappulan y-akselin sijainnnin, kun sitÃ¤ liikutetaan eteenpÃ¤in y-askelta
      * (toimii molemmilla puolilla)
      * 
+     * @param puoli kumman puolen pelaajan kannalta katsotaan suuntaa
      * @param y y-akselin askeleiden mÃ¤Ã¤rÃ¤
      * @return y-akselin koordinaatti
      */
     public int getEteenpainY(Side puoli, int y) {
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        return getY() + (puoli == Side.WHITE ? y : -y);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        return getY() + (puoli == Side.WHITE ? y : -y);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L79">        return getAsString();</span>
+<span class="nc" id="L80">        return getAsString();</span>
     }
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
