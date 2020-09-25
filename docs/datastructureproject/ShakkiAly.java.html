@@ -148,23 +148,23 @@ public class ShakkiAly implements ChessBot {
      */
     public static int laudanArvo(Pelilauta peliLauta, Side puoli) {
 <span class="fc" id="L150">        int i = 0;</span>
-        for (int y = 0; y &lt; peliLauta.getKoko(); y++) {
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        for (int y = 0; y &lt; peliLauta.getKoko(); y++) {</span>
 <span class="fc bfc" id="L152" title="All 2 branches covered.">            for (int x = 0; x &lt; peliLauta.getKoko(); x++) {</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">                Nappula nappula = peliLauta.lauta[y][x];</span>
-<span class="fc" id="L154">                if (nappula != null) {</span>
+<span class="fc" id="L153">                Nappula nappula = peliLauta.lauta[y][x];</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">                if (nappula != null) {</span>
 <span class="fc bfc" id="L155" title="All 2 branches covered.">                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">                }</span>
+                }
             }
         }
-        return i;
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L159">        return i;</span>
+    }
 
     /**
      * Laudan tulostus (debugausta varten)
      */
     public void printtaa() {
-        lauta.printtaa();
+<span class="nc" id="L166">        lauta.printtaa();</span>
 <span class="nc" id="L167">    }</span>
-<span class="nc" id="L168">    </span>
+    
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
