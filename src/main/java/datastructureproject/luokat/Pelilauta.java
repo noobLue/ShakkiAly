@@ -1,7 +1,5 @@
 package datastructureproject.luokat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Kuningatar;
@@ -183,8 +181,8 @@ public class Pelilauta {
      * @param puoli kumman pelaajan vuoro on. 
      * @return listan siirroista jotka pelaaja voi tehdä. 
      */
-    public ArrayList<Siirto> kaikkiLiikeet(Side puoli) {
-        ArrayList<Siirto> siirrot = new ArrayList<>();
+    public SiirtoLista kaikkiLiikeet(Side puoli) {
+        SiirtoLista siirrot = new SiirtoLista();
         
         for (int y = 0; y < getKoko(); y++) {
             for (int x = 0; x < getKoko(); x++) {
@@ -207,7 +205,8 @@ public class Pelilauta {
                 if (lauta[y][x] == null) {
                     System.out.print("?, ");
                 } else {
-                    System.out.print((lauta[y][x].getPuoli() == Side.BLACK ? lauta[y][x].toString().toUpperCase() : lauta[y][x]) + ", ");
+                    System.out.print((lauta[y][x].getPuoli() == Side.BLACK 
+                        ? lauta[y][x].toString().toUpperCase() : lauta[y][x]) + ", ");
                 }
             }
             System.out.println("");

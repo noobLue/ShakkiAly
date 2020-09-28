@@ -1,11 +1,10 @@
 package datastructureproject.luokat.nappulat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 
 public class Lahetti extends Nappula {
     public Lahetti(Side puoli, Ruutu ruutu) {
@@ -17,8 +16,8 @@ public class Lahetti extends Nappula {
         return new Lahetti(getPuoli(), getRuutu().kopioi());
     }
 
-    public ArrayList<Siirto> kaikkiSiirrot(Pelilauta lauta) {
-        ArrayList<Siirto> siirrot = new ArrayList<>();
+    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
+        SiirtoLista siirrot = new SiirtoLista();
         for (int i = 1; getX() + i < lauta.getKoko() && getY() + i < lauta.getKoko(); i++) {
             Ruutu kohde1 = new Ruutu(getX() + i, getY() + i);
             Nappula n = lauta.getNappula(kohde1.getX(), kohde1.getY());

@@ -15,7 +15,7 @@ Pelipuun läpikäynti pohjasyvyyteen asti minmaxilla kestäisi aivan liian kauan
 
 ## Mahdolliset puutteet ja parannusehdotukset
 
-Tekoäly ei osaa tehdä en-passant liikettä (sotilaan erikoisliike). Periaatteessa tilanne jossa en-passant liike olisi ainut validi liike, tekoäly päättää vain luovuttaa.
+Tekoäly ei osaa tehdä en-passant liikettä (sotilaan erikoisliike) eikä kuninkaan tornitusta. Periaatteessa tilanne jossa en-passant liike olisi ainut validi liike, tekoäly päättää vain luovuttaa. Kuninkaan tornitus on hieman erilainen liike, sillä sitä ei voi tehdä jos kuningas ei voi tehdä yhden askeleen siirtoa samaan suuntaa. Eli tornitus on mahdollinen vain jos kuninkaalla on toinen mahdollinen liike.  
 
 Tekoäly tekee minmaxissa jokaiselle pelinpuun haaralle tarkistuksen, ettei oma kuningas päädy shakitukseen. Tämän tarkastuksen voisi tehdä vasta siinä vaiheessa kun kyseinen haara on katselussa, ja se nopeuttaisi algoritmia koska isoa osaa pelipuun haaroista ei edes katsella tarkemmin.
 

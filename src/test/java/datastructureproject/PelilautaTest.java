@@ -6,8 +6,6 @@ import chess.model.Side;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import datastructureproject.luokat.*;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Kuningatar;
@@ -210,11 +208,12 @@ public class PelilautaTest {
     @Test
     public void kaksoisAskelTest(){
         Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti());
-        ArrayList<Siirto> siirrot = lauta.kaikkiLiikeet(Side.WHITE);
+        SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
         
         boolean contains1 = false;
         boolean contains2 = false;
-        for(Siirto s: siirrot){
+        for(int i = 0; i < siirrot.size(); i++){
+            Siirto s = siirrot.get(i);
             System.out.println(s.getUCIString());
             if(s.getUCIString().equals("a2a4")){
                 contains1 = true;
@@ -252,5 +251,19 @@ public class PelilautaTest {
         assertTrue(ratsuLauta.getNappula(new Ruutu("d8")) instanceof Ratsu);
         assertTrue(lahettiLauta.getNappula(new Ruutu("d8")) instanceof Lahetti);
         assertTrue(torniLauta.getNappula(new Ruutu("d8")) instanceof Torni);
+    }
+
+    @Test
+    public void generoiduissaLiikkeissaEiOleDuplikaatteja(){
+        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti());
+        SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
+        for (int i = 0; i < siirrot.size(); i++){
+            for (int j = 0; j < siirrot.size(); j++){
+                if (i == j) {
+                    continue;
+                }
+                assertNotEquals(siirrot.get(j).getUCIString(), siirrot.get(i).getUCIString());
+            }
+        }
     }
 }

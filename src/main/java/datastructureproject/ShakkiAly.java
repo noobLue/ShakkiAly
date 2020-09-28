@@ -1,13 +1,12 @@
 package datastructureproject;
 
-import java.util.ArrayList;
-
 import chess.bot.ChessBot;
 import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.ShakkiTemplaatti;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Nappula;
 
@@ -28,7 +27,7 @@ public class ShakkiAly implements ChessBot {
         }
         //Haetaan kaikki meidan mahdolliset liikkeet 
         //ja karsitaan niistä pois tilanteet jotka johtavat oman kuninkaan shakitukseen
-        ArrayList<Siirto> siirrot = filtteroiInvaliditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);
+        SiirtoLista siirrot = vainValiditSiirrot(lauta, lauta.kaikkiLiikeet(gamestate.playing), gamestate.playing);
         if (siirrot.isEmpty()) {
             return "a0a0"; //luovutus
         }
@@ -37,7 +36,8 @@ public class ShakkiAly implements ChessBot {
         Siirto parasSiirto = siirrot.get((int) (System.currentTimeMillis() % siirrot.size()));
         int parasArvo = Integer.MIN_VALUE;
         //Käydään läpi mahdolliset siirrot ja aloitetaan siirroille minmax vastustajan nakokulmasta
-        for (Siirto seuraava: siirrot) {
+        for (int i = 0; i < siirrot.size(); i++) {
+            Siirto seuraava = siirrot.get(i);
             Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);
             Side vastustaja = gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE;
             int maxArvo = minValue(uusiLauta, vastustaja, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
@@ -60,10 +60,11 @@ public class ShakkiAly implements ChessBot {
      * @param puoli pelaaja jonka vuoro on
      * @return listan siirroista josta on filtteröity pois shakkitilanteen säilyttävät / aiheuttavat siirrot
      */
-    public ArrayList<Siirto> filtteroiInvaliditSiirrot(Pelilauta lauta, ArrayList<Siirto> kaikkiSiirrot, Side puoli) {
-        ArrayList<Siirto> siirrot = new ArrayList<>();
+    public SiirtoLista vainValiditSiirrot(Pelilauta lauta, SiirtoLista kaikkiSiirrot, Side puoli) {
+        SiirtoLista siirrot = new SiirtoLista();
 
-        for (Siirto s: kaikkiSiirrot) {
+        for (int i = 0; i < kaikkiSiirrot.size(); i++) {
+            Siirto s = kaikkiSiirrot.get(i);
             Pelilauta sLauta = lauta.toteutaSiirto(s);
             Kuningas k = sLauta.etsiKuningas(puoli);
             if (!(k.olenUhattuna(sLauta))) {
@@ -85,13 +86,14 @@ public class ShakkiAly implements ChessBot {
      * @return max-pelaajan valitseman haaran 'arvo'
      */
     public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
-        ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
+        SiirtoLista kaikkiSiirrot = vainValiditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
         if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli);
         }
 
         int value = Integer.MIN_VALUE;
-        for (Siirto siirto: kaikkiSiirrot) {
+        for (int i = 0; i < kaikkiSiirrot.size(); i++) {
+            Siirto siirto = kaikkiSiirrot.get(i);
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
             int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 
@@ -117,13 +119,14 @@ public class ShakkiAly implements ChessBot {
      * @return min-pelaajan valitseman haaran 'arvo'
      */
     public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
-        ArrayList<Siirto> kaikkiSiirrot = filtteroiInvaliditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
+        SiirtoLista kaikkiSiirrot = vainValiditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
         if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);
         }
 
         int value = Integer.MAX_VALUE;
-        for (Siirto siirto: kaikkiSiirrot) {
+        for (int i = 0; i < kaikkiSiirrot.size(); i++) {
+            Siirto siirto = kaikkiSiirrot.get(i);
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
             int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 

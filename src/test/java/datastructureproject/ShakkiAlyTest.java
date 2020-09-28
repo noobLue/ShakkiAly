@@ -49,4 +49,5 @@ public class ShakkiAlyTest {
         assertTrue(ShakkiAly.laudanArvo(lauta, Side.WHITE) > 0);
         assertTrue(ShakkiAly.laudanArvo(lauta, Side.BLACK) < 0);
     }
+
 }

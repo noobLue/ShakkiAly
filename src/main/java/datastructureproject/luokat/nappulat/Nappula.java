@@ -1,11 +1,10 @@
 package datastructureproject.luokat.nappulat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 
 /**
  * Kuvaa shakkinappulaa
@@ -17,11 +16,11 @@ public abstract class Nappula {
     /**
      * 
      * @param puoli kumpi pelaaja omistaa taman nappulan
-     * @param positio nappulan sijainti pelilaudalla
+     * @param ruutu nappulan sijainti pelilaudalla
      */
-    public Nappula(Side puoli, Ruutu positio) {
+    public Nappula(Side puoli, Ruutu ruutu) {
         this.puoli = puoli;
-        this.ruutu = positio;
+        this.ruutu = ruutu;
     }
 
     public Side getPuoli() {
@@ -61,7 +60,7 @@ public abstract class Nappula {
      * @param lauta pelilaudan tilanne
      * @return mahdolliset siirrot tässä pelitilanteessa
      */
-    public abstract ArrayList<Siirto> kaikkiSiirrot(Pelilauta lauta);
+    public abstract SiirtoLista kaikkiSiirrot(Pelilauta lauta);
 
     /**
      * Kopioi nappulan, niin että kopio ja alkuperäinen eivät vaikuta toisiinsa (deep copy)
@@ -76,8 +75,9 @@ public abstract class Nappula {
      * @return onko tämä nappula uhattuna tässä tilanteessa
      */
     public boolean olenUhattuna(Pelilauta lauta) {
-        ArrayList<Siirto> vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);
-        for (Siirto s: vastustajanLiikkeet) {
+        SiirtoLista vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);
+        for (int i = 0; i < vastustajanLiikkeet.size(); i++) {
+            Siirto s = vastustajanLiikkeet.get(i);
             if (s.getKohde().getX() == getX() &&  s.getKohde().getY() == getY()) {
                 return true;
             }
@@ -87,6 +87,11 @@ public abstract class Nappula {
     }
 
     protected int arvo = 1;
+
+    /**
+     * 
+     * @return palauttaa nappulalle määritetyn arvon, jota käytetään pelitilanteen arvioinnissa (heurestiikassa).
+     */
     public int getArvo() {
         return arvo;
     }

@@ -1,11 +1,10 @@
 package datastructureproject.luokat.nappulat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 
 public class Kuningas extends Nappula {
     public Kuningas(Side puoli, Ruutu ruutu) {
@@ -18,8 +17,8 @@ public class Kuningas extends Nappula {
     }
 
     @Override
-    public ArrayList<Siirto> kaikkiSiirrot(Pelilauta lauta) {
-        ArrayList<Siirto> siirrot = new ArrayList<Siirto>();
+    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
+        SiirtoLista siirrot = new SiirtoLista();
 
         for (int y = -1; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
@@ -36,7 +35,6 @@ public class Kuningas extends Nappula {
                 }
             }
         }
-        //Tornitus?
 
 
         return siirrot;
