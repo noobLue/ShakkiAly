@@ -2,14 +2,24 @@
 
 ## Mitä on testattu
 
-Suurin osa olemassa olevista luokista on jo yksikkötestattu joissain määrin. 
+Eri nappuloiden mahdollisten siirtojen generointia on testattu useassa eri esimerkkitilanteessa. Testeissä on katsottu tavallisten sekä erikoissiirtojen (ei tornitusta eikä ohestalyöntiä) generointia, tähän sisältyy myös siirrot joilla syödään vastapelaajan nappuloita. On myös testattu ettei vahingossa generoida duplikaatteja siirtoja.
 
-Suorituskykyä ei ole vielä testattu
+Pelilaudan luonnin oikeellisuus on testattu. Testit kattavat myös siirtojen prosessoinnin, joka takaa että tekoäly ei sekoa pelin aikana. 
+
+Ruutujen ja siirtojen luonti sekä metodit on testattu.
+
+SiirtoLista pohjautuu taulukkoon, jonka takia taulukon kasvattaminen tarvittaessa ja indeksin oikeellisuus on siinä testauksen keskipisteenä.
+
+
 ## Millaisilla syötteillä testaus tehtiin
 
-Pienet metodit on testattu pienillä testitapauksilla. Shakkilaudan toimintaan liittyvät metodit on testattu syöttämällä jokin lauta-tilanne ja katsoen pelilaudan toimintaa jonkin tietyn liikkeen jälkeen. 
+Nappuloiden testeissä syötteinä on jokin pelilaudan tilanne ja siellä tarkasteltavana oleva nappula. Nappulan generoituja liikkeitä tarkastellaan ja katsotaan onko ne oikein.
+
+Pelilaudan testauksessa syötteenä on laudan alkutilanne ja tarkasteltava siirto. Laudan uutta tilaa verrataan odotettuun tilaan.
+
+
 
 ## Miten on testattu
 
-Testit on tehty JUnit:illa yksikkötesteinä. Testejen seassa on myös integrointitestejä, joista näkee isompien kokonaisuuksien toiminnan. 
+Testit on tehty JUnit:illa yksikkötesteinä.  
 

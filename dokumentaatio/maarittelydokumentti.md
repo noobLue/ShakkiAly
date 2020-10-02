@@ -16,7 +16,7 @@ Projektin tekoäly kommunikoi [projektipohjassa](https://github.com/TiraLabra/ch
 
 Huonoimmassa tapauksessa aikavaativuus on **O(b^d)**, parhaassa tapauksessa **O(sqrt(b^d))**, jossa b kuvaa haarautuvuutta (vuoron mahdolliset siirrot) ja d haun syvyyttä. [[1]](##Lähteet)
 
-Tilaa tarvitaan pelitilojen muistissa pitämiseen. Minmaxia suoritettaessa jokaiselle pelipuun haaralle tarvitaan shakkilaudan verran tilaa, eli tilavaativuus on shakkilaudan koko kerrottuna aikavaativuudella (8^2)*b^d eli tilavaativuus on O(b^d).
+Tilaa tarvitaan pelitilojen muistissa pitämiseen. Minimaxia suoritettaessa tarvitaan tiettynä hetkenä aina maksimissaan yhden polun verran tilaa, eli shakkilaudan koko kerrottuna polun syvyydellä. Eli O(sd), jossa s on shakkilaudan viemä tila ja d on polun syvyys.
 
 ## Koulutusohjelma ja projektin kieli
 

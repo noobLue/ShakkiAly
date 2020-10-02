@@ -40,7 +40,7 @@ public class ShakkiAly implements ChessBot {
             Siirto seuraava = siirrot.get(i);
             Pelilauta uusiLauta = lauta.toteutaSiirto(seuraava);
             Side vastustaja = gamestate.playing == Side.WHITE ? Side.BLACK : Side.WHITE;
-            int maxArvo = minValue(uusiLauta, vastustaja, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+            int maxArvo = minArvo(uusiLauta, vastustaja, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
             if (maxArvo > parasArvo) {
                 parasSiirto = seuraava;
                 parasArvo = maxArvo;
@@ -85,27 +85,27 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return max-pelaajan valitseman haaran 'arvo'
      */
-    public int maxValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
+    public int maxArvo(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
         SiirtoLista kaikkiSiirrot = vainValiditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
         if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli);
         }
 
-        int value = Integer.MIN_VALUE;
+        int arvo = Integer.MIN_VALUE;
         for (int i = 0; i < kaikkiSiirrot.size(); i++) {
             Siirto siirto = kaikkiSiirrot.get(i);
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
-            int minVal = minValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
+            int minVal = minArvo(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 
-            value = value > minVal ? value : minVal;
+            arvo = arvo > minVal ? arvo : minVal;
             alpha = alpha > minVal ? alpha : minVal;
 
             if (alpha >= beta) {
-                return value;
+                return arvo;
             }
         }
 
-        return value;
+        return arvo;
     }
 
     /**
@@ -118,27 +118,27 @@ public class ShakkiAly implements ChessBot {
      * @param syvyys syvyys jota tarkastellaan pelipuussa
      * @return min-pelaajan valitseman haaran 'arvo'
      */
-    public int minValue(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
+    public int minArvo(Pelilauta peliLauta, Side puoli, int alpha, int beta, int syvyys) {
         SiirtoLista kaikkiSiirrot = vainValiditSiirrot(peliLauta, peliLauta.kaikkiLiikeet(puoli), puoli);
         if (kaikkiSiirrot.isEmpty() || syvyys >= SYVYYS) {
             return laudanArvo(peliLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE);
         }
 
-        int value = Integer.MAX_VALUE;
+        int arvo = Integer.MAX_VALUE;
         for (int i = 0; i < kaikkiSiirrot.size(); i++) {
             Siirto siirto = kaikkiSiirrot.get(i);
             Pelilauta uusiLauta = peliLauta.toteutaSiirto(siirto);
-            int minVal = maxValue(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
+            int minVal = maxArvo(uusiLauta, puoli == Side.WHITE ? Side.BLACK : Side.WHITE, alpha, beta, syvyys + 1);
 
-            value = value < minVal ? value : minVal;
+            arvo = arvo < minVal ? arvo : minVal;
             beta = beta < minVal ? beta : minVal;
 
             if (alpha >= beta) {
-                return value;
+                return arvo;
             }
         }
 
-        return value;
+        return arvo;
     }
 
     /**

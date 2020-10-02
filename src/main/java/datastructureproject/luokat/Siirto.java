@@ -5,6 +5,9 @@ package datastructureproject.luokat;
  */
 public class Siirto {
     private static final char EI_YLENNYSTA = '0';
+    /**
+     * Sotilaan ylennys.
+     */
     private char ylennys;
     private Ruutu alku;
     private Ruutu kohde;

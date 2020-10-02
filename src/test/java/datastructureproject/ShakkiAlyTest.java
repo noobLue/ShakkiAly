@@ -32,12 +32,13 @@ public class ShakkiAlyTest {
     }
 
     @Test
-    public void heurestiikkaNayttaaPelinLoppumisTilanteen(){
+    public void heuristiikkaNayttaaPelinLoppumisTilanteen(){
         char[][] alku = new char[][]{
             { '0', '0', '0', 'k', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
+            
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },

@@ -55,9 +55,16 @@ public class Pelilauta {
         nollaaRuutu(siirto.getAlku());
 
         //Erikoissiirrot:
+        //https://fi.wikipedia.org/wiki/Tornitus
         //Tornitus
-        boolean siirronPituusYliYksi = Math.abs(siirto.getAlku().getX() - siirto.getKohde().getX()) > 1;
-        if (siirrettava instanceof Kuningas && siirronPituusYliYksi) {
+
+        int siirronPituusX = siirto.getAlku().getX() - siirto.getKohde().getX();
+        siirronPituusX = siirronPituusX >= 0 ? siirronPituusX : -siirronPituusX;
+
+        int siirronPituusY = siirto.getAlku().getY() - siirto.getKohde().getY();
+        siirronPituusY = siirronPituusY >= 0 ? siirronPituusY : -siirronPituusY;
+
+        if (siirrettava instanceof Kuningas && siirronPituusX > 1) {
             boolean kohdeIsompi  = (siirto.getKohde().getX() - siirto.getAlku().getX() > 0);
             int torniX = kohdeIsompi ? getKoko() - 1 : 0;
             int torniUusiX = 1 + (kohdeIsompi ? siirto.getAlku().getX() : siirto.getKohde().getX());
@@ -80,16 +87,18 @@ public class Pelilauta {
             lauta[siirto.getAlku().getY()][torniUusiX] = torni;
         }
 
-        //Prosessoi En passant - liike, olettaen ettei vastustaja tee laittomia liikkeitä
-        if (Math.abs(siirto.getAlku().getY() - siirto.getKohde().getY()) >= 1
-                && Math.abs(siirto.getAlku().getX() - siirto.getKohde().getX()) >= 1
+        //https://fi.wikipedia.org/wiki/Ohestaly%C3%B6nti
+        //Prosessoi Ohestalyönit - liike, olettaen ettei vastustaja tee laittomia liikkeitä
+        if (siirronPituusY >= 1
+                && siirronPituusX >= 1
                 && siirrettava instanceof Sotilas
                 && getNappula(siirto.getKohde()) == null) {
             int uusiY = siirto.getKohde().getEteenpainY(siirrettava.getPuoli(), -1);
             lauta[uusiY][siirto.getKohde().getX()] = null;
         }
 
-        //Prosessoi ylennys
+        //https://fi.wikipedia.org/wiki/Sotilas_(shakki)
+        //Prosessoi sotilaan ylennys
         if (siirrettava instanceof Sotilas && siirto.onkoYlennysSiirto()) {
 
             Side puoli = siirrettava.getPuoli();
@@ -104,7 +113,7 @@ public class Pelilauta {
                 siirrettava = new Torni(puoli, ruutu);
             } else {
                 throw new Error("Joku yritti ylentää sotilaan sallimattomaksi nappulaksi (" 
-                + siirto.getYlennys() + ")");
+                    + siirto.getYlennys() + ")");
             }
             lauta[siirto.getKohde().getY()][siirto.getKohde().getX()] = siirrettava;
         }

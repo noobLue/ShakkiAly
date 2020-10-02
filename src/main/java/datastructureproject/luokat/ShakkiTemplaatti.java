@@ -10,7 +10,7 @@ public class ShakkiTemplaatti {
     /**
      * "Universal Chess Interface" - protokollan merkiston (ie. 'r'=Rook) mukainen Shakkilaudan templaatti
      */
-    private final char[][] shakkiTemplaatti = new char[][] {
+    private final char[][] aloitusTilanne = new char[][] {
         {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
         {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
         {'0', '0', '0', '0', '0', '0', '0', '0' }, 
@@ -32,7 +32,7 @@ public class ShakkiTemplaatti {
     public ShakkiTemplaatti(char[][] templaatti) {
         for (int y = 0; y < templaatti.length; y++) {
             for (int x = 0; x < templaatti[y].length; x++) {
-                shakkiTemplaatti[y][x] = templaatti[y][x];
+                aloitusTilanne[y][x] = templaatti[y][x];
             }
         }
     }
@@ -42,7 +42,7 @@ public class ShakkiTemplaatti {
      * @return templaatin koko
      */
     public int getKoko() {
-        return shakkiTemplaatti.length;
+        return aloitusTilanne.length;
     }
 
     /** 
@@ -51,13 +51,13 @@ public class ShakkiTemplaatti {
      */
     public Side kummanRivi(final int y) {
         if (valkoinenAlhaalla) {
-            return (y < shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
+            return (y < aloitusTilanne[0].length / 2) ? Side.WHITE : Side.BLACK;
         } else {
-            return (y >= shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
+            return (y >= aloitusTilanne[0].length / 2) ? Side.WHITE : Side.BLACK;
         }
     }
 
     public char[][] getTemplaatti() {
-        return shakkiTemplaatti;
+        return aloitusTilanne;
     }
 }
