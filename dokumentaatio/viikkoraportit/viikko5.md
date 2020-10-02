@@ -24,15 +24,3 @@ Seuraavaksi olisi tehtävänä
 ### Ajankäyttö
 
 Yhteensä: 8 tuntia
- 
-
-
-
-
-Mitä sain aikaiseksi:
-    Projekti käyttää nyt täysin omia tietorakenteita 
-
-Maanantai
-    4 tuntia:
-        - SiirtoLista
-        - Testejä mm.Nappula luokalle
