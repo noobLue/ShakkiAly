@@ -1,7 +1,7 @@
 # ShakkiAly
 [![CircleCI](https://circleci.com/gh/noobLue/ShakkiAly.svg?style=shield)](https://circleci.com/gh/noobLue/ShakkiAly)
 
-Shakkitekoälyn toteutus Javalla. Tämä projekti on rakennettu [https://github.com/TiraLabra/chess/]('chess' projektipohjan päälle). Itse tekemäni osuus löytyy pakkauksesta datastructureproject.
+Shakkitekoälyn toteutus Javalla. Tämä projekti on rakennettu ['chess'](https://github.com/TiraLabra/chess/) projektipohjan päälle. Itse tekemäni osuus löytyy pakkauksesta datastructureproject.
 
 ## Käyttöohje
 .jar tiedoston kääntäminen seuraavalla komennolla.
