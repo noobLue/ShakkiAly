@@ -10,7 +10,7 @@ public class ShakkiTemplaatti {
     /**
      * &quot;Universal Chess Interface&quot; - protokollan merkiston (ie. 'r'=Rook) mukainen Shakkilaudan templaatti
      */
-<span class="fc" id="L13">    private final char[][] shakkiTemplaatti = new char[][] {</span>
+<span class="fc" id="L13">    private final char[][] aloitusTilanne = new char[][] {</span>
         {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
         {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
         {'0', '0', '0', '0', '0', '0', '0', '0' }, 
@@ -32,7 +32,7 @@ public class ShakkiTemplaatti {
 <span class="fc" id="L32">    public ShakkiTemplaatti(char[][] templaatti) {</span>
 <span class="fc bfc" id="L33" title="All 2 branches covered.">        for (int y = 0; y &lt; templaatti.length; y++) {</span>
 <span class="fc bfc" id="L34" title="All 2 branches covered.">            for (int x = 0; x &lt; templaatti[y].length; x++) {</span>
-<span class="fc" id="L35">                shakkiTemplaatti[y][x] = templaatti[y][x];</span>
+<span class="fc" id="L35">                aloitusTilanne[y][x] = templaatti[y][x];</span>
             }
         }
 <span class="fc" id="L38">    }</span>
@@ -42,7 +42,7 @@ public class ShakkiTemplaatti {
      * @return templaatin koko
      */
     public int getKoko() {
-<span class="nc" id="L45">        return shakkiTemplaatti.length;</span>
+<span class="nc" id="L45">        return aloitusTilanne.length;</span>
     }
 
     /** 
@@ -51,14 +51,14 @@ public class ShakkiTemplaatti {
      */
     public Side kummanRivi(final int y) {
         if (valkoinenAlhaalla) {
-<span class="fc bfc" id="L54" title="All 2 branches covered.">            return (y &lt; shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            return (y &lt; aloitusTilanne[0].length / 2) ? Side.WHITE : Side.BLACK;</span>
         } else {
-            return (y &gt;= shakkiTemplaatti[0].length / 2) ? Side.WHITE : Side.BLACK;
+            return (y &gt;= aloitusTilanne[0].length / 2) ? Side.WHITE : Side.BLACK;
         }
     }
 
     public char[][] getTemplaatti() {
-<span class="fc" id="L61">        return shakkiTemplaatti;</span>
+<span class="fc" id="L61">        return aloitusTilanne;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

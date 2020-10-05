@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Sotilas.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Sotilas.java</span></div><h1>Sotilas.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L12">        super(puoli, ruutu);</span>
-<span class="fc" id="L13">        this.arvo = 1;</span>
+<span class="fc" id="L11">        super(puoli, ruutu);</span>
+<span class="fc" id="L12">        this.arvo = 1;</span>
+<span class="fc" id="L13">        this.merkki = 'p';</span>
 <span class="fc" id="L14">    }</span>
 
     public Nappula kopioi() {
@@ -18,8 +18,8 @@ public class Sotilas extends Nappula {
     }
 
     @Override
-    public ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L22">        ArrayList&lt;Siirto&gt; siirrot = new ArrayList();</span>
+    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L22">        SiirtoLista siirrot = new SiirtoLista();</span>
 
         //Liiku yksi eteen
 <span class="fc" id="L25">        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));</span>
@@ -60,7 +60,7 @@ public class Sotilas extends Nappula {
 
     @Override
     public String toString() {
-<span class="fc" id="L63">        return &quot;p&quot;;</span>
+<span class="nc" id="L63">        return &quot;p&quot;;</span>
     }
 
 }

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Nappula.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.nappulat</a> &gt; <span class="el_source">Nappula.java</span></div><h1>Nappula.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.nappulat;
 
-import java.util.ArrayList;
-
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
 import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.SiirtoLista;
 
 /**
  * Kuvaa shakkinappulaa
@@ -13,15 +12,16 @@ import datastructureproject.luokat.Siirto;
 public abstract class Nappula {
     private Ruutu ruutu;
     protected Side puoli;
+    protected char merkki;
 
     /**
      * 
      * @param puoli kumpi pelaaja omistaa taman nappulan
-     * @param positio nappulan sijainti pelilaudalla
+     * @param ruutu nappulan sijainti pelilaudalla
      */
-<span class="fc" id="L22">    public Nappula(Side puoli, Ruutu positio) {</span>
+<span class="fc" id="L22">    public Nappula(Side puoli, Ruutu ruutu) {</span>
 <span class="fc" id="L23">        this.puoli = puoli;</span>
-<span class="fc" id="L24">        this.ruutu = positio;</span>
+<span class="fc" id="L24">        this.ruutu = ruutu;</span>
 <span class="fc" id="L25">    }</span>
 
     public Side getPuoli() {
@@ -61,7 +61,7 @@ public abstract class Nappula {
      * @param lauta pelilaudan tilanne
      * @return mahdolliset siirrot tÃ¤ssÃ¤ pelitilanteessa
      */
-    public abstract ArrayList&lt;Siirto&gt; kaikkiSiirrot(Pelilauta lauta);
+    public abstract SiirtoLista kaikkiSiirrot(Pelilauta lauta);
 
     /**
      * Kopioi nappulan, niin ettÃ¤ kopio ja alkuperÃ¤inen eivÃ¤t vaikuta toisiinsa (deep copy)
@@ -76,19 +76,49 @@ public abstract class Nappula {
      * @return onko tÃ¤mÃ¤ nappula uhattuna tÃ¤ssÃ¤ tilanteessa
      */
     public boolean olenUhattuna(Pelilauta lauta) {
-<span class="fc bfc" id="L79" title="All 2 branches covered.">        ArrayList&lt;Siirto&gt; vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (Siirto s: vastustajanLiikkeet) {</span>
-<span class="fc bfc" id="L81" title="All 4 branches covered.">            if (s.getKohde().getX() == getX() &amp;&amp;  s.getKohde().getY() == getY()) {</span>
-<span class="fc" id="L82">                return true;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        SiirtoLista vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int i = 0; i &lt; vastustajanLiikkeet.size(); i++) {</span>
+<span class="fc" id="L81">            Siirto s = vastustajanLiikkeet.get(i);</span>
+<span class="pc bpc" id="L82" title="1 of 4 branches missed.">            if (s.getKohde().getX() == getX() &amp;&amp;  s.getKohde().getY() == getY()) {</span>
+<span class="nc" id="L83">                return true;</span>
             }
-<span class="fc" id="L84">        }</span>
+        }
 
-<span class="fc" id="L86">        return false;</span>
+<span class="fc" id="L87">        return false;</span>
     }
 
-<span class="fc" id="L89">    protected int arvo = 1;</span>
+<span class="fc" id="L90">    protected int arvo = 1;</span>
+
+    /**
+     * 
+     * @return palauttaa nappulalle mÃ¤Ã¤ritetyn arvon, jota kÃ¤ytetÃ¤Ã¤n pelitilanteen arvioinnissa (heurestiikassa).
+     */
     public int getArvo() {
-<span class="fc" id="L91">        return arvo;</span>
+<span class="fc" id="L97">        return arvo;</span>
     }
+
+    public char getMerkki() {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        return this.getPuoli() == Side.WHITE ? merkki : versitaaliksi(merkki);</span>
+    }
+
+    private static char versitaaliksi(char c) {
+<span class="pc bpc" id="L105" title="1 of 7 branches missed.">        switch (c) {</span>
+            case 'r':
+<span class="fc" id="L107">                return 'R';</span>
+            case 'n':
+<span class="fc" id="L109">                return 'N';</span>
+            case 'b':
+<span class="fc" id="L111">                return 'B';</span>
+            case 'q':
+<span class="fc" id="L113">                return 'Q';</span>
+            case 'k':
+<span class="fc" id="L115">                return 'K';</span>
+            case 'p':
+<span class="fc" id="L117">                return 'P';</span>
+            default:
+<span class="nc" id="L119">                return '0';</span>
+        }
+    }
+    
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
