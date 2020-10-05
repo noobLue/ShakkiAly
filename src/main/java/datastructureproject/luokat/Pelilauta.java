@@ -10,19 +10,48 @@ import datastructureproject.luokat.nappulat.Sotilas;
 import datastructureproject.luokat.nappulat.Torni;
 
 public class Pelilauta {
-    private static int koko = 8;
+
+    /** 
+     * Laudan alkutilan esitys. Versaalit kuvaavat mustan pelaajan nappuloita.
+     * r = torni, n = ratsu, b = lähetti, q = kuningatar, k = kuningas, p = sotilas
+     */
+    public static final char[][] ALKUTILANNE = new char[][] {
+        {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' }, 
+        {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+    };
+
     public int getKoko() {
-        return koko;
+        return lauta.length;
     }
 
     /**
      * Kuvaa shakkilaudan tilannetta
      */
-    public Nappula[][] lauta;
-    public Siirto viimeSiirto = null;
+    public final Nappula[][] lauta;
+    private Siirto viimeSiirto = null;
+    private Ruutu valkoinenKuningas;
+    private Ruutu mustaKuningas;
 
-    public Pelilauta(ShakkiTemplaatti templaatti) {
-        lauta = new Nappula[templaatti.getTemplaatti().length][templaatti.getTemplaatti()[0].length];
+    /**
+     * Luo uuden pelilaudan shakin aloitustilanteelle
+     */
+    public Pelilauta() {
+        lauta = new Nappula[ALKUTILANNE.length][ALKUTILANNE[0].length];
+        alusta(ALKUTILANNE);
+    }
+
+    /**
+     * Luo uuden pelilaudan
+     * @param templaatti pelin alkutilanne tai keskeneräisen pelin tilanne
+     */
+    public Pelilauta(char[][] templaatti) {
+        lauta = new Nappula[templaatti.length][templaatti[0].length];
         alusta(templaatti);
     }
 
@@ -34,6 +63,11 @@ public class Pelilauta {
     public Pelilauta(Pelilauta edellinen) {
         lauta = new Nappula[edellinen.lauta.length][edellinen.lauta[0].length];
         viimeSiirto = edellinen.viimeSiirto;
+        if (edellinen.valkoinenKuningas != null && edellinen.mustaKuningas != null) {
+            valkoinenKuningas = edellinen.valkoinenKuningas.kopioi();
+            mustaKuningas = edellinen.mustaKuningas.kopioi();
+        }
+
         for (int y = 0; y < edellinen.lauta.length; y++) {
             for (int x = 0; x < edellinen.lauta[y].length; x++) {
                 if (edellinen.lauta[y][x] == null) {
@@ -54,10 +88,18 @@ public class Pelilauta {
         Nappula siirrettava = getNappula(siirto.getAlku());
         nollaaRuutu(siirto.getAlku());
 
+        //Tallennetaan kuninkaan sijainti muistiin
+        if (siirrettava instanceof Kuningas) {
+            if (siirrettava.getPuoli() == Side.WHITE) { 
+                valkoinenKuningas = siirto.getKohde(); 
+            } else {
+                mustaKuningas = siirto.getKohde(); 
+            }
+        }
+
         //Erikoissiirrot:
         //https://fi.wikipedia.org/wiki/Tornitus
         //Tornitus
-
         int siirronPituusX = siirto.getAlku().getX() - siirto.getKohde().getX();
         siirronPituusX = siirronPituusX >= 0 ? siirronPituusX : -siirronPituusX;
 
@@ -131,15 +173,7 @@ public class Pelilauta {
      * @return tämän pelaajan kuningas
      */
     public Kuningas etsiKuningas(Side puoli) {
-        for (int y = 0; y < lauta.length; y++) {
-            for (int x = 0; x < lauta[y].length; x++) {
-                Nappula n = lauta[y][x];
-                if (n instanceof Kuningas && n.getPuoli() == puoli) {
-                    return (Kuningas) n;
-                }
-            }
-        }
-        return null;
+        return (Kuningas) (puoli == Side.WHITE ? getNappula(valkoinenKuningas) : getNappula(mustaKuningas));
     }
 
     /**
@@ -225,27 +259,48 @@ public class Pelilauta {
     /**
      * Alustaa pelilaudan templaatin mukaiseen alkuasentoon
      */
-    private void alusta(ShakkiTemplaatti templaatti) {
-        for (int y = 0; y < templaatti.getTemplaatti().length; y++) {
-            for (int x = 0; x < templaatti.getTemplaatti()[0].length; x++) {
-                switch (templaatti.getTemplaatti()[y][x]) {
+    private void alusta(char[][] templaatti) {
+        for (int y = 0; y < templaatti.length; y++) {
+            for (int x = 0; x < templaatti[0].length; x++) {
+                switch (templaatti[y][x]) {
                     case 'r':
-                        lauta[y][x] = new Torni(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        lauta[y][x] = new Torni(Side.WHITE, new Ruutu(x, y));
                         break;
                     case 'n':
-                        lauta[y][x] = new Ratsu(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        lauta[y][x] = new Ratsu(Side.WHITE, new Ruutu(x, y));
                         break;
                     case 'b':
-                        lauta[y][x] = new Lahetti(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        lauta[y][x] = new Lahetti(Side.WHITE, new Ruutu(x, y));
                         break;
                     case 'q':
-                        lauta[y][x] = new Kuningatar(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        lauta[y][x] = new Kuningatar(Side.WHITE, new Ruutu(x, y));
                         break;
                     case 'k':
-                        lauta[y][x] = new Kuningas(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        valkoinenKuningas = new Ruutu(x, y);
+                        lauta[y][x] = new Kuningas(Side.WHITE, new Ruutu(x, y));
                         break;
                     case 'p':
-                        lauta[y][x] = new Sotilas(templaatti.kummanRivi(y), new Ruutu(x, y));
+                        lauta[y][x] = new Sotilas(Side.WHITE, new Ruutu(x, y));
+                        break;
+
+                    case 'R':
+                        lauta[y][x] = new Torni(Side.BLACK, new Ruutu(x, y));
+                        break;
+                    case 'N':
+                        lauta[y][x] = new Ratsu(Side.BLACK, new Ruutu(x, y));
+                        break;
+                    case 'B':
+                        lauta[y][x] = new Lahetti(Side.BLACK, new Ruutu(x, y));
+                        break;
+                    case 'Q':
+                        lauta[y][x] = new Kuningatar(Side.BLACK, new Ruutu(x, y));
+                        break;
+                    case 'K':
+                        mustaKuningas = new Ruutu(x, y);
+                        lauta[y][x] = new Kuningas(Side.BLACK, new Ruutu(x, y));
+                        break;
+                    case 'P':
+                        lauta[y][x] = new Sotilas(Side.BLACK, new Ruutu(x, y));
                         break;
                     default:
                         break;

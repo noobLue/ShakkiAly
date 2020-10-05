@@ -10,6 +10,7 @@ public class Lahetti extends Nappula {
     public Lahetti(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
         this.arvo = 6;
+        this.merkki = 'b';
     }
 
     public Nappula kopioi() {

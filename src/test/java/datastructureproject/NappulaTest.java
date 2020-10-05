@@ -8,7 +8,6 @@ import org.junit.Test;
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.ShakkiTemplaatti;
 import datastructureproject.luokat.Siirto;
 import datastructureproject.luokat.SiirtoLista;
 import datastructureproject.luokat.nappulat.Kuningas;
@@ -61,20 +60,19 @@ public class NappulaTest {
             return;
         }
 
-        lauta1 = new Pelilauta(new ShakkiTemplaatti());
+        lauta1 = new Pelilauta();
 
-        //Älä muuta enää
-        lauta2 = new Pelilauta(new ShakkiTemplaatti(new char[][]{
+        lauta2 = new Pelilauta(new char[][]{
             { '0', 'n', 'b', '0', 'k', '0', '0', 'r' },
             { '0', '0', '0', 'q', '0', 'p', 'p', 'p' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', 'r', '0', 'p', '0', '0', 'n', '0' },
 
-            { '0', '0', 'p', '0', '0', '0', 'p', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', 'p' },
-            { '0', '0', 'p', 'p', 'p', 'p', 'p', '0' },
-            { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
-        }));
+            { '0', '0', 'P', '0', '0', '0', 'P', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', 'P' },
+            { '0', '0', 'P', 'P', 'P', 'P', 'P', '0' },
+            { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        });
 
         asetteluTehty = true;
     }
@@ -91,7 +89,8 @@ public class NappulaTest {
     @Test
     public void sotilasSiirrotTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("a2"));
-        assertTrue(n instanceof Sotilas); //Varmistetaan että nappula on sotilas (eli templaatti on oikea)
+        //Varmistetaan että nappula on varmasti sotilas (eli templaatti on oikea)
+        assertTrue(n instanceof Sotilas); 
 
         SiirtoLista lista = n.kaikkiSiirrot(lauta1);
         assertEquals(2, lista.size());
@@ -159,7 +158,7 @@ public class NappulaTest {
         SiirtoLista lista = n.kaikkiSiirrot(lauta2);
 
         assertEquals(8, lista.size());
-        assertTrue(listaContains(lista, new Siirto("b4b8"))); // syönti
+        assertTrue(listaContains(lista, new Siirto("b4b8")));
         assertTrue(listaContains(lista, new Siirto("b4b2")));
 
 

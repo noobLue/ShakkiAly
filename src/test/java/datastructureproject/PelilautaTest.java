@@ -24,7 +24,7 @@ public class PelilautaTest {
                 char c = odotettu[y][x];
                 if(n == null && c != '0')
                     return false;
-                else if(n != null && n.toString().charAt(0) != c)
+                else if(n != null && n.getMerkki() != c)
                     return false;
             }
         }
@@ -34,24 +34,24 @@ public class PelilautaTest {
 
     @Test
     public void alustusTest(){
-        ShakkiTemplaatti templaatti = new ShakkiTemplaatti();
-        Pelilauta pLauta = new Pelilauta(templaatti);
+        Pelilauta pLauta = new Pelilauta();
 
         for(int y = 0; y < 8; y++){
             for(int x = 0; x < 8; x++){
-                if(templaatti.getTemplaatti()[y][x] == 'p'){
+                char c = Pelilauta.ALKUTILANNE[y][x];
+                if(c == 'p' || c == 'P'){
                     assertTrue(pLauta.lauta[y][x] instanceof Sotilas);
-                } else if(templaatti.getTemplaatti()[y][x] == 'r'){
+                } else if(c == 'r' || c == 'R'){
                     assertTrue(pLauta.lauta[y][x] instanceof Torni);
-                } else if(templaatti.getTemplaatti()[y][x] == 'q'){
+                } else if(c == 'q' || c == 'Q'){
                     assertTrue(pLauta.lauta[y][x] instanceof Kuningatar);
-                } else if(templaatti.getTemplaatti()[y][x] == 'k'){
+                } else if(c == 'k' || c == 'K'){
                     assertTrue(pLauta.lauta[y][x] instanceof Kuningas);
-                } else if(templaatti.getTemplaatti()[y][x] == 'n'){
+                } else if(c == 'n' || c == 'N'){
                     assertTrue(pLauta.lauta[y][x] instanceof Ratsu);
-                } else if(templaatti.getTemplaatti()[y][x] == 'b'){
+                } else if(c == 'b' || c == 'B'){
                     assertTrue(pLauta.lauta[y][x] instanceof Lahetti);
-                } else if(templaatti.getTemplaatti()[y][x] == '0'){
+                } else if(c == '0'){
                     assertEquals(null, pLauta.lauta[y][x]);
                 } else {
                     assertTrue(false);
@@ -62,7 +62,6 @@ public class PelilautaTest {
 
     @Test
     public void siirtoTest(){
-        ShakkiTemplaatti templaatti = new ShakkiTemplaatti();
         Siirto siirto = new Siirto("e2e4");
 
         char[][] odotettu = new char[][]{
@@ -72,11 +71,11 @@ public class PelilautaTest {
             { '0', '0', '0', '0', 'p', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' },
-            { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
+            { 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' },
+            { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
         };
 
-        Pelilauta lauta = new Pelilauta(templaatti);
+        Pelilauta lauta = new Pelilauta();
         Pelilauta tulos = lauta.toteutaSiirto(siirto);
 
         assertTrue(vertaaLautaaOdotettuun(tulos, odotettu));
@@ -94,10 +93,10 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { 'k', '0', '0', '0', '0', '0', '0', '0' }
+            { 'K', '0', '0', '0', '0', '0', '0', '0' }
         };
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
 
         assertEquals(3, lauta.kaikkiLiikeet(Side.WHITE).size());
         assertEquals(3, lauta.kaikkiLiikeet(Side.BLACK).size());
@@ -116,7 +115,7 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' }
         };
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
 
         assertEquals(14, lauta.kaikkiLiikeet(Side.WHITE).size());
         assertEquals(0, lauta.kaikkiLiikeet(Side.BLACK).size());
@@ -132,10 +131,10 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'q', '0', 'q', '0', '0', '0' }
+            { '0', '0', 'Q', '0', 'Q', '0', '0', '0' }
         };
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
 
         assertEquals(5, lauta.kaikkiLiikeet(Side.WHITE).size());
     }
@@ -150,7 +149,7 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
         };
 
         char[][] kohde = new char[][]{
@@ -161,42 +160,42 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
         };
 
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
         Siirto siirto = new Siirto("e1c1");
 
         assertTrue(vertaaLautaaOdotettuun(lauta.toteutaSiirto(siirto), kohde));
     }
 
     @Test
-    public void enPassantTest(){
+    public void ohestaLyontiTest(){
         char[][] alku = new char[][]{
             { 'r', '0', '0', '0', 'k', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', 'p', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', 'p', '0', '0' },
+            { '0', '0', '0', '0', '0', 'P', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
         };
 
         char[][] kohde = new char[][]{
             { 'r', '0', '0', '0', 'k', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', 'p', '0' },
+            { '0', '0', '0', '0', '0', '0', 'P', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'q', '0', 'k', '0', '0', 'k' }
+            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
         };
 
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
         
         lauta = lauta.toteutaSiirto(new Siirto("f5f4"));
         lauta = lauta.toteutaSiirto(new Siirto("g2g4"));
@@ -207,7 +206,7 @@ public class PelilautaTest {
 
     @Test
     public void kaksoisAskelTest(){
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti());
+        Pelilauta lauta = new Pelilauta();
         SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
         
         boolean contains1 = false;
@@ -237,7 +236,7 @@ public class PelilautaTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
         };
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
         for(int i = 0; i < 6; i++){
             lauta = lauta.toteutaSiirto(new Siirto(new Ruutu(3,i), new Ruutu(3,i+1)));
         }
@@ -255,7 +254,7 @@ public class PelilautaTest {
 
     @Test
     public void generoiduissaLiikkeissaEiOleDuplikaatteja(){
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti());
+        Pelilauta lauta = new Pelilauta();
         SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
         for (int i = 0; i < siirrot.size(); i++){
             for (int j = 0; j < siirrot.size(); j++){

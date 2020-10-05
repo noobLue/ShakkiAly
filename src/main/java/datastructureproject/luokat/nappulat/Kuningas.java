@@ -9,7 +9,8 @@ import datastructureproject.luokat.SiirtoLista;
 public class Kuningas extends Nappula {
     public Kuningas(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
-        this.arvo = Integer.MAX_VALUE;
+        this.arvo = Integer.MAX_VALUE / 2;
+        this.merkki = 'k';
     }
 
     public Nappula kopioi() {

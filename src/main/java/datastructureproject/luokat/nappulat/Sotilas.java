@@ -10,6 +10,7 @@ public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
         this.arvo = 1;
+        this.merkki = 'p';
     }
 
     public Nappula kopioi() {

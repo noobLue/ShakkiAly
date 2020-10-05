@@ -12,6 +12,7 @@ import datastructureproject.luokat.SiirtoLista;
 public abstract class Nappula {
     private Ruutu ruutu;
     protected Side puoli;
+    protected char merkki;
 
     /**
      * 
@@ -95,4 +96,28 @@ public abstract class Nappula {
     public int getArvo() {
         return arvo;
     }
+
+    public char getMerkki() {
+        return this.getPuoli() == Side.WHITE ? merkki : versitaaliksi(merkki);
+    }
+
+    private static char versitaaliksi(char c) {
+        switch (c) {
+            case 'r':
+                return 'R';
+            case 'n':
+                return 'N';
+            case 'b':
+                return 'B';
+            case 'q':
+                return 'Q';
+            case 'k':
+                return 'K';
+            case 'p':
+                return 'P';
+            default:
+                return '0';
+        }
+    }
+    
 }

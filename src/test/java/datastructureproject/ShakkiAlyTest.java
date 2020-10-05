@@ -7,12 +7,11 @@ import org.junit.Test;
 import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.ShakkiTemplaatti;
 
 public class ShakkiAlyTest {
     @Test
     public void sallitunLiikkeenGenerointi(){
-        ShakkiAly aly = new ShakkiAly();
+        ShakkiAly aly = new ShakkiAly(true, 1);
         GameState state = new GameState();
         String moves = "a2a4";
         state.setMoves(moves);
@@ -38,14 +37,13 @@ public class ShakkiAlyTest {
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
-            
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
             { '0', '0', '0', '0', '0', '0', '0', '0' },
         };
 
-        Pelilauta lauta = new Pelilauta(new ShakkiTemplaatti(alku));
+        Pelilauta lauta = new Pelilauta(alku);
 
         assertTrue(ShakkiAly.laudanArvo(lauta, Side.WHITE) > 0);
         assertTrue(ShakkiAly.laudanArvo(lauta, Side.BLACK) < 0);

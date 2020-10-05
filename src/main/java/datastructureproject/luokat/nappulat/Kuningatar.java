@@ -10,6 +10,7 @@ public class Kuningatar extends Nappula {
     public Kuningatar(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
         this.arvo = 8;
+        this.merkki = 'q';
     }
 
     public Nappula kopioi() {

@@ -10,6 +10,7 @@ public class Torni extends Nappula {
     public Torni(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
         this.arvo = 3;
+        this.merkki = 'r';
     }
 
     public Nappula kopioi() {

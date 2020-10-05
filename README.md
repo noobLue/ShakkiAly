@@ -20,6 +20,8 @@ Winboardilla esimerkiksi pääsee pelaamaan tekoälyn kanssa käyttämällä seu
 
 xBoard ja Lichess ohjeet löytyvät englanniksi [projektipohjan dokumentaatiosta](./dokumentaatio/projektipohjan/Beginners_guide.md)
 
+Huom. Lichessissä pelatessa ohjelma täytyy käynnistää jokaisen pelin jälkeen uusiksi.
+
 ## Testikattavuus
 
 [Jacoco-testiraportti](https://nooblue.github.io/ShakkiAly/)

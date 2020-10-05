@@ -23,8 +23,6 @@ Tekoäly tekee minimaxissa jokaiselle pelinpuun haaralle tarkistuksen, ettei oma
 
 https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
-https://materiaalit.github.io/intro-to-ai/part2/
-
 Ohjelman yleisrakenne
 Saavutetut aika- ja tilavaativuudet (m.m. O-analyysit pseudokoodista)
 Suorituskyky- ja O-analyysivertailu (mikäli työ vertailupainotteinen)

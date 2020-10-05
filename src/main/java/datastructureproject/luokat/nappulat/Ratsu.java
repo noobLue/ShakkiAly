@@ -11,6 +11,7 @@ public class Ratsu extends Nappula {
     public Ratsu(Side puoli, Ruutu ruutu) {
         super(puoli, ruutu);
         this.arvo = 2;
+        this.merkki = 'n';
     }
 
     public Nappula kopioi() {
