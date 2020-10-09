@@ -31,6 +31,8 @@ MiniMaxin ja Alpha-Beta karsinnan testauksia miettiessä lyö pää vähän tyhj
 
 ### Seuraavaksi
 
+Tehokkuustestauksen parantaminen
+
 MiniMaxille ja Alpha-Beta karsinnalle testejen tekoa.
 
 Parempi heuristiikka laudan tilan arviointiin.
