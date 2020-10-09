@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TehokkuusTesti.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject</a> &gt; <span class="el_source">TehokkuusTesti.java</span></div><h1>TehokkuusTesti.java</h1><pre class="source lang-java linenums">package datastructureproject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import chess.bot.ChessBot;
+import chess.engine.GameState;
+import chess.model.Side;
+import datastructureproject.luokat.ShakkiAly;
+
+<span class="nc" id="L11">public class TehokkuusTesti {</span>
+    private ChessBot bot;
+<span class="nc" id="L13">    private List&lt;GameState&gt; gsList = new ArrayList&lt;&gt;();</span>
+
+    public void setGsList(List&lt;GameState&gt; gsList) {
+<span class="nc" id="L16">        this.gsList = gsList;</span>
+<span class="nc" id="L17">    }</span>
+
+
+    public static void main(String[] args) {
+        /*
+        Set your bot and tests here.
+        */
+
+<span class="nc" id="L25">        ShakkiAly[] botit = new ShakkiAly[14];</span>
+
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        for(int i = 0; i &lt; botit.length / 2; i++){</span>
+<span class="nc" id="L28">            botit[i * 2 + 1] = new ShakkiAly(false, i);</span>
+<span class="nc" id="L29">            botit[i * 2] = new ShakkiAly(true, i);</span>
+        }
+        
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        for(int i = 0; i &lt; botit.length; i++){</span>
+<span class="nc" id="L33">            aika(botit[i]);</span>
+        }
+
+<span class="nc" id="L36">    }</span>
+
+    public static void aika(ShakkiAly aly){
+<span class="nc" id="L39">        GameState state = new GameState();</span>
+<span class="nc" id="L40">        state.setMoves(&quot;a6a4&quot;);</span>
+<span class="nc" id="L41">        state.playing = Side.WHITE;</span>
+
+<span class="nc" id="L43">        System.out.println(&quot;Tarkastellaan ShakkiAlya: AlphaBeta kÃ¤ytÃ¶ssÃ¤: &quot; + aly.onAlphaBeta() + &quot;, maksimisyvyydellÃ¤: &quot; + aly.getSyvyysMax());</span>
+<span class="nc" id="L44">        long alku = System.nanoTime();</span>
+<span class="nc" id="L45">        aly.nextMove(state);</span>
+<span class="nc" id="L46">        long kesti = System.nanoTime() - alku;</span>
+<span class="nc" id="L47">        double millis = kesti / 1_000_000d;</span>
+<span class="nc" id="L48">        System.out.println(&quot;    Liikkeen haussa kesti: &quot; + kesti + &quot; nanosekunttia  / &quot; + millis + &quot; millisekunttia.&quot; );</span>
+<span class="nc" id="L49">        System.out.println(&quot;    KÃ¤ytiin lÃ¤pi yhteensÃ¤ &quot; + aly.getNodet() +&quot; nodea&quot;);</span>
+<span class="nc" id="L50">        System.out.println(&quot;    Yhden noden lÃ¤pikÃ¤ymiseen kului aikaa: &quot; + (millis / (double)aly.getNodet() ) +&quot; millisekunttia&quot;);</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        System.out.println(&quot;    KeskimÃ¤Ã¤rÃ¤inen haarautuvuus: &quot; + (aly.getSyvyysMax() &gt; 0 ? Math.pow(aly.getNodet(), 1 / (double)aly.getSyvyysMax()) : 0) +&quot; nodea&quot;);</span>
+<span class="nc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -2,57 +2,57 @@
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L11">        super(puoli, ruutu);</span>
-<span class="fc" id="L12">        this.arvo = 1;</span>
-<span class="fc" id="L13">        this.merkki = 'p';</span>
-<span class="fc" id="L14">    }</span>
+<span class="fc" id="L9">        super('p', puoli, ruutu, 1);</span>
+<span class="fc" id="L10">    }</span>
 
     public Nappula kopioi() {
-<span class="fc" id="L17">        return new Sotilas(getPuoli(), getRuutu().kopioi());</span>
+<span class="fc" id="L13">        return new Sotilas(getPuoli(), getRuutu().kopioi());</span>
     }
 
     @Override
-    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L22">        SiirtoLista siirrot = new SiirtoLista();</span>
+    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L18">        SiirtoLista siirrot = new SiirtoLista();</span>
 
         //Liiku yksi eteen
-<span class="fc" id="L25">        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));</span>
-<span class="pc bpc" id="L26" title="1 of 4 branches missed.">        if (yksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(yksiEteen) == null) {</span>
-<span class="pc bpc" id="L27" title="1 of 4 branches missed.">            boolean ylennys = yksiEteen.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);</span>
-<span class="pc bpc" id="L28" title="1 of 2 branches missed.">            if (ylennys) {</span>
-<span class="nc" id="L29">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'q'));</span>
+<span class="fc" id="L21">        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));</span>
+<span class="pc bpc" id="L22" title="1 of 4 branches missed.">        if (yksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(yksiEteen) == null) {</span>
+<span class="fc bfc" id="L23" title="All 4 branches covered.">            boolean ylennys = yksiEteen.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">            if (ylennys) {</span>
+                //LisÃ¤tÃ¤Ã¤n listaan kuningattareksi sekÃ¤ ratsuksi ylennys, 
+                //torni ja lÃ¤hetti olisivat turhia kuningattareen verrattuna.
+<span class="fc" id="L27">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'q'));</span>
+<span class="fc" id="L28">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'n'));</span>
             } else {
-<span class="fc" id="L31">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));</span>
+<span class="fc" id="L30">                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));</span>
             }
 
-            //Liiku kaksi eteen (yksiEteen pitÃ¤Ã¤ olla myÃ¶s validi kohta)
-<span class="fc" id="L35">            Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));</span>
-<span class="pc bpc" id="L36" title="1 of 4 branches missed.">            if (kaksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(kaksiEteen) == null </span>
-<span class="fc bfc" id="L37" title="All 4 branches covered.">                    &amp;&amp; getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {</span>
-<span class="fc" id="L38">                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));</span>
+            //Liiku kaksi eteen (yksiEteen pitÃ¤Ã¤ olla myÃ¶s validi kohta liikkua)
+<span class="fc" id="L34">            Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));</span>
+<span class="fc bfc" id="L35" title="All 4 branches covered.">            if (kaksiEteen.olenLaudalla(lauta) &amp;&amp; lauta.getNappula(kaksiEteen) == null </span>
+<span class="fc bfc" id="L36" title="All 4 branches covered.">                    &amp;&amp; getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {</span>
+<span class="fc" id="L37">                siirrot.add(new Siirto(getX(), getY(), kaksiEteen.getX(), kaksiEteen.getY()));</span>
             }
         }
 
         //SyÃ¶ viistoon
-<span class="fc" id="L43">        int[] viistot = new int[] {1, -1};</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int x: viistot) {</span>
-<span class="fc" id="L45">            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));</span>
-<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (!vRuutu.olenLaudalla(lauta)) {</span>
-<span class="fc" id="L47">                continue;</span>
+<span class="fc" id="L42">        int[] viistot = new int[] {1, -1};</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int x: viistot) {</span>
+<span class="fc" id="L44">            Ruutu vRuutu = new Ruutu(getX() + x, getEteenpainY(1));</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (!vRuutu.olenLaudalla(lauta)) {</span>
+<span class="fc" id="L46">                continue;</span>
             }
-<span class="fc" id="L49">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
-<span class="fc bfc" id="L50" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
-<span class="fc" id="L51">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
+<span class="fc" id="L48">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
+<span class="fc" id="L50">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
             }
         }
 
-        //En passant
+        //OhestalyÃ¶nti
+        //Ei (vielÃ¤?) implementoitu
 
         
 <span class="fc" id="L58">        return siirrot;</span>

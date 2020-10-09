@@ -2,9 +2,8 @@
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.apulaiset.ShakkiApu;
+import datastructureproject.luokat.tietorakenteet.*;
 
 /**
  * Kuvaa shakkinappulaa
@@ -13,36 +12,39 @@ public abstract class Nappula {
     private Ruutu ruutu;
     protected Side puoli;
     protected char merkki;
+    protected int arvo;
 
     /**
      * 
      * @param puoli kumpi pelaaja omistaa taman nappulan
      * @param ruutu nappulan sijainti pelilaudalla
      */
-<span class="fc" id="L22">    public Nappula(Side puoli, Ruutu ruutu) {</span>
-<span class="fc" id="L23">        this.puoli = puoli;</span>
-<span class="fc" id="L24">        this.ruutu = ruutu;</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L22">    public Nappula(char merkki, Side puoli, Ruutu ruutu, int arvo) {</span>
+<span class="fc" id="L23">        this.merkki = merkki;</span>
+<span class="fc" id="L24">        this.puoli = puoli;</span>
+<span class="fc" id="L25">        this.ruutu = ruutu;</span>
+<span class="fc" id="L26">        this.arvo = arvo;</span>
+<span class="fc" id="L27">    }</span>
 
     public Side getPuoli() {
-<span class="fc" id="L28">        return puoli;</span>
+<span class="fc" id="L30">        return puoli;</span>
     }
 
     public int getX() {
-<span class="fc" id="L32">        return ruutu.getX();</span>
+<span class="fc" id="L34">        return ruutu.getX();</span>
     }
 
     public int getY() {
-<span class="fc" id="L36">        return ruutu.getY();</span>
+<span class="fc" id="L38">        return ruutu.getY();</span>
     }
 
     public void setRuutu(int x, int y) {
-<span class="fc" id="L40">        this.ruutu.setX(x);</span>
-<span class="fc" id="L41">        this.ruutu.setY(y);</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L42">        this.ruutu.setX(x);</span>
+<span class="fc" id="L43">        this.ruutu.setY(y);</span>
+<span class="fc" id="L44">    }</span>
 
     public Ruutu getRuutu() {
-<span class="fc" id="L45">        return ruutu;</span>
+<span class="fc" id="L47">        return ruutu;</span>
     }
 
     /**
@@ -53,7 +55,7 @@ public abstract class Nappula {
      * @return y-akselin koordinaatti
      */
     protected int getEteenpainY(int y) {
-<span class="fc" id="L56">        return getRuutu().getEteenpainY(getPuoli(), y);</span>
+<span class="fc" id="L58">        return getRuutu().getEteenpainY(getPuoli(), y);</span>
     }
 
     /**
@@ -61,7 +63,40 @@ public abstract class Nappula {
      * @param lauta pelilaudan tilanne
      * @return mahdolliset siirrot tÃ¤ssÃ¤ pelitilanteessa
      */
-    public abstract SiirtoLista kaikkiSiirrot(Pelilauta lauta);
+    public abstract SiirtoLista generoiSiirrot(Pelilauta lauta);
+
+    /**
+     * Palauttaa nappulan sallitut siirrot, kun se saa liikkua tiettyihin suuntiin loputtomasti. 
+     * Tiettyyn suuntaan siirtojen etsiminen lopetetaan, kun mennÃ¤Ã¤n pelilaudan reunan yli
+     * tai pÃ¤Ã¤dytÃ¤Ã¤n syÃ¶mÃ¤Ã¤n vastustajan nappula. 
+     * 
+     * @param lauta pelitilanne pelilautana
+     * @param suunnat suunnat joihin nappula saa liikkua
+     * @return lista siirroista, joita nappula saa liikkua annettuihin suuntiin
+     */
+    protected SiirtoLista generoiSuoratSiirrot(Pelilauta lauta, int[][] suunnat) {
+<span class="fc" id="L78">        SiirtoLista siirrot = new SiirtoLista();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for (int[] pari: suunnat) {</span>
+<span class="fc" id="L80">            Ruutu ruutu = getRuutu().kopioi();</span>
+<span class="fc" id="L81">            ruutu.addX(pari[0]);</span>
+<span class="fc" id="L82">            ruutu.addY(pari[1]);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            while (ruutu.olenLaudalla(lauta)) {</span>
+<span class="fc" id="L84">                Nappula n = lauta.getNappula(ruutu);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                if (n == null) {</span>
+<span class="fc" id="L86">                    siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));</span>
+                } else {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                    if (n.getPuoli() != getPuoli()) {</span>
+<span class="fc" id="L89">                        siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));</span>
+                    }
+                    break;
+                }
+                
+<span class="fc" id="L94">                ruutu.addX(pari[0]);</span>
+<span class="fc" id="L95">                ruutu.addY(pari[1]);</span>
+<span class="fc" id="L96">            }</span>
+        }
+<span class="fc" id="L98">        return siirrot;</span>
+    }
 
     /**
      * Kopioi nappulan, niin ettÃ¤ kopio ja alkuperÃ¤inen eivÃ¤t vaikuta toisiinsa (deep copy)
@@ -76,47 +111,46 @@ public abstract class Nappula {
      * @return onko tÃ¤mÃ¤ nappula uhattuna tÃ¤ssÃ¤ tilanteessa
      */
     public boolean olenUhattuna(Pelilauta lauta) {
-<span class="fc bfc" id="L79" title="All 2 branches covered.">        SiirtoLista vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int i = 0; i &lt; vastustajanLiikkeet.size(); i++) {</span>
-<span class="fc" id="L81">            Siirto s = vastustajanLiikkeet.get(i);</span>
-<span class="pc bpc" id="L82" title="1 of 4 branches missed.">            if (s.getKohde().getX() == getX() &amp;&amp;  s.getKohde().getY() == getY()) {</span>
-<span class="nc" id="L83">                return true;</span>
+<span class="fc" id="L114">        SiirtoLista vastustajanLiikkeet = lauta.generoiSiirrot(ShakkiApu.vastustaja(getPuoli()));</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (int i = 0; i &lt; vastustajanLiikkeet.size(); i++) {</span>
+<span class="fc" id="L117">            Siirto s = vastustajanLiikkeet.get(i);</span>
+<span class="pc bpc" id="L118" title="1 of 4 branches missed.">            if (s.getKohde().getX() == getX() &amp;&amp;  s.getKohde().getY() == getY()) {</span>
+<span class="nc" id="L119">                return true;</span>
             }
         }
 
-<span class="fc" id="L87">        return false;</span>
+<span class="fc" id="L123">        return false;</span>
     }
-
-<span class="fc" id="L90">    protected int arvo = 1;</span>
 
     /**
      * 
      * @return palauttaa nappulalle mÃ¤Ã¤ritetyn arvon, jota kÃ¤ytetÃ¤Ã¤n pelitilanteen arvioinnissa (heurestiikassa).
      */
     public int getArvo() {
-<span class="fc" id="L97">        return arvo;</span>
+<span class="fc" id="L131">        return arvo;</span>
     }
 
     public char getMerkki() {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        return this.getPuoli() == Side.WHITE ? merkki : versitaaliksi(merkki);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        return this.getPuoli() == Side.WHITE ? merkki : versitaaliksi(merkki);</span>
     }
 
     private static char versitaaliksi(char c) {
-<span class="pc bpc" id="L105" title="1 of 7 branches missed.">        switch (c) {</span>
+<span class="pc bpc" id="L139" title="1 of 7 branches missed.">        switch (c) {</span>
             case 'r':
-<span class="fc" id="L107">                return 'R';</span>
+<span class="fc" id="L141">                return 'R';</span>
             case 'n':
-<span class="fc" id="L109">                return 'N';</span>
+<span class="fc" id="L143">                return 'N';</span>
             case 'b':
-<span class="fc" id="L111">                return 'B';</span>
+<span class="fc" id="L145">                return 'B';</span>
             case 'q':
-<span class="fc" id="L113">                return 'Q';</span>
+<span class="fc" id="L147">                return 'Q';</span>
             case 'k':
-<span class="fc" id="L115">                return 'K';</span>
+<span class="fc" id="L149">                return 'K';</span>
             case 'p':
-<span class="fc" id="L117">                return 'P';</span>
+<span class="fc" id="L151">                return 'P';</span>
             default:
-<span class="nc" id="L119">                return '0';</span>
+<span class="nc" id="L153">                return '0';</span>
         }
     }
     

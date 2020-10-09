@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Matikka.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.apulaiset</a> &gt; <span class="el_source">Matikka.java</span></div><h1>Matikka.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.apulaiset;
+
+<span class="nc" id="L3">public class Matikka {</span>
+    /**
+     * Palauttaa parametreista pienimmÃ¤n arvon. 
+     * Jos molemman arvot ovat samoja, myÃ¶s sama arvo palautetaan.
+     * 
+     * @param a ensimmÃ¤inen numero
+     * @param b toinen numero
+     * @return pienemmÃ¤n arvon muuttujista a ja b
+     */
+    public static int minimi(int a, int b) {
+<span class="fc bfc" id="L13" title="All 2 branches covered.">        return a &lt;= b ? a : b;</span>
+    }
+
+    /**
+     * Palauttaa parametreista suurimman arvon.
+     * Jos molemman arvot ovat samoja, myÃ¶s sama arvo palautetaan.
+     * 
+     * @param a ensimmÃ¤inen numero
+     * @param b toinen numero
+     * @return suurin arvon muuttujista a ja b
+     */
+    public static int maksimi(int a, int b) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        return a &gt;= b ? a : b;</span>
+    }
+
+    /**
+     * Laskee luvun itseisarvon. 
+     * Jos parametrina annettu luku on positiivnen (nolla mukaanlukien), palautetaan kyseinen arvo. 
+     * Jos taas luku on negatiivinen, palautetaan sen vastaluku.
+     * 
+     * @param a luku
+     * @return parametrin a itseisarvo
+     */
+    public static int itseisarvo(int a) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        return a &gt;= 0 ? a : -a;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -3,36 +3,32 @@
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Kuningatar extends Nappula {
+<span class="fc" id="L9">    private final int[][] suunnat = new int[][]{</span>
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}, //Viistorivit
+        {0, 1}, {0, -1}, {1, 0}, {-1, 0}    //Vaakarivit
+    };
+
+
     public Kuningatar(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L11">        super(puoli, ruutu);</span>
-<span class="fc" id="L12">        this.arvo = 8;</span>
-<span class="fc" id="L13">        this.merkki = 'q';</span>
-<span class="fc" id="L14">    }</span>
+<span class="fc" id="L16">        super('q', puoli, ruutu, 8);</span>
+<span class="fc" id="L17">    }</span>
 
     public Nappula kopioi() {
-<span class="fc" id="L17">        return new Kuningatar(getPuoli(), getRuutu().kopioi());</span>
+<span class="fc" id="L20">        return new Kuningatar(getPuoli(), getRuutu().kopioi());</span>
     }
 
 
     @Override
-    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L23">        SiirtoLista siirrot = new SiirtoLista();</span>
-<span class="fc" id="L24">        Torni tTorni = new Torni(getPuoli(), getRuutu());</span>
-<span class="fc" id="L25">        Lahetti tLahetti = new Lahetti(getPuoli(), getRuutu());</span>
-
-<span class="fc" id="L27">        siirrot.addAll(tTorni.kaikkiSiirrot(lauta));</span>
-<span class="fc" id="L28">        siirrot.addAll(tLahetti.kaikkiSiirrot(lauta));</span>
-
-<span class="fc" id="L30">        return siirrot;</span>
+    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L26">        return generoiSuoratSiirrot(lauta, suunnat);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L35">        return &quot;q&quot;;</span>
+<span class="nc" id="L31">        return &quot;q&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
