@@ -16,7 +16,8 @@ Winboardilla esimerkiksi pääsee pelaamaan tekoälyn kanssa käyttämällä seu
 
     "tira-chess" -fcp "java -jar **HAKEMISTON_SIJAINTI**\ShakkiAly\build\libs\chess-all.jar"
 
-![alt text](./dokumentaatio/winboard-setup.png)
+![winboard-setup](./dokumentaatio/winboard-setup.png)
+
 
 xBoard ja Lichess ohjeet löytyvät englanniksi [projektipohjan dokumentaatiosta](./dokumentaatio/projektipohjan/Beginners_guide.md)
 
@@ -25,6 +26,12 @@ Huom. Lichessissä pelatessa ohjelma täytyy käynnistää jokaisen pelin jälke
 ## Testikattavuus
 
 [Jacoco-testiraportti](https://nooblue.github.io/ShakkiAly/)
+
+## Checkstyle
+
+Projektin buildaamisen jälkeen checkstyle raportti löytyy kansiosta 
+
+`ShakkiAly\build\reports\checkstyle\main.html`
 
 ## Dokumentaatio
 
@@ -46,4 +53,6 @@ Huom. Lichessissä pelatessa ohjelma täytyy käynnistää jokaisen pelin jälke
 * [Viikko 4](./dokumentaatio/viikkoraportit/viikko4.md)
 
 * [Viikko 5](./dokumentaatio/viikkoraportit/viikko5.md)
+
+* [Viikko 6](./dokumentaatio/viikkoraportit/viikko6.md)
 

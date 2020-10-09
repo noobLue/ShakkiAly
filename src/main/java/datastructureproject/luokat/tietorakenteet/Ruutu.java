@@ -1,6 +1,7 @@
-package datastructureproject.luokat;
+package datastructureproject.luokat.tietorakenteet;
 
 import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
 
 /**
  * Kuvaa shakkiruutua sijaintina
@@ -32,6 +33,10 @@ public class Ruutu {
         return new Ruutu(x, y);
     }
 
+    /**
+     * Miten tämä ruutu esitettäisiin, jos se olisi osana UCI-muotoista siirtoa
+     * @return shakkiruudun merkkijono-muotoinen esitys
+     */
     public String getAsString() {
         char eka = (char) ((int) alkuMerkki + x);
         int toka = y + 1;
@@ -46,12 +51,20 @@ public class Ruutu {
         this.x = x;
     }
 
+    public void addX(int x) {
+        this.x += x;
+    }
+
     public int getY() {
         return y;
     }
 
     public void setY(final int y) {
         this.y = y;
+    }
+
+    public void addY(int y) {
+        this.y += y;
     }
     
     /**

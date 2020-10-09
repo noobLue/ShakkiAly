@@ -3,14 +3,17 @@ package datastructureproject.luokat.nappulat;
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Kuningatar extends Nappula {
+    private final int[][] suunnat = new int[][]{
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}, //Viistorivit
+        {0, 1}, {0, -1}, {1, 0}, {-1, 0}    //Vaakarivit
+    };
+
+
     public Kuningatar(Side puoli, Ruutu ruutu) {
-        super(puoli, ruutu);
-        this.arvo = 8;
-        this.merkki = 'q';
+        super('q', puoli, ruutu, 8);
     }
 
     public Nappula kopioi() {
@@ -19,15 +22,8 @@ public class Kuningatar extends Nappula {
 
 
     @Override
-    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
-        SiirtoLista siirrot = new SiirtoLista();
-        Torni tTorni = new Torni(getPuoli(), getRuutu());
-        Lahetti tLahetti = new Lahetti(getPuoli(), getRuutu());
-
-        siirrot.addAll(tTorni.kaikkiSiirrot(lauta));
-        siirrot.addAll(tLahetti.kaikkiSiirrot(lauta));
-
-        return siirrot;
+    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+        return generoiSuoratSiirrot(lauta, suunnat);
     }
 
     @Override

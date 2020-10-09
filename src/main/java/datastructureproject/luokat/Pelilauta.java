@@ -1,6 +1,7 @@
 package datastructureproject.luokat;
 
 import chess.model.Side;
+import datastructureproject.luokat.apulaiset.Matikka;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Kuningatar;
 import datastructureproject.luokat.nappulat.Lahetti;
@@ -8,6 +9,7 @@ import datastructureproject.luokat.nappulat.Nappula;
 import datastructureproject.luokat.nappulat.Ratsu;
 import datastructureproject.luokat.nappulat.Sotilas;
 import datastructureproject.luokat.nappulat.Torni;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Pelilauta {
 
@@ -26,6 +28,10 @@ public class Pelilauta {
         {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
     };
 
+    /**
+     * Palauttaa laudan leveyden / pituuden
+     * @return laudan koko
+     */
     public int getKoko() {
         return lauta.length;
     }
@@ -34,7 +40,6 @@ public class Pelilauta {
      * Kuvaa shakkilaudan tilannetta
      */
     public final Nappula[][] lauta;
-    private Siirto viimeSiirto = null;
     private Ruutu valkoinenKuningas;
     private Ruutu mustaKuningas;
 
@@ -62,7 +67,6 @@ public class Pelilauta {
      */
     public Pelilauta(Pelilauta edellinen) {
         lauta = new Nappula[edellinen.lauta.length][edellinen.lauta[0].length];
-        viimeSiirto = edellinen.viimeSiirto;
         if (edellinen.valkoinenKuningas != null && edellinen.mustaKuningas != null) {
             valkoinenKuningas = edellinen.valkoinenKuningas.kopioi();
             mustaKuningas = edellinen.mustaKuningas.kopioi();
@@ -80,7 +84,7 @@ public class Pelilauta {
     }
 
     /**
-     * Tekee siirron
+     * Toteuttaa siirron tällä laudalla
      * 
      * @param siirto
      */
@@ -100,11 +104,8 @@ public class Pelilauta {
         //Erikoissiirrot:
         //https://fi.wikipedia.org/wiki/Tornitus
         //Tornitus
-        int siirronPituusX = siirto.getAlku().getX() - siirto.getKohde().getX();
-        siirronPituusX = siirronPituusX >= 0 ? siirronPituusX : -siirronPituusX;
-
-        int siirronPituusY = siirto.getAlku().getY() - siirto.getKohde().getY();
-        siirronPituusY = siirronPituusY >= 0 ? siirronPituusY : -siirronPituusY;
+        int siirronPituusX = Matikka.itseisarvo(siirto.getAlku().getX() - siirto.getKohde().getX());
+        int siirronPituusY = Matikka.itseisarvo(siirto.getAlku().getY() - siirto.getKohde().getY());
 
         if (siirrettava instanceof Kuningas && siirronPituusX > 1) {
             boolean kohdeIsompi  = (siirto.getKohde().getX() - siirto.getAlku().getX() > 0);
@@ -141,7 +142,7 @@ public class Pelilauta {
 
         //https://fi.wikipedia.org/wiki/Sotilas_(shakki)
         //Prosessoi sotilaan ylennys
-        if (siirrettava instanceof Sotilas && siirto.onkoYlennysSiirto()) {
+        if (siirrettava instanceof Sotilas && siirto.onYlennys()) {
 
             Side puoli = siirrettava.getPuoli();
             Ruutu ruutu = siirto.getKohde();
@@ -158,12 +159,10 @@ public class Pelilauta {
                     + siirto.getYlennys() + ")");
             }
             lauta[siirto.getKohde().getY()][siirto.getKohde().getX()] = siirrettava;
-        }
+        } 
 
         //Sijoittaa nappulan laudalle ja päivittää nappulan oman sijainnin tiedon
         sijoitaNappula(siirrettava, siirto.getKohde());
-        //Talletetaan viime siirto muistiin
-        viimeSiirto = siirto; 
     }
 
     /**
@@ -173,7 +172,8 @@ public class Pelilauta {
      * @return tämän pelaajan kuningas
      */
     public Kuningas etsiKuningas(Side puoli) {
-        return (Kuningas) (puoli == Side.WHITE ? getNappula(valkoinenKuningas) : getNappula(mustaKuningas));
+        Nappula kuningas = puoli == Side.WHITE ? getNappula(valkoinenKuningas) : getNappula(mustaKuningas);
+        return (kuningas instanceof Kuningas) ? (Kuningas) kuningas : null;
     }
 
     /**
@@ -219,42 +219,25 @@ public class Pelilauta {
     }
 
     /**
-     * Hakee tämän pelaajan mahdolliset liikkeet pelilaudalla.
+     * Generoi tietyn puolen pelaajan kaikkien nappuloiden liikkeet.
      * 
      * @param puoli kumman pelaajan vuoro on. 
      * @return listan siirroista jotka pelaaja voi tehdä. 
      */
-    public SiirtoLista kaikkiLiikeet(Side puoli) {
+    public SiirtoLista generoiSiirrot(Side puoli) {
         SiirtoLista siirrot = new SiirtoLista();
         
         for (int y = 0; y < getKoko(); y++) {
             for (int x = 0; x < getKoko(); x++) {
                 Nappula n = lauta[y][x];
                 if (n != null && n.getPuoli() == puoli) {
-                    siirrot.addAll(n.kaikkiSiirrot(this));
+                    siirrot.addAll(n.generoiSiirrot(this));
                 }
             }
         }
 
         return siirrot;
     } 
-
-    /**
-     * Printtaa pelilaudan tilanteen, debug-toiminta
-     */
-    public void printtaa() {
-        for (int y = lauta.length - 1; y >= 0; y--) {
-            for (int x = 0; x < lauta[y].length; x++) {
-                if (lauta[y][x] == null) {
-                    System.out.print("?, ");
-                } else {
-                    System.out.print((lauta[y][x].getPuoli() == Side.BLACK 
-                        ? lauta[y][x].toString().toUpperCase() : lauta[y][x]) + ", ");
-                }
-            }
-            System.out.println("");
-        }
-    }
 
     /**
      * Alustaa pelilaudan templaatin mukaiseen alkuasentoon

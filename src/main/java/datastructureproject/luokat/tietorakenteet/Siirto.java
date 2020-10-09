@@ -1,4 +1,4 @@
-package datastructureproject.luokat;
+package datastructureproject.luokat.tietorakenteet;
 
 /**
  * Kuvaa shakissa yhden nappulan siirtoa
@@ -65,7 +65,7 @@ public class Siirto {
      * 
      * @return sisaltaako tama siirto ylennyksen
      */
-    public boolean onkoYlennysSiirto() {
+    public boolean onYlennys() {
         return ylennys != EI_YLENNYSTA;
     }
 

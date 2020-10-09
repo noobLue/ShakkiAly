@@ -6,7 +6,8 @@ import chess.model.Side;
 
 import static org.junit.Assert.*;
 
-import datastructureproject.luokat.*;
+import datastructureproject.luokat.tietorakenteet.*;
+import datastructureproject.luokat.Pelilauta;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Kuningatar;
 import datastructureproject.luokat.nappulat.Lahetti;
@@ -98,8 +99,8 @@ public class PelilautaTest {
 
         Pelilauta lauta = new Pelilauta(alku);
 
-        assertEquals(3, lauta.kaikkiLiikeet(Side.WHITE).size());
-        assertEquals(3, lauta.kaikkiLiikeet(Side.BLACK).size());
+        assertEquals(3, lauta.generoiSiirrot(Side.WHITE).size());
+        assertEquals(3, lauta.generoiSiirrot(Side.BLACK).size());
     }
 
     @Test
@@ -117,8 +118,8 @@ public class PelilautaTest {
 
         Pelilauta lauta = new Pelilauta(alku);
 
-        assertEquals(14, lauta.kaikkiLiikeet(Side.WHITE).size());
-        assertEquals(0, lauta.kaikkiLiikeet(Side.BLACK).size());
+        assertEquals(14, lauta.generoiSiirrot(Side.WHITE).size());
+        assertEquals(0, lauta.generoiSiirrot(Side.BLACK).size());
     }
 
     @Test
@@ -136,7 +137,7 @@ public class PelilautaTest {
 
         Pelilauta lauta = new Pelilauta(alku);
 
-        assertEquals(5, lauta.kaikkiLiikeet(Side.WHITE).size());
+        assertEquals(5, lauta.generoiSiirrot(Side.WHITE).size());
     }
 
     @Test
@@ -207,7 +208,7 @@ public class PelilautaTest {
     @Test
     public void kaksoisAskelTest(){
         Pelilauta lauta = new Pelilauta();
-        SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
+        SiirtoLista siirrot = lauta.generoiSiirrot(Side.WHITE);
         
         boolean contains1 = false;
         boolean contains2 = false;
@@ -255,7 +256,7 @@ public class PelilautaTest {
     @Test
     public void generoiduissaLiikkeissaEiOleDuplikaatteja(){
         Pelilauta lauta = new Pelilauta();
-        SiirtoLista siirrot = lauta.kaikkiLiikeet(Side.WHITE);
+        SiirtoLista siirrot = lauta.generoiSiirrot(Side.WHITE);
         for (int i = 0; i < siirrot.size(); i++){
             for (int j = 0; j < siirrot.size(); j++){
                 if (i == j) {

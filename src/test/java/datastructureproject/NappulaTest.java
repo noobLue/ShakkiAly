@@ -7,9 +7,7 @@ import org.junit.Test;
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 import datastructureproject.luokat.nappulat.Kuningas;
 import datastructureproject.luokat.nappulat.Kuningatar;
 import datastructureproject.luokat.nappulat.Lahetti;
@@ -92,7 +90,7 @@ public class NappulaTest {
         //Varmistetaan että nappula on varmasti sotilas (eli templaatti on oikea)
         assertTrue(n instanceof Sotilas); 
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta1);
+        SiirtoLista lista = n.generoiSiirrot(lauta1);
         assertEquals(2, lista.size());
         
         Siirto siirto1 = new Siirto("a2a3");
@@ -102,10 +100,10 @@ public class NappulaTest {
     }
 
     @Test
-    public void sotilasSiirtoTest2(){
+    public void sotilasSiirtoTest2() {
         Nappula n = lauta2.getNappula(new Ruutu("d4"));
         assertTrue(n instanceof Sotilas);
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
         assertEquals(2, lista.size());
 
         Siirto siirto1 = new Siirto("d4d5");
@@ -116,6 +114,25 @@ public class NappulaTest {
     }
 
     @Test
+    public void sotilasSiirtoYlennysTest() {
+        Pelilauta ylennysLauta = new Pelilauta(new char[][]{
+            { '0', 'n', 'b', '0', 'k', '0', '0', 'r' },
+            { '0', '0', '0', 'q', '0', 'p', 'p', 'p' },
+            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { '0', 'r', '0', 'p', '0', '0', 'n', '0' },
+
+            { '0', '0', 'P', '0', '0', '0', 'P', '0' },
+            { '0', '0', '0', '0', '0', '0', '0', 'P' },
+            { 'p', '0', 'P', 'P', 'P', 'P', 'P', '0' },
+            { '0', '0', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        });
+        Nappula sotilas = ylennysLauta.getNappula(0, 6);
+        assertTrue(sotilas instanceof Sotilas);
+
+        assertTrue(listaContains(sotilas.generoiSiirrot(ylennysLauta), new Siirto("a7a8q")));
+    }
+
+    @Test
     public void ratsuSiirtoTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("b1"));
         //Varmistetaan että templaatti on generoitunut oikein
@@ -123,7 +140,7 @@ public class NappulaTest {
         assertNull(lauta1.getNappula(new Ruutu("c3")));
         assertTrue(n instanceof Ratsu);
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta1);
+        SiirtoLista lista = n.generoiSiirrot(lauta1);
         
         assertTrue(listaContains(lista, new Siirto("b1a3")));
         assertTrue(listaContains(lista, new Siirto("b1c3")));
@@ -134,7 +151,7 @@ public class NappulaTest {
         Nappula n = lauta2.getNappula(new Ruutu("g4"));
         assertTrue(n instanceof Ratsu);
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
         assertEquals(4, lista.size());
 
         assertTrue(listaContains(lista, new Siirto("g4e3")));
@@ -148,14 +165,14 @@ public class NappulaTest {
     public void torniSiirtoTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("a1"));
         assertTrue(n instanceof Torni);
-        assertEquals(0, n.kaikkiSiirrot(lauta1).size());
+        assertEquals(0, n.generoiSiirrot(lauta1).size());
     }
 
     @Test
     public void torniSiirtoTest2(){
         Nappula n = lauta2.getNappula(new Ruutu("b4"));
         assertTrue(n instanceof Torni);
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
 
         assertEquals(8, lista.size());
         assertTrue(listaContains(lista, new Siirto("b4b8")));
@@ -170,14 +187,14 @@ public class NappulaTest {
     public void lahettiSiirtoTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("c1"));
         assertTrue(n instanceof Lahetti);
-        assertEquals(0, n.kaikkiSiirrot(lauta1).size());
+        assertEquals(0, n.generoiSiirrot(lauta1).size());
     }
 
     @Test
     public void lahettiSiirtoTest2(){
         Nappula n = lauta2.getNappula(new Ruutu("c1"));
         assertTrue(n instanceof Lahetti);
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
 
         assertEquals(2, lista.size());
 
@@ -191,7 +208,7 @@ public class NappulaTest {
 
         Nappula n = lautaTemp3.getNappula(new Ruutu("b2"));
         assertTrue(n instanceof Lahetti);
-        SiirtoLista lista = n.kaikkiSiirrot(lautaTemp3);
+        SiirtoLista lista = n.generoiSiirrot(lautaTemp3);
 
         assertEquals(4, lista.size());
 
@@ -206,7 +223,7 @@ public class NappulaTest {
     public void kuningatarSiirtoTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("d1"));
         assertTrue(n instanceof Kuningatar);
-        assertEquals(0, n.kaikkiSiirrot(lauta1).size());
+        assertEquals(0, n.generoiSiirrot(lauta1).size());
     }
 
     @Test
@@ -214,7 +231,7 @@ public class NappulaTest {
         Nappula n = lauta2.getNappula(new Ruutu("d2"));
         assertTrue(n instanceof Kuningatar);
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
         assertEquals(10, lista.size());
 
         assertTrue(listaContains(lista, new Siirto("d2g5")));
@@ -231,12 +248,12 @@ public class NappulaTest {
         Nappula n = lauta2.getNappula(new Ruutu("d2"));
         assertTrue(n instanceof Kuningatar);
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
 
         Nappula torniSim = new Torni(Side.WHITE, new Ruutu("d2"));
-        SiirtoLista torniLista = torniSim.kaikkiSiirrot(lauta2);
+        SiirtoLista torniLista = torniSim.generoiSiirrot(lauta2);
         Nappula lahettiSim = new Lahetti(Side.WHITE, new Ruutu("d2"));
-        SiirtoLista lahettiLista = lahettiSim.kaikkiSiirrot(lauta2);
+        SiirtoLista lahettiLista = lahettiSim.generoiSiirrot(lauta2);
 
         assertEquals(torniLista.size()+lahettiLista.size(), lista.size());
 
@@ -252,7 +269,7 @@ public class NappulaTest {
     public void kuningasSiirtoTest1(){
         Nappula n = lauta1.getNappula(new Ruutu("e1"));
         assertTrue(n instanceof Kuningas);
-        assertEquals(0, n.kaikkiSiirrot(lauta1).size());
+        assertEquals(0, n.generoiSiirrot(lauta1).size());
     }
 
     @Test
@@ -260,7 +277,7 @@ public class NappulaTest {
         Nappula n = lauta2.getNappula(new Ruutu("e1"));
         assertTrue(n instanceof Kuningas);
 
-        SiirtoLista lista = n.kaikkiSiirrot(lauta2);
+        SiirtoLista lista = n.generoiSiirrot(lauta2);
         assertEquals(3, lista.size());
 
         assertTrue(listaContains(lista, new Siirto("e1d1")));

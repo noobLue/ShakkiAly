@@ -2,9 +2,8 @@ package datastructureproject.luokat.nappulat;
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.apulaiset.ShakkiApu;
+import datastructureproject.luokat.tietorakenteet.*;
 
 /**
  * Kuvaa shakkinappulaa
@@ -13,15 +12,18 @@ public abstract class Nappula {
     private Ruutu ruutu;
     protected Side puoli;
     protected char merkki;
+    protected int arvo;
 
     /**
      * 
      * @param puoli kumpi pelaaja omistaa taman nappulan
      * @param ruutu nappulan sijainti pelilaudalla
      */
-    public Nappula(Side puoli, Ruutu ruutu) {
+    public Nappula(char merkki, Side puoli, Ruutu ruutu, int arvo) {
+        this.merkki = merkki;
         this.puoli = puoli;
         this.ruutu = ruutu;
+        this.arvo = arvo;
     }
 
     public Side getPuoli() {
@@ -61,7 +63,40 @@ public abstract class Nappula {
      * @param lauta pelilaudan tilanne
      * @return mahdolliset siirrot tässä pelitilanteessa
      */
-    public abstract SiirtoLista kaikkiSiirrot(Pelilauta lauta);
+    public abstract SiirtoLista generoiSiirrot(Pelilauta lauta);
+
+    /**
+     * Palauttaa nappulan sallitut siirrot, kun se saa liikkua tiettyihin suuntiin loputtomasti. 
+     * Tiettyyn suuntaan siirtojen etsiminen lopetetaan, kun mennään pelilaudan reunan yli
+     * tai päädytään syömään vastustajan nappula. 
+     * 
+     * @param lauta pelitilanne pelilautana
+     * @param suunnat suunnat joihin nappula saa liikkua
+     * @return lista siirroista, joita nappula saa liikkua annettuihin suuntiin
+     */
+    protected SiirtoLista generoiSuoratSiirrot(Pelilauta lauta, int[][] suunnat) {
+        SiirtoLista siirrot = new SiirtoLista();
+        for (int[] pari: suunnat) {
+            Ruutu ruutu = getRuutu().kopioi();
+            ruutu.addX(pari[0]);
+            ruutu.addY(pari[1]);
+            while (ruutu.olenLaudalla(lauta)) {
+                Nappula n = lauta.getNappula(ruutu);
+                if (n == null) {
+                    siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));
+                } else {
+                    if (n.getPuoli() != getPuoli()) {
+                        siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));
+                    }
+                    break;
+                }
+                
+                ruutu.addX(pari[0]);
+                ruutu.addY(pari[1]);
+            }
+        }
+        return siirrot;
+    }
 
     /**
      * Kopioi nappulan, niin että kopio ja alkuperäinen eivät vaikuta toisiinsa (deep copy)
@@ -76,7 +111,8 @@ public abstract class Nappula {
      * @return onko tämä nappula uhattuna tässä tilanteessa
      */
     public boolean olenUhattuna(Pelilauta lauta) {
-        SiirtoLista vastustajanLiikkeet = lauta.kaikkiLiikeet(getPuoli() == Side.WHITE ? Side.BLACK : Side.WHITE);
+        SiirtoLista vastustajanLiikkeet = lauta.generoiSiirrot(ShakkiApu.vastustaja(getPuoli()));
+
         for (int i = 0; i < vastustajanLiikkeet.size(); i++) {
             Siirto s = vastustajanLiikkeet.get(i);
             if (s.getKohde().getX() == getX() &&  s.getKohde().getY() == getY()) {
@@ -86,8 +122,6 @@ public abstract class Nappula {
 
         return false;
     }
-
-    protected int arvo = 1;
 
     /**
      * 

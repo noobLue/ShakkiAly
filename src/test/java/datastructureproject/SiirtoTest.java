@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class SiirtoTest {
     
@@ -22,13 +21,13 @@ public class SiirtoTest {
     @Test
     public void ylennysTest(){
         Siirto siirto = new Siirto(new Ruutu("a1"), new Ruutu("a3"));
-        assertFalse(siirto.onkoYlennysSiirto());
+        assertFalse(siirto.onYlennys());
     }
 
     @Test
     public void ylennysTest2(){
         Siirto siirto = new Siirto(new Ruutu("a1"), new Ruutu("a3"), 'q');
-        assertTrue(siirto.onkoYlennysSiirto());
+        assertTrue(siirto.onYlennys());
     }
 
     @Test
@@ -40,14 +39,14 @@ public class SiirtoTest {
     @Test
     public void merkkijonoJasennysTest(){
         Siirto siirto = new Siirto("a1a7q");
-        assertTrue(siirto.onkoYlennysSiirto());
+        assertTrue(siirto.onYlennys());
         assertEquals(6, siirto.getKohde().getY());
     }
 
     @Test
     public void merkkijonoJasennysTest2(){
         Siirto siirto = new Siirto("a1a7");
-        assertFalse(siirto.onkoYlennysSiirto());
+        assertFalse(siirto.onYlennys());
         assertEquals(6, siirto.getKohde().getY());
     }
 

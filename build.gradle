@@ -79,7 +79,7 @@ build.dependsOn javadoc
 
 task performanceTest(type:JavaExec) {
    classpath = sourceSets.main.runtimeClasspath
-   main = 'datastructureproject.PerformanceTest'
+   main = 'datastructureproject.tehokkuus.TehokkuusTesti'
 }
 
 jar {

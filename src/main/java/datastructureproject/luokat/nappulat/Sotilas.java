@@ -2,15 +2,11 @@ package datastructureproject.luokat.nappulat;
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
-        super(puoli, ruutu);
-        this.arvo = 1;
-        this.merkki = 'p';
+        super('p', puoli, ruutu, 1);
     }
 
     public Nappula kopioi() {
@@ -18,7 +14,7 @@ public class Sotilas extends Nappula {
     }
 
     @Override
-    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
+    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
         SiirtoLista siirrot = new SiirtoLista();
 
         //Liiku yksi eteen
@@ -26,12 +22,15 @@ public class Sotilas extends Nappula {
         if (yksiEteen.olenLaudalla(lauta) && lauta.getNappula(yksiEteen) == null) {
             boolean ylennys = yksiEteen.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);
             if (ylennys) {
+                //Lisätään listaan kuningattareksi sekä ratsuksi ylennys, 
+                //torni ja lähetti olisivat turhia kuningattareen verrattuna.
                 siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'q'));
+                siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY(), 'n'));
             } else {
                 siirrot.add(new Siirto(getX(), getY(), yksiEteen.getX(), yksiEteen.getY()));
             }
 
-            //Liiku kaksi eteen (yksiEteen pitää olla myös validi kohta)
+            //Liiku kaksi eteen (yksiEteen pitää olla myös validi kohta liikkua)
             Ruutu kaksiEteen = new Ruutu(getX(), getEteenpainY(2));
             if (kaksiEteen.olenLaudalla(lauta) && lauta.getNappula(kaksiEteen) == null 
                     && getY() == (getPuoli() == Side.WHITE ? 1 : lauta.getKoko() - 2)) {
@@ -52,7 +51,8 @@ public class Sotilas extends Nappula {
             }
         }
 
-        //En passant
+        //Ohestalyönti
+        //Ei (vielä?) implementoitu
 
         
         return siirrot;

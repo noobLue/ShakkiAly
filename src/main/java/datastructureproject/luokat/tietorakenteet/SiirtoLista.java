@@ -1,4 +1,4 @@
-package datastructureproject.luokat;
+package datastructureproject.luokat.tietorakenteet;
 
 /**
  * Siirtoja sisältävä lista

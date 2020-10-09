@@ -6,7 +6,7 @@ package chess;
 import chess.bot.ChessBot;
 import chess.connection.LichessAPI;
 import chess.model.Profile;
-import datastructureproject.ShakkiAly;
+import datastructureproject.luokat.ShakkiAly;
 import chess.connection.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

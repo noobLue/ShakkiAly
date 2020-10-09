@@ -2,16 +2,12 @@ package datastructureproject.luokat.nappulat;
 
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
-import datastructureproject.luokat.Ruutu;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class Ratsu extends Nappula {
 
     public Ratsu(Side puoli, Ruutu ruutu) {
-        super(puoli, ruutu);
-        this.arvo = 2;
-        this.merkki = 'n';
+        super('n', puoli, ruutu, 2);
     }
 
     public Nappula kopioi() {
@@ -19,7 +15,7 @@ public class Ratsu extends Nappula {
     }
 
     @Override
-    public SiirtoLista kaikkiSiirrot(Pelilauta lauta) {
+    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
         SiirtoLista siirrot = new SiirtoLista();
         int[][] siirrotArr = new int[][] {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
 

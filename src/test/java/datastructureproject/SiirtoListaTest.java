@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 import java.lang.Math;
 
 import org.junit.Test;
-import datastructureproject.luokat.Siirto;
-import datastructureproject.luokat.SiirtoLista;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class SiirtoListaTest {
     

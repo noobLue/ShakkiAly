@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
-import datastructureproject.luokat.Ruutu;
+import datastructureproject.luokat.tietorakenteet.*;
 
 public class RuutuTest {
     

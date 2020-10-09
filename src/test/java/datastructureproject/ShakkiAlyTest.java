@@ -7,6 +7,7 @@ import org.junit.Test;
 import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.ShakkiAly;
 
 public class ShakkiAlyTest {
     @Test
@@ -23,11 +24,26 @@ public class ShakkiAlyTest {
         state.playing = Side.WHITE;
         String valkoisenLiike = aly.nextMove(state);
 
-        assertNotEquals("a0a0", mustanLiike);
-        assertNotEquals("0000", mustanLiike);
+        assertNotEquals(ShakkiAly.LUOVUTUS, mustanLiike);
+        assertNotEquals(ShakkiAly.LUOVUTUS, valkoisenLiike);
+    }
 
-        assertNotEquals("a0a0", valkoisenLiike);
-        assertNotEquals("0000", valkoisenLiike);
+    @Test
+    public void sallitunLiikkeenGenerointi2(){
+        ShakkiAly aly = new ShakkiAly(true, 2);
+        GameState state = new GameState();
+        String moves = "a2a4";
+        state.setMoves(moves);
+        state.playing = Side.WHITE;
+        String mustanLiike = aly.nextMove(state);
+
+        moves += ","+mustanLiike;
+        state.setMoves(moves);
+        state.playing = Side.BLACK;
+        String valkoisenLiike = aly.nextMove(state);
+
+        assertNotEquals(ShakkiAly.LUOVUTUS, mustanLiike);
+        assertNotEquals(ShakkiAly.LUOVUTUS, valkoisenLiike);
     }
 
     @Test
