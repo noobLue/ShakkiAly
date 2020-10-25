@@ -6,7 +6,7 @@ import datastructureproject.luokat.tietorakenteet.*;
 
 public class Kuningas extends Nappula {
     public Kuningas(Side puoli, Ruutu ruutu) {
-        super('k', puoli, ruutu, Integer.MAX_VALUE / 2);
+        super('k', puoli, ruutu);
     }
 
     
@@ -15,8 +15,8 @@ public class Kuningas extends Nappula {
     }
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-        SiirtoLista siirrot = new SiirtoLista();
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
+        Lista<Siirto> siirrot = new Lista<>();
 
         for (int y = -1; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {

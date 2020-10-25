@@ -10,14 +10,14 @@ public class Lahetti extends Nappula {
     };
 
     public Lahetti(Side puoli, Ruutu ruutu) {
-        super('b', puoli, ruutu, 6);
+        super('b', puoli, ruutu);
     }
 
     public Nappula kopioi() {
         return new Lahetti(getPuoli(), getRuutu().kopioi());
     }
 
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
         return generoiSuoratSiirrot(lauta, suunnat);
     }
 

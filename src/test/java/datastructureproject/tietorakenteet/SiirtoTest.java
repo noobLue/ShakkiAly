@@ -1,4 +1,4 @@
-package datastructureproject;
+package datastructureproject.tietorakenteet;
 
 import static org.junit.Assert.*;
 

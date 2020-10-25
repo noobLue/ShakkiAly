@@ -1,9 +1,13 @@
 
 # Toteutusdokumentti
 
-## Syvyysrajoitettu miinmax
+## Syvyysrajoitettu minimax
 
 Pelilaudan tilannetta ylläpitävä tietorakenne on kaksi ulotteinen taulukko Nappula-luokkaisia olioita. Jokainen Nappula-luokkainen olio osaa palauttaa listan sallituista liikkeistään. Pelilaudan kunkin tilanteen pelipuun saa alkuun generoimalla oman puolen nappuloiden sallitut liikket. Sitten aloitetaan MiniMax-algoritmin pyöritys joka arvioi pelipuun tasoja vuorotellen kummankin eri pelaajan kannalta (tekoäly on max-pelaaja, vastustaja on min-pelaaja). Algoritmi olettaa vihollisen pelaavan aina ns. optimaalisti ja valitsee loppujenlopuksi polun joka päätyy optimaalitilanteessa tekoälyn kannalta parhaiten. *Alpha-beta karsintaa* tehdään minimaxin aikana, jonka avulla voidaan ohittaa pelipuun haarat jotka on todettu algoritmin logiikan kannalta turhiksi. MiniMax lopetetaan kun ollaan päästy tiettyyn haluttuun syvyyteen asti ja arvioidaan pelilaudan tilannetta valitun *heuristiikan* avulla.
+
+## NegaMax
+
+MiniMaxia on yksinkertaistettu hyödyntämällä tietoa, että max-pelaajan kannalta pelitilanteen arvo on sama kuin negaatio pelitilanteen arvosta min-pelaajan kannalta. Tässä yritetään siis aina vuorotellen maksimoida vastustajan arvon negaatiota. (Ei siis tarvitse erikseen ohjelmoida max ja min pelaajien logiikoita, vaan samalla koodilla saadaan hoideltua molemmat)
 
 ## Alpha-beta karsinta
 
@@ -26,11 +30,3 @@ Heuristiikka on tällä hetkellä erittäin yksinkertainen ja varsinkin pelin al
 [1] https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 [2] https://fi.wikipedia.org/wiki/Ohestaly%C3%B6nti
 [3] https://fi.wikipedia.org/wiki/Tornitus
-
-
-Ohjelman yleisrakenne
-Saavutetut aika- ja tilavaativuudet (m.m. O-analyysit pseudokoodista)
-Suorituskyky- ja O-analyysivertailu (mikäli työ vertailupainotteinen)
-Työn mahdolliset puutteet ja parannusehdotukset
-Lähteet
-

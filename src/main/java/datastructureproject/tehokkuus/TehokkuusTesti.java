@@ -1,32 +1,16 @@
 package datastructureproject.tehokkuus;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import chess.bot.ChessBot;
 import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.ShakkiAly;
 
 public class TehokkuusTesti {
-    private ChessBot bot;
-    private List<GameState> gsList = new ArrayList<>();
-
-    public void setGsList(List<GameState> gsList) {
-        this.gsList = gsList;
-    }
-
-
     public static void main(String[] args) {
-        /*
-        Set your bot and tests here.
-        */
-
         ShakkiAly[] botit = new ShakkiAly[14];
 
         for (int i = 0; i < botit.length / 2; i++) {
-            botit[i * 2 + 1] = new ShakkiAly(false, i);
-            botit[i * 2] = new ShakkiAly(true, i);
+            botit[i * 2 + 1] = new ShakkiAly(false, i + 1);
+            botit[i * 2] = new ShakkiAly(true, i + 1);
         }
         
         for (int i = 0; i < botit.length; i++) {
@@ -37,7 +21,7 @@ public class TehokkuusTesti {
 
     public static void aika(ShakkiAly aly) {
         GameState state = new GameState();
-        state.setMoves("a6a4");
+        state.setMoves("a7a5");
         state.playing = Side.WHITE;
 
         System.out.println("Tarkastellaan ShakkiAlya, AlphaBeta käytössä: " 

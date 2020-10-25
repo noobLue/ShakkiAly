@@ -23,7 +23,7 @@ public class PelilautaTest {
             for(int x = 0; x < 8; x++){
                 Nappula n = lauta.getNappula(x, y);
                 char c = odotettu[y][x];
-                if(n == null && c != '0')
+                if(n == null && c != ' ' && c != '0')
                     return false;
                 else if(n != null && n.getMerkki() != c)
                     return false;
@@ -52,7 +52,7 @@ public class PelilautaTest {
                     assertTrue(pLauta.lauta[y][x] instanceof Ratsu);
                 } else if(c == 'b' || c == 'B'){
                     assertTrue(pLauta.lauta[y][x] instanceof Lahetti);
-                } else if(c == '0'){
+                } else if(c == '0' || c == ' '){
                     assertEquals(null, pLauta.lauta[y][x]);
                 } else {
                     assertTrue(false);
@@ -67,19 +67,21 @@ public class PelilautaTest {
 
         char[][] odotettu = new char[][]{
             { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' },
-            { 'p', 'p', 'p', 'p', '0', 'p', 'p', 'p' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', 'p', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { 'p', 'p', 'p', 'p', ' ', 'p', 'p', 'p' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', 'p', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
             { 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' },
             { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
         };
 
         Pelilauta lauta = new Pelilauta();
-        Pelilauta tulos = lauta.toteutaSiirto(siirto);
+        lauta.siirto(siirto);
 
-        assertTrue(vertaaLautaaOdotettuun(tulos, odotettu));
+        assertTrue(vertaaLautaaOdotettuun(lauta, odotettu));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, Pelilauta.ALKUTILANNE));
 
     }
 
@@ -87,14 +89,14 @@ public class PelilautaTest {
     @Test
     public void siirronGenerointiTest(){
         char[][] alku = new char[][]{
-            { '0', '0', '0', '0', '0', '0', '0', 'k' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { 'K', '0', '0', '0', '0', '0', '0', '0' }
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'k' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { 'K', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }
         };
 
         Pelilauta lauta = new Pelilauta(alku);
@@ -106,14 +108,14 @@ public class PelilautaTest {
     @Test
     public void siirronGenerointiTest2(){
         char[][] alku = new char[][]{
-            { '0', '0', '0', 'r', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' }
+            { ' ', ' ', ' ', 'r', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }
         };
 
         Pelilauta lauta = new Pelilauta(alku);
@@ -125,14 +127,14 @@ public class PelilautaTest {
     @Test
     public void siirronGenerointiTestShakkejaEiFiltteroidaViela(){
         char[][] alku = new char[][]{
-            { '0', '0', '0', 'k', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'Q', '0', 'Q', '0', '0', '0' }
+            { ' ', ' ', ' ', 'k', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', 'Q', ' ', 'Q', ' ', ' ', ' ' }
         };
 
         Pelilauta lauta = new Pelilauta(alku);
@@ -143,72 +145,78 @@ public class PelilautaTest {
     @Test
     public void tornitusTest(){
         char[][] alku = new char[][]{
-            { 'r', '0', '0', '0', 'k', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
+            { 'r', ' ', ' ', ' ', 'k', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', 'Q', ' ', 'K', ' ', ' ', 'K' }
         };
 
         char[][] kohde = new char[][]{
-            { '0', '0', 'k', 'r', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
+            { ' ', ' ', 'k', 'r', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', 'Q', ' ', 'K', ' ', ' ', 'K' }
         };
 
 
         Pelilauta lauta = new Pelilauta(alku);
         Siirto siirto = new Siirto("e1c1");
-
-        assertTrue(vertaaLautaaOdotettuun(lauta.toteutaSiirto(siirto), kohde));
+        lauta.siirto(siirto);
+        assertTrue(vertaaLautaaOdotettuun(lauta, kohde));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, alku));
     }
 
     @Test
     public void ohestaLyontiTest(){
         char[][] alku = new char[][]{
-            { 'r', '0', '0', '0', 'k', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', 'p', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', 'P', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
+            { 'r', ' ', ' ', ' ', 'k', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', 'p', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', 'P', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', 'Q', ' ', 'K', ' ', ' ', 'K' }
         };
 
         char[][] kohde = new char[][]{
-            { 'r', '0', '0', '0', 'k', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', 'P', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', 'Q', '0', 'K', '0', '0', 'K' }
+            { 'r', ' ', ' ', ' ', 'k', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', 'P', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', 'Q', ' ', 'K', ' ', ' ', 'K' }
         };
 
 
         Pelilauta lauta = new Pelilauta(alku);
         
-        lauta = lauta.toteutaSiirto(new Siirto("f5f4"));
-        lauta = lauta.toteutaSiirto(new Siirto("g2g4"));
-        lauta = lauta.toteutaSiirto(new Siirto("f4g3"));
-
+        lauta.siirto(new Siirto("f5f4"));
+        lauta.siirto(new Siirto("g2g4"));
+        lauta.siirto(new Siirto("f4g3"));
         assertTrue(vertaaLautaaOdotettuun(lauta, kohde));
+
+        lauta.peruutaSiirto();
+        lauta.peruutaSiirto();
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, alku));
     }
 
     @Test
     public void kaksoisAskelTest(){
         Pelilauta lauta = new Pelilauta();
-        SiirtoLista siirrot = lauta.generoiSiirrot(Side.WHITE);
+        Lista<Siirto> siirrot = lauta.generoiSiirrot(Side.WHITE);
         
         boolean contains1 = false;
         boolean contains2 = false;
@@ -228,35 +236,42 @@ public class PelilautaTest {
     @Test 
     public void ylennysTest(){
         char[][] alku = new char[][]{
-            { '0', '0', '0', 'p', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
-            { '0', '0', '0', '0', '0', '0', '0', '0' },
+            { ' ', ' ', ' ', 'p', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
         };
         Pelilauta lauta = new Pelilauta(alku);
         for(int i = 0; i < 6; i++){
-            lauta = lauta.toteutaSiirto(new Siirto(new Ruutu(3,i), new Ruutu(3,i+1)));
+            lauta.siirto(new Siirto(new Ruutu(3,i), new Ruutu(3,i+1)));
         }
         
-        Pelilauta kuningatarLauta = lauta.toteutaSiirto(new Siirto("d7d8q"));
-        Pelilauta ratsuLauta = lauta.toteutaSiirto(new Siirto("d7d8n"));
-        Pelilauta lahettiLauta = lauta.toteutaSiirto(new Siirto("d7d8b"));
-        Pelilauta torniLauta = lauta.toteutaSiirto(new Siirto("d7d8r"));
+        lauta.siirto(new Siirto("d7d8q"));
+        assertTrue(lauta.getNappula(new Ruutu("d8")) instanceof Kuningatar);
+        lauta.peruutaSiirto();
 
-        assertTrue(kuningatarLauta.getNappula(new Ruutu("d8")) instanceof Kuningatar);
-        assertTrue(ratsuLauta.getNappula(new Ruutu("d8")) instanceof Ratsu);
-        assertTrue(lahettiLauta.getNappula(new Ruutu("d8")) instanceof Lahetti);
-        assertTrue(torniLauta.getNappula(new Ruutu("d8")) instanceof Torni);
+        lauta.siirto(new Siirto("d7d8n"));
+        assertTrue(lauta.getNappula(new Ruutu("d8")) instanceof Ratsu);
+        lauta.peruutaSiirto();
+
+        lauta.siirto(new Siirto("d7d8b"));
+        assertTrue(lauta.getNappula(new Ruutu("d8")) instanceof Lahetti);
+        lauta.peruutaSiirto();
+
+        lauta.siirto(new Siirto("d7d8r"));
+        assertTrue(lauta.getNappula(new Ruutu("d8")) instanceof Torni);
+        lauta.peruutaSiirto();
+
     }
 
     @Test
     public void generoiduissaLiikkeissaEiOleDuplikaatteja(){
         Pelilauta lauta = new Pelilauta();
-        SiirtoLista siirrot = lauta.generoiSiirrot(Side.WHITE);
+        Lista<Siirto> siirrot = lauta.generoiSiirrot(Side.WHITE);
         for (int i = 0; i < siirrot.size(); i++){
             for (int j = 0; j < siirrot.size(); j++){
                 if (i == j) {
@@ -265,5 +280,128 @@ public class PelilautaTest {
                 assertNotEquals(siirrot.get(j).getUCIString(), siirrot.get(i).getUCIString());
             }
         }
+    }
+
+    @Test
+    public void siirronPeruutusTest1() {
+        Pelilauta lauta = new Pelilauta();
+
+        lauta.siirto(new Siirto("a2a4"));
+        lauta.siirto(new Siirto("c7c5"));
+        lauta.siirto(new Siirto("a1a3") );
+        lauta.siirto(new Siirto("d8a5"));
+
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {' ', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'Q', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', ' ', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {' ', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
+            {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
+        }));
+    }
+
+    @Test
+    public void tornituksenPeruutus() {
+        char[][] alku = new char[][] {
+            {'r', ' ', ' ', ' ', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'Q', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', ' ', 'K', 'B', 'N', 'R' }
+        };
+        Pelilauta lauta = new Pelilauta(alku);
+
+        lauta.siirto(new Siirto("e1c1"));
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {' ', ' ', 'k', 'r', ' ', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'Q', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', ' ', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, alku));
+    }
+
+    @Test
+    public void syonninPeruutusTest() {
+        char[][] alku = new char[][] {
+            {'r', ' ', ' ', ' ', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'Q', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', ' ', 'K', 'B', 'N', 'R' }
+        };
+        Pelilauta lauta = new Pelilauta(alku);
+
+        lauta.siirto(new Siirto("a5d2"));
+        assertTrue(vertaaLautaaOdotettuun(lauta, new char[][] {
+            {'r', ' ', ' ', ' ', 'k', 'b', 'n', 'r' }, 
+            {' ', 'p', 'p', 'Q', 'p', 'p', 'p', 'p' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'p', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ' }, 
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+            {'P', 'P', ' ', 'P', 'P', 'P', 'P', 'P' }, 
+            {'R', 'N', 'B', ' ', 'K', 'B', 'N', 'R' }
+        }));
+        lauta.peruutaSiirto();
+        assertTrue(vertaaLautaaOdotettuun(lauta, alku));
     }
 }

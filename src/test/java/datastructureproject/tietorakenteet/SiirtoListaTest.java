@@ -1,4 +1,4 @@
-package datastructureproject;
+package datastructureproject.tietorakenteet;
 
 import static org.junit.Assert.*;
 import java.lang.Math;
@@ -13,7 +13,7 @@ public class SiirtoListaTest {
         Siirto s = new Siirto("a2a3");
         Siirto s2 = new Siirto("a2a4");
 
-        SiirtoLista lista = new SiirtoLista();
+        Lista<Siirto> lista = new Lista<Siirto>();
         lista.add(s);
         lista.add(s2);
         assertEquals(2, lista.size());
@@ -24,7 +24,7 @@ public class SiirtoListaTest {
         Siirto s = new Siirto("a2a3");
         int koko = 24;
 
-        SiirtoLista lista = new SiirtoLista();
+        Lista<Siirto> lista = new Lista<Siirto>();
         for(int i = 0; i < koko; i++){
             lista.add(s);
         }
@@ -36,7 +36,7 @@ public class SiirtoListaTest {
         Siirto s = new Siirto("a2a3");
         int koko = (int)Math.pow((8*8), 3);
 
-        SiirtoLista lista = new SiirtoLista();
+        Lista<Siirto> lista = new Lista<Siirto>();
         for(int i = 0; i < koko; i++){
             lista.add(s);
         }
@@ -50,7 +50,7 @@ public class SiirtoListaTest {
         Siirto s = new Siirto(string1);
         Siirto s2 = new Siirto(string2);
 
-        SiirtoLista lista = new SiirtoLista();
+        Lista<Siirto> lista = new Lista<Siirto>();
         lista.add(s);
         lista.add(s2);
         assertEquals(string1, lista.get(0).getUCIString());
@@ -64,7 +64,7 @@ public class SiirtoListaTest {
         Siirto s = new Siirto(string1);
         Siirto s2 = new Siirto(string2);
 
-        SiirtoLista lista = new SiirtoLista();
+        Lista<Siirto> lista = new Lista<Siirto>();
         lista.add(s);
         for(int i = 0; i < 1999; i++){
             lista.add(s2);
@@ -78,8 +78,8 @@ public class SiirtoListaTest {
 
     @Test
     public void listanLisaysListaan(){
-        SiirtoLista lista1 = new SiirtoLista();
-        SiirtoLista lista2 = new SiirtoLista();
+        Lista<Siirto> lista1 = new Lista<Siirto>();
+        Lista<Siirto> lista2 = new Lista<Siirto>();
 
         lista1.add(new Siirto("b1a2"));
         lista1.add(new Siirto("b1a2"));

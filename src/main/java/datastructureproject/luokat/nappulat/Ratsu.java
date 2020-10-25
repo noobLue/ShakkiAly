@@ -7,7 +7,7 @@ import datastructureproject.luokat.tietorakenteet.*;
 public class Ratsu extends Nappula {
 
     public Ratsu(Side puoli, Ruutu ruutu) {
-        super('n', puoli, ruutu, 2);
+        super('n', puoli, ruutu);
     }
 
     public Nappula kopioi() {
@@ -15,8 +15,8 @@ public class Ratsu extends Nappula {
     }
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-        SiirtoLista siirrot = new SiirtoLista();
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
+        Lista<Siirto> siirrot = new Lista<>();
         int[][] siirrotArr = new int[][] {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
 
         for (int[] pari: siirrotArr) {
@@ -29,7 +29,6 @@ public class Ratsu extends Nappula {
                 siirrot.add(new Siirto(getX(), getY(), ruutu.getX(), ruutu.getY()));
             }
         }
-       
 
         return siirrot;
     }

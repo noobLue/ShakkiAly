@@ -4,7 +4,7 @@ Projektin tarkoituksena on luoda shakkiin tekoäly joka käyttää tekniikkana a
 
 ## Algoritmit ja tietorakenteet
 
-Tekoälyn logiikka tulee pyörimaan minmax algoritmilla, lisäyksenä alpha-beta karsinta. Valitsin tämän, sillä se soveltuu hyvin kaksinpeleihin suunnatuille tekoälyille.
+Tekoälyn logiikka tulee pyörimaan MiniMax algoritmilla (NegaMax variaatio), lisäyksenä alpha-beta karsinta. Valitsin tämän, sillä se soveltuu hyvin kaksinpeleihin suunnatuille tekoälyille.
 
 Tarvitsen tietorakenteen shakkilaudan tilan säilyttämiseen. Tarvitsen myös tietorakenteet, jotka sisältävät pelinappuloiden tiedot.
 
@@ -14,7 +14,7 @@ Projektin tekoäly kommunikoi [projektipohjassa](https://github.com/TiraLabra/ch
 
 ## Aikavaativuus ja tilavaativuus
 
-Huonoimmassa tapauksessa aikavaativuus on **O(b^d)**, parhaassa tapauksessa **O(sqrt(b^d))**, jossa b kuvaa haarautuvuutta (vuoron mahdolliset siirrot) ja d haun syvyyttä. [[1]](##Lähteet)
+Alpha-beta karsinnan kanssa huonoimman tapauksen aikavaativuus on **O(b^d)**, parhaan tapauksen taas **O(sqrt(b^d))**, jossa b kuvaa haarautuvuutta (vuoron mahdolliset siirrot) ja d haun syvyyttä. [[1]](##Lähteet)
 
 Tilaa tarvitaan pelitilojen muistissa pitämiseen. Minimaxia suoritettaessa tarvitaan tiettynä hetkenä aina maksimissaan yhden polun verran tilaa, eli shakkilaudan koko kerrottuna polun syvyydellä. Eli O(sd), jossa s on shakkilaudan viemä tila ja d on polun syvyys.
 

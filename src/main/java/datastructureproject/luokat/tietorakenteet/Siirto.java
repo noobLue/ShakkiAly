@@ -18,17 +18,32 @@ public class Siirto {
      * @param kohde siirron kohderuutu
      */
     public Siirto(Ruutu alku, Ruutu kohde) {
-        this.alku = alku;
-        this.kohde = kohde;
+        this.alku = alku.kopioi();
+        this.kohde = kohde.kopioi();
         this.ylennys = EI_YLENNYSTA;
     }
 
+    /**
+     * 
+     * @param x ensimmaisen ruudun x koordinaatti
+     * @param y ensimmaisen ruudun y koordinaatti
+     * @param x2 toisen ruudun x koordinaatti
+     * @param y2 toisen ruudun y koordinaatti
+     */
     public Siirto(int x, int y, int x2, int y2) {
         this.alku = new Ruutu(x, y);
         this.kohde = new Ruutu(x2, y2);
         this.ylennys = EI_YLENNYSTA;
     }
     
+    /**
+     * 
+     * @param x ensimmaisen ruudun x koordinaatti
+     * @param y ensimmaisen ruudun y koordinaatti
+     * @param x2 toisen ruudun x koordinaatti
+     * @param y2 toisen ruudun y koordinaatti
+     * @param ylennys sotilaan ylennys merkki
+     */
     public Siirto(int x, int y, int x2, int y2, char ylennys) {
         this.alku = new Ruutu(x, y);
         this.kohde = new Ruutu(x2, y2);
@@ -42,8 +57,8 @@ public class Siirto {
      * @param ylennys mahdollisen ylennyksen merkki UCI-formaatissa
      */
     public Siirto(Ruutu alku, Ruutu kohde, char ylennys) {
-        this.alku = alku;
-        this.kohde = kohde;
+        this.alku = alku.kopioi();
+        this.kohde = kohde.kopioi();
         this.ylennys = ylennys;
     }
 

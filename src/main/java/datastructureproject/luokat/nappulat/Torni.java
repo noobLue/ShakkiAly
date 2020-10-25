@@ -10,14 +10,15 @@ public class Torni extends Nappula {
     };
 
     public Torni(Side puoli, Ruutu ruutu) {
-        super('r', puoli, ruutu, 3);
+        super('r', puoli, ruutu);
     }
 
     public Nappula kopioi() {
         return new Torni(getPuoli(), getRuutu().kopioi());
     }
 
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+    @Override
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
         return generoiSuoratSiirrot(lauta, suunnat);
     }
 

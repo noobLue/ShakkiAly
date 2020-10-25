@@ -6,7 +6,7 @@ import datastructureproject.luokat.tietorakenteet.*;
 
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
-        super('p', puoli, ruutu, 1);
+        super('p', puoli, ruutu);
     }
 
     public Nappula kopioi() {
@@ -14,8 +14,8 @@ public class Sotilas extends Nappula {
     }
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-        SiirtoLista siirrot = new SiirtoLista();
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
+        Lista<Siirto> siirrot = new Lista<>();
 
         //Liiku yksi eteen
         Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));
@@ -47,14 +47,19 @@ public class Sotilas extends Nappula {
             }
             Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];
             if (vNappula != null && vNappula.getPuoli() != this.getPuoli()) {
-                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));
+
+                boolean ylennys = vRuutu.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);
+                if (ylennys) {
+                    //Lisätään listaan kuningattareksi sekä ratsuksi ylennys, 
+                    //torni ja lähetti olisivat turhia kuningattareen verrattuna.
+                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi(), 'q'));
+                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi(), 'n'));
+                } else {
+                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi()));
+                }
             }
         }
 
-        //Ohestalyönti
-        //Ei (vielä?) implementoitu
-
-        
         return siirrot;
     }
 

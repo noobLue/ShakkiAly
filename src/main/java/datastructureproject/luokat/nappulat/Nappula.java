@@ -12,18 +12,17 @@ public abstract class Nappula {
     private Ruutu ruutu;
     protected Side puoli;
     protected char merkki;
-    protected int arvo;
 
     /**
      * 
+     * @param merkki tata nappulaa kuvaava merkki
      * @param puoli kumpi pelaaja omistaa taman nappulan
      * @param ruutu nappulan sijainti pelilaudalla
      */
-    public Nappula(char merkki, Side puoli, Ruutu ruutu, int arvo) {
+    public Nappula(char merkki, Side puoli, Ruutu ruutu) {
         this.merkki = merkki;
         this.puoli = puoli;
         this.ruutu = ruutu;
-        this.arvo = arvo;
     }
 
     public Side getPuoli() {
@@ -36,6 +35,10 @@ public abstract class Nappula {
 
     public int getY() {
         return ruutu.getY();
+    }
+
+    public void setRuutu(Ruutu r) {
+        this.ruutu = r;
     }
 
     public void setRuutu(int x, int y) {
@@ -63,7 +66,7 @@ public abstract class Nappula {
      * @param lauta pelilaudan tilanne
      * @return mahdolliset siirrot tässä pelitilanteessa
      */
-    public abstract SiirtoLista generoiSiirrot(Pelilauta lauta);
+    public abstract Lista<Siirto> generoiSiirrot(Pelilauta lauta);
 
     /**
      * Palauttaa nappulan sallitut siirrot, kun se saa liikkua tiettyihin suuntiin loputtomasti. 
@@ -74,27 +77,28 @@ public abstract class Nappula {
      * @param suunnat suunnat joihin nappula saa liikkua
      * @return lista siirroista, joita nappula saa liikkua annettuihin suuntiin
      */
-    protected SiirtoLista generoiSuoratSiirrot(Pelilauta lauta, int[][] suunnat) {
-        SiirtoLista siirrot = new SiirtoLista();
+    protected Lista<Siirto> generoiSuoratSiirrot(Pelilauta lauta, int[][] suunnat) {
+        Lista<Siirto> siirrot = new Lista<>();
         for (int[] pari: suunnat) {
-            Ruutu ruutu = getRuutu().kopioi();
-            ruutu.addX(pari[0]);
-            ruutu.addY(pari[1]);
-            while (ruutu.olenLaudalla(lauta)) {
-                Nappula n = lauta.getNappula(ruutu);
+            Ruutu r = getRuutu().kopioi();
+            r.addX(pari[0]);
+            r.addY(pari[1]);
+            while (r.olenLaudalla(lauta)) {
+                Nappula n = lauta.getNappula(r);
                 if (n == null) {
-                    siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));
+                    siirrot.add(new Siirto(getRuutu().kopioi(), r.kopioi()));
                 } else {
                     if (n.getPuoli() != getPuoli()) {
-                        siirrot.add(new Siirto(getRuutu(), ruutu.kopioi()));
+                        siirrot.add(new Siirto(getRuutu().kopioi(), r.kopioi()));
                     }
                     break;
                 }
                 
-                ruutu.addX(pari[0]);
-                ruutu.addY(pari[1]);
+                r.addX(pari[0]);
+                r.addY(pari[1]);
             }
         }
+
         return siirrot;
     }
 
@@ -111,7 +115,7 @@ public abstract class Nappula {
      * @return onko tämä nappula uhattuna tässä tilanteessa
      */
     public boolean olenUhattuna(Pelilauta lauta) {
-        SiirtoLista vastustajanLiikkeet = lauta.generoiSiirrot(ShakkiApu.vastustaja(getPuoli()));
+        Lista<Siirto> vastustajanLiikkeet = lauta.generoiSiirrot(ShakkiApu.vastustaja(getPuoli()));
 
         for (int i = 0; i < vastustajanLiikkeet.size(); i++) {
             Siirto s = vastustajanLiikkeet.get(i);
@@ -121,14 +125,6 @@ public abstract class Nappula {
         }
 
         return false;
-    }
-
-    /**
-     * 
-     * @return palauttaa nappulalle määritetyn arvon, jota käytetään pelitilanteen arvioinnissa (heurestiikassa).
-     */
-    public int getArvo() {
-        return arvo;
     }
 
     public char getMerkki() {

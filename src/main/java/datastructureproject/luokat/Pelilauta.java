@@ -12,7 +12,6 @@ import datastructureproject.luokat.nappulat.Torni;
 import datastructureproject.luokat.tietorakenteet.*;
 
 public class Pelilauta {
-
     /** 
      * Laudan alkutilan esitys. Versaalit kuvaavat mustan pelaajan nappuloita.
      * r = torni, n = ratsu, b = lähetti, q = kuningatar, k = kuningas, p = sotilas
@@ -20,21 +19,13 @@ public class Pelilauta {
     public static final char[][] ALKUTILANNE = new char[][] {
         {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
         {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
         {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' }, 
         {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
     };
-
-    /**
-     * Palauttaa laudan leveyden / pituuden
-     * @return laudan koko
-     */
-    public int getKoko() {
-        return lauta.length;
-    }
 
     /**
      * Kuvaa shakkilaudan tilannetta
@@ -42,6 +33,9 @@ public class Pelilauta {
     public final Nappula[][] lauta;
     private Ruutu valkoinenKuningas;
     private Ruutu mustaKuningas;
+
+
+    private Lista<Lista<Tupla<Ruutu, Nappula>>> historia = new Lista<>();
 
     /**
      * Luo uuden pelilaudan shakin aloitustilanteelle
@@ -52,7 +46,7 @@ public class Pelilauta {
     }
 
     /**
-     * Luo uuden pelilaudan
+     * Luo uuden pelilaudan testitilanteen tarkastelua varten
      * @param templaatti pelin alkutilanne tai keskeneräisen pelin tilanne
      */
     public Pelilauta(char[][] templaatti) {
@@ -60,25 +54,13 @@ public class Pelilauta {
         alusta(templaatti);
     }
 
-    /**
-     * Tekee syväkopion aiemmasta pelilaudan tilanteesta.
-     * 
-     * @param edellinen edellinen laudan tilanne
-     */
-    public Pelilauta(Pelilauta edellinen) {
-        lauta = new Nappula[edellinen.lauta.length][edellinen.lauta[0].length];
-        if (edellinen.valkoinenKuningas != null && edellinen.mustaKuningas != null) {
-            valkoinenKuningas = edellinen.valkoinenKuningas.kopioi();
-            mustaKuningas = edellinen.mustaKuningas.kopioi();
-        }
-
-        for (int y = 0; y < edellinen.lauta.length; y++) {
-            for (int x = 0; x < edellinen.lauta[y].length; x++) {
-                if (edellinen.lauta[y][x] == null) {
-                    lauta[y][x] = null;
-                } else {
-                    lauta[y][x] = edellinen.lauta[y][x].kopioi();
-                }
+    private void talletaKuningasMuistiin(Nappula n, Ruutu kohde) {
+        //Tallennetaan kuninkaan sijainti muistiin
+        if (n instanceof Kuningas) {
+            if (n.getPuoli() == Side.WHITE) { 
+                valkoinenKuningas = kohde.kopioi(); 
+            } else {
+                mustaKuningas = kohde.kopioi(); 
             }
         }
     }
@@ -88,17 +70,24 @@ public class Pelilauta {
      * 
      * @param siirto
      */
-    private void siirto(Siirto siirto) {
+    public void siirto(Siirto siirto) {
         Nappula siirrettava = getNappula(siirto.getAlku());
+        Lista<Tupla<Ruutu, Nappula>> historiaSiirrot = new Lista<>();
+
+        //talleta liikkeen alkuruutu
+        historiaSiirrot.add(new Tupla<>(siirto.getAlku().kopioi(), siirrettava.kopioi()));
+        //talleta liikkeen kohderuutu
+        if (getNappula(siirto.getKohde()) != null) {
+            historiaSiirrot.add(new Tupla<>(siirto.getKohde().kopioi(), getNappula(siirto.getKohde()).kopioi()));
+        } else {
+            historiaSiirrot.add(new Tupla<>(siirto.getKohde().kopioi(), (Nappula) null));
+        }
+
         nollaaRuutu(siirto.getAlku());
 
         //Tallennetaan kuninkaan sijainti muistiin
         if (siirrettava instanceof Kuningas) {
-            if (siirrettava.getPuoli() == Side.WHITE) { 
-                valkoinenKuningas = siirto.getKohde(); 
-            } else {
-                mustaKuningas = siirto.getKohde(); 
-            }
+            talletaKuningasMuistiin(siirrettava, siirto.getKohde());
         }
 
         //Erikoissiirrot:
@@ -124,28 +113,40 @@ public class Pelilauta {
             // liikkeitä, eikä itse tehdä tornituksia
             // Jos tornitukset sisälletään omaan liikehdintään, tulee silloin tarkastaa ettei torni tule uhatuksi
 
+            //Talletetaan tornin alkuruutu historiaan
+            historiaSiirrot.add(new Tupla<>(torni.getRuutu().kopioi(), torni.kopioi()));
+
             //Siirretään torni 
             lauta[siirto.getAlku().getY()][torniX] = null;
             torni.setRuutu(torniUusiX, siirto.getAlku().getY());
             lauta[siirto.getAlku().getY()][torniUusiX] = torni;
+
+            //Talletetaan tornin kohderuutu historiaan
+            historiaSiirrot.add(new Tupla<>(torni.getRuutu().kopioi(), (Nappula) null));
         }
 
         //https://fi.wikipedia.org/wiki/Ohestaly%C3%B6nti
-        //Prosessoi Ohestalyönit - liike, olettaen ettei vastustaja tee laittomia liikkeitä
+        //Prosessoi Ohestalyönti liike, olettaen ettei vastustaja tee laittomia liikkeitä
         if (siirronPituusY >= 1
                 && siirronPituusX >= 1
                 && siirrettava instanceof Sotilas
                 && getNappula(siirto.getKohde()) == null) {
             int uusiY = siirto.getKohde().getEteenpainY(siirrettava.getPuoli(), -1);
-            lauta[uusiY][siirto.getKohde().getX()] = null;
+            Ruutu ohestaLyoty = new Ruutu(siirto.getKohde().getX(), uusiY);
+
+            //Talletetaan ohestalyöty nappula historiaan
+            historiaSiirrot.add(new Tupla<>(ohestaLyoty.kopioi(), getNappula(ohestaLyoty).kopioi()));
+
+            lauta[ohestaLyoty.getY()][ohestaLyoty.getX()] = null;
         }
 
+        
         //https://fi.wikipedia.org/wiki/Sotilas_(shakki)
         //Prosessoi sotilaan ylennys
         if (siirrettava instanceof Sotilas && siirto.onYlennys()) {
 
             Side puoli = siirrettava.getPuoli();
-            Ruutu ruutu = siirto.getKohde();
+            Ruutu ruutu = siirto.getKohde().kopioi();
             if (siirto.getYlennys() == 'q') {
                 siirrettava = new Kuningatar(puoli, ruutu);
             } else if (siirto.getYlennys() == 'n') {
@@ -158,11 +159,36 @@ public class Pelilauta {
                 throw new Error("Joku yritti ylentää sotilaan sallimattomaksi nappulaksi (" 
                     + siirto.getYlennys() + ")");
             }
-            lauta[siirto.getKohde().getY()][siirto.getKohde().getX()] = siirrettava;
+            
         } 
 
         //Sijoittaa nappulan laudalle ja päivittää nappulan oman sijainnin tiedon
-        sijoitaNappula(siirrettava, siirto.getKohde());
+        sijoitaNappula(siirrettava, siirto.getKohde().kopioi());
+
+        //Lisätään tämän siirron vaikutukset historialistaan
+        historia.add(historiaSiirrot);
+    }
+
+    /**
+     * Peruutetaan viimeksi toteutettu siirto (toimii vastakohtana siirto(Siirto s) funktiolle)
+     */
+    public void peruutaSiirto() {
+        Lista<Tupla<Ruutu, Nappula>> historiaLista = historia.pop();
+
+        for (int i = 0; i < historiaLista.size(); i++) {
+            Tupla<Ruutu, Nappula> hs = historiaLista.get(i);
+
+            Ruutu r = hs.getEka();
+            Nappula n = hs.getToka();
+            if (n != null) {
+                n.setRuutu(r);
+            }
+            lauta[r.getY()][r.getX()] = n;
+
+            if (n instanceof Kuningas) {
+                talletaKuningasMuistiin(n, r);
+            }
+        }
     }
 
     /**
@@ -177,18 +203,6 @@ public class Pelilauta {
     }
 
     /**
-     * Toteuttaa syötteessä annetun siirron pelilaudalle
-     * 
-     * @param siirto Siirto joka halutaan tehdä
-     * @return Uusi pelilaudan tilanne siirron jälkeen
-     */
-    public Pelilauta toteutaSiirto(Siirto siirto) {
-        Pelilauta lautaUusi = new Pelilauta(this);
-        lautaUusi.siirto(siirto);
-        return lautaUusi;
-    }
-
-    /**
      * 
      * @param x koordinaatti laudalla
      * @param y koordinaatti laudalla
@@ -198,10 +212,19 @@ public class Pelilauta {
         return lauta[y][x];
     }
 
+    /**
+     * 
+     * @param ruutu ruutu jossa oleva nappula halutaan loytaa
+     * @return nappulan joka on ruudussa
+     */
     public Nappula getNappula(Ruutu ruutu) {
         return lauta[ruutu.getY()][ruutu.getX()];
     }
 
+    /**
+     * Poistaa ruudussa olevan nappulan
+     * @param ruutu ruutu, jossa oleva nappula halutaan poistaa
+     */
     public void nollaaRuutu(Ruutu ruutu) {
         lauta[ruutu.getY()][ruutu.getX()] = null;
     }
@@ -224,14 +247,15 @@ public class Pelilauta {
      * @param puoli kumman pelaajan vuoro on. 
      * @return listan siirroista jotka pelaaja voi tehdä. 
      */
-    public SiirtoLista generoiSiirrot(Side puoli) {
-        SiirtoLista siirrot = new SiirtoLista();
+    public Lista<Siirto> generoiSiirrot(Side puoli) {
+        Lista<Siirto> siirrot = new Lista<>();
         
         for (int y = 0; y < getKoko(); y++) {
             for (int x = 0; x < getKoko(); x++) {
                 Nappula n = lauta[y][x];
                 if (n != null && n.getPuoli() == puoli) {
-                    siirrot.addAll(n.generoiSiirrot(this));
+                    Lista<Siirto> tSiirrot = n.generoiSiirrot(this);
+                    siirrot.addAll(tSiirrot);
                 }
             }
         }
@@ -291,5 +315,36 @@ public class Pelilauta {
 
             }
         }
+    }
+
+
+    /**
+     * Palauttaa laudan leveyden / pituuden
+     * @return laudan koko
+     */
+    public int getKoko() {
+        return lauta.length;
+    }
+
+    public boolean onShakissa(Side puoli) {
+        Kuningas k = etsiKuningas(puoli);
+        return k == null || k.olenUhattuna(this);
+    }
+
+    public boolean onMatissa(Side vuoro) {
+        if (!onShakissa(vuoro)) {
+            return false;
+        }
+        Lista<Siirto> siirrot = generoiSiirrot(vuoro);
+
+        for (int i = 0; i < siirrot.size(); i++) {
+            siirto(siirrot.get(i));
+            if (!onShakissa(vuoro)) {
+                return false;
+            }
+            peruutaSiirto();
+        }
+
+        return true;
     }
 }

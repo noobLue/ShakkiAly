@@ -24,7 +24,7 @@ public class Ruutu {
      * 
      * @param pos UCI protokollan mukainen representaatio shakkiruudusta
      */
-    public Ruutu(final String pos) { //ex. "a1"
+    public Ruutu(final String pos) {
         x = (int) pos.toLowerCase().charAt(0) - (int) alkuMerkki;
         y = Integer.parseInt(pos.substring(1, 2)) - 1;
     }

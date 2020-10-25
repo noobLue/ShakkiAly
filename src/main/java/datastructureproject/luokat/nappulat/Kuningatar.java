@@ -11,9 +11,8 @@ public class Kuningatar extends Nappula {
         {0, 1}, {0, -1}, {1, 0}, {-1, 0}    //Vaakarivit
     };
 
-
     public Kuningatar(Side puoli, Ruutu ruutu) {
-        super('q', puoli, ruutu, 8);
+        super('q', puoli, ruutu);
     }
 
     public Nappula kopioi() {
@@ -22,7 +21,7 @@ public class Kuningatar extends Nappula {
 
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+    public Lista<Siirto> generoiSiirrot(Pelilauta lauta) {
         return generoiSuoratSiirrot(lauta, suunnat);
     }
 

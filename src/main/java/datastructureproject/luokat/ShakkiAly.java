@@ -5,22 +5,24 @@ import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.apulaiset.Matikka;
 import datastructureproject.luokat.apulaiset.ShakkiApu;
+import datastructureproject.luokat.evaluointi.Evaluaattori;
+import datastructureproject.luokat.evaluointi.OmaEvaluaattori;
 import datastructureproject.luokat.tietorakenteet.*;
 import datastructureproject.luokat.nappulat.Kuningas;
-import datastructureproject.luokat.nappulat.Nappula;
 
 public class ShakkiAly implements ChessBot {
-    public static final String LUOVUTUS = "luovutus";
+    public static final String LUOVUTUS = null;
+    private Evaluaattori evaluaattori;
+
     private int syvyysMax;
     private boolean alphaBeta;
 
-    private Pelilauta lauta;
-    private Siirto viimeSiirto;
+    private Pelilauta pelilauta;
     
     private long haarat = 0;
 
     public ShakkiAly(boolean alphaBeta) {
-        alusta(alphaBeta, 4);
+        alusta(alphaBeta, 4); 
     }
 
     public ShakkiAly(boolean alphaBeta, int syvyysMax) {
@@ -28,10 +30,10 @@ public class ShakkiAly implements ChessBot {
     }
 
     private void alusta(boolean alphaBeta, int syvyysMax) {
-        this.lauta = new Pelilauta();
+        evaluaattori = new OmaEvaluaattori();
+        this.pelilauta = new Pelilauta();
         this.alphaBeta = alphaBeta;
         this.syvyysMax = syvyysMax;
-        viimeSiirto = null;
     }
 
     /**
@@ -67,22 +69,20 @@ public class ShakkiAly implements ChessBot {
     @Override
     public String nextMove(GameState gamestate) {
         //Luetaan koko pelitilanne laudalle, esim. keskeytyneen pelin vuoksi
-        this.lauta = new Pelilauta();
+        this.pelilauta = new Pelilauta();
         for (String siirto: gamestate.moves) {
-            lauta = lauta.toteutaSiirto(new Siirto(siirto));
+            pelilauta.siirto(new Siirto(siirto));
         }
 
         haarat = 0;
         // Pistetään MiniMax algoritmi pyörimään
-        ArvoSiirto arvoSiirto = maxArvo(lauta, gamestate.playing, Integer.MIN_VALUE, Integer.MAX_VALUE, syvyysMax);
-        if (arvoSiirto.getSiirto() == null) {
+        Tupla<Double, Siirto> arvoSiirto = negaMax(pelilauta, gamestate.playing);
+        if (arvoSiirto.getToka() == null) {
             return LUOVUTUS;
         }
-        
-        //Toteutetaan siirto omalla laudalla
-        lauta = lauta.toteutaSiirto(arvoSiirto.getSiirto());
+
         //Palautetaan siirto rajapinnan mukaan
-        return arvoSiirto.getSiirto().getUCIString();
+        return arvoSiirto.getToka().getUCIString();
     }
 
     /**
@@ -92,113 +92,83 @@ public class ShakkiAly implements ChessBot {
      * @param puoli pelaaja jonka vuoro on
      * @return listan siirroista josta on filtteröity pois shakkitilanteen säilyttävät / aiheuttavat siirrot
      */
-    public SiirtoLista vainSallitut(Pelilauta lauta, SiirtoLista kaikkiSiirrot, Side puoli) {
-        SiirtoLista siirrot = new SiirtoLista();
+    public Lista<Siirto> vainSallitut(Pelilauta lauta, Lista<Siirto> kaikkiSiirrot, Side puoli) {
+        Lista<Siirto> siirrot = new Lista<>();
 
         for (int i = 0; i < kaikkiSiirrot.size(); i++) {
             Siirto siirto = kaikkiSiirrot.get(i);
-            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);
-            Kuningas k = uusiLauta.etsiKuningas(puoli);
-            if (k != null && !(k.olenUhattuna(uusiLauta))) {
+
+
+            lauta.siirto(siirto);
+            Kuningas k = lauta.etsiKuningas(puoli);
+            if (k != null && !(k.olenUhattuna(lauta))) {
                 siirrot.add(siirto);
             }
+            lauta.peruutaSiirto();
         }
 
         return siirrot;
     }
 
+    public static final double MAX = 1_000_000d;
+    public static final double MIN = -MAX;
+    public static final double DELTA = 0.0001d;
+
     /**
-     * Simuloidaan omaa vuoroa minmaxissa
+     * Aloitetaan rekursiivinen negaMax algoritmi
      * 
      * @param lauta tamanhetkinen pelitilanne
-     * @param puoli max-pelaajan puoli
+     * @param vuoro kumman pelaajan siirto halutaan etsiä
+     * @return 
+     */
+    public Tupla<Double, Siirto> negaMax(Pelilauta lauta, Side vuoro) {
+        return negaMax(lauta, vuoro, MIN, MAX, syvyysMax);
+    } 
+
+    /**
+     * MiniMaxin yksi rekursio
+     * 
+     * @param lauta tamanhetkinen pelitilanne
+     * @param vuoro kumman vuoro
      * @param alpha alphabeta karsinnan alpha-arvo
      * @param beta alphabeta karsinnan beta-arvo
      * @param syvyys syvyys jota tarkastellaan pelipuussa
-     * @return max-pelaajan valitseman haaran 'arvo'
+     * @return 
      */
-    public ArvoSiirto maxArvo(Pelilauta lauta, Side puoli, int alpha, int beta, int syvyys) {
-        SiirtoLista siirrot;
-        if (syvyys <= 0 || (siirrot = vainSallitut(lauta, lauta.generoiSiirrot(puoli), puoli)).isEmpty()) {
-            return new ArvoSiirto(laudanArvo(lauta, puoli), null);
+    private Tupla<Double, Siirto> negaMax(Pelilauta lauta, Side vuoro, double alpha, double beta, int syvyys) {
+        Lista<Siirto> siirrot = lauta.generoiSiirrot(vuoro);
+        siirrot = vainSallitut(lauta, siirrot, vuoro);
+        if (siirrot.size() == 0) {
+            return new Tupla<>(lauta.onShakissa(vuoro) ? MIN - syvyys : 0, null);
         }
-        ArvoSiirto maxinSiirto = new ArvoSiirto(Integer.MIN_VALUE, null);
+
+        if (syvyys <= 0) {
+            double laudanArvo = evaluaattori.getLaudanArvo(lauta, vuoro);
+            return new Tupla<>(laudanArvo, null);
+        }
+        
+        Tupla<Double, Siirto> parasSiirto = new Tupla<>(MIN, null);
         for (int i = 0; i < siirrot.size(); i++) {
             haarat++;
             Siirto siirto = siirrot.get(i);
-            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);
-            ArvoSiirto minninSiirto = minArvo(uusiLauta, ShakkiApu.vastustaja(puoli), alpha, beta, syvyys - 1);
+            lauta.siirto(siirto);
+            Tupla<Double, Siirto> vastustajanSiirto = negaMax(lauta, ShakkiApu.vastustaja(vuoro), -beta, -alpha, syvyys - 1);
 
-            //Päivitetään maxin parasta siirtoa, jos tämä haara on johtanut minnille huonomman arvon kuin aiemmassa
-            if (maxinSiirto.getArvo() < minninSiirto.getArvo()) {
-                maxinSiirto.set(minninSiirto.getArvo(), siirto);
+            //Päivitetään tämän pelaajan parasta siirtoa, 
+            //jos tämä haara on johtanut toiselle pelaajalle huonomman arvon kuin aiemmassa
+            if (-vastustajanSiirto.getEka() > parasSiirto.getEka()) {
+                parasSiirto.set(-vastustajanSiirto.getEka(), siirto);
             }
+            lauta.peruutaSiirto();
 
-            alpha = Matikka.maksimi(alpha, minninSiirto.getArvo());
+            alpha = Matikka.maksimi(alpha, parasSiirto.getEka());
             if (alphaBeta && alpha >= beta) {
-                return maxinSiirto;
+                break;
             }
         }
 
-        return maxinSiirto;
+        return parasSiirto;
     }
 
-    /**
-     * Simuloidaan vastustajan vuoroa minmaxissa
-     * 
-     * @param lauta tamanhetkinen pelitilanne
-     * @param puoli min-pelaajan puoli
-     * @param alpha alphabeta karsinnan alpha-arvo
-     * @param beta alphabeta karsinnan beta-arvo
-     * @param syvyys syvyys jota tarkastellaan pelipuussa
-     * @return min-pelaajan valitseman haaran 'arvo'
-     */
-    public ArvoSiirto minArvo(Pelilauta lauta, Side puoli, int alpha, int beta, int syvyys) {
-        Side vastustajanPuoli = ShakkiApu.vastustaja(puoli);
-        SiirtoLista siirrot;
-        if (syvyys <= 0 || (siirrot = vainSallitut(lauta, lauta.generoiSiirrot(puoli), puoli)).isEmpty()) {
-            return new ArvoSiirto(laudanArvo(lauta, puoli), null);
-        }
 
-        ArvoSiirto minninSiirto = new ArvoSiirto(Integer.MAX_VALUE, null);
-        for (int i = 0; i < siirrot.size(); i++) {
-            haarat++;
-            Siirto siirto = siirrot.get(i);
-            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);
-            ArvoSiirto maxinSiirto = maxArvo(uusiLauta, vastustajanPuoli, alpha, beta, syvyys - 1);
-
-            //Päivitetään minnin parasta siirtoa, jos tämä haara on johtanut maxille huonomman arvon kuin aiemmassa
-            if (minninSiirto.getArvo() > maxinSiirto.getArvo()) {
-                minninSiirto.set(maxinSiirto.getArvo(), siirto);
-            }
-
-            beta = Matikka.minimi(beta, maxinSiirto.getArvo());
-            if (alphaBeta && alpha >= beta) {
-                return minninSiirto;
-            }
-        }
-
-        return minninSiirto;
-    }
-
-    /**
-     * Heuristiikka jolla arvioidaan pelitilanteen 'arvoa' jommankumman puolen pelaajan kannalta
-     * 
-     * @param lauta pelilaudan tilanne, jota tarkastellaan
-     * @param puoli kumman puolen pelaajan kannalta tilannetta tarkastellaan
-     * @return laudan arvo kokonaislukuna. Jos arvo isompi kuin 0, niin tilanne on hyvä
-     */
-    public static int laudanArvo(Pelilauta lauta, Side puoli) {
-        int i = 0;
-        for (int y = 0; y < lauta.getKoko(); y++) {
-            for (int x = 0; x < lauta.getKoko(); x++) {
-                Nappula nappula = lauta.lauta[y][x];
-                if (nappula != null) {
-                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();
-                }
-            }
-        }
-        return i;
-    }
-    
 }

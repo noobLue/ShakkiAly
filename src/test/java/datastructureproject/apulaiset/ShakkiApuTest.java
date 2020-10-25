@@ -1,4 +1,4 @@
-package datastructureproject;
+package datastructureproject.apulaiset;
 
 import static org.junit.Assert.assertEquals;
 
