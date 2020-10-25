@@ -6,7 +6,7 @@ import datastructureproject.luokat.tietorakenteet.*;
 
 public class Sotilas extends Nappula {
     public Sotilas(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L9">        super('p', puoli, ruutu, 1);</span>
+<span class="fc" id="L9">        super('p', puoli, ruutu);</span>
 <span class="fc" id="L10">    }</span>
 
     public Nappula kopioi() {
@@ -14,8 +14,8 @@ public class Sotilas extends Nappula {
     }
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L18">        SiirtoLista siirrot = new SiirtoLista();</span>
+    public Lista&lt;Siirto&gt; generoiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L18">        Lista&lt;Siirto&gt; siirrot = new Lista&lt;&gt;();</span>
 
         //Liiku yksi eteen
 <span class="fc" id="L21">        Ruutu yksiEteen = new Ruutu(getX(), getEteenpainY(1));</span>
@@ -47,20 +47,25 @@ public class Sotilas extends Nappula {
             }
 <span class="fc" id="L48">            Nappula vNappula = lauta.lauta[vRuutu.getY()][vRuutu.getX()];</span>
 <span class="fc bfc" id="L49" title="All 4 branches covered.">            if (vNappula != null &amp;&amp; vNappula.getPuoli() != this.getPuoli()) {</span>
-<span class="fc" id="L50">                siirrot.add(new Siirto(getX(), getY(), vRuutu.getX(), vRuutu.getY()));</span>
+
+<span class="pc bpc" id="L51" title="1 of 4 branches missed.">                boolean ylennys = vRuutu.getY() == (getPuoli() == Side.WHITE ? lauta.getKoko() - 1 : 0);</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">                if (ylennys) {</span>
+                    //LisÃ¤tÃ¤Ã¤n listaan kuningattareksi sekÃ¤ ratsuksi ylennys, 
+                    //torni ja lÃ¤hetti olisivat turhia kuningattareen verrattuna.
+<span class="nc" id="L55">                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi(), 'q'));</span>
+<span class="nc" id="L56">                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi(), 'n'));</span>
+                } else {
+<span class="fc" id="L58">                    siirrot.add(new Siirto(getRuutu().kopioi(), vRuutu.kopioi()));</span>
+                }
             }
         }
 
-        //OhestalyÃ¶nti
-        //Ei (vielÃ¤?) implementoitu
-
-        
-<span class="fc" id="L58">        return siirrot;</span>
+<span class="fc" id="L63">        return siirrot;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L63">        return &quot;p&quot;;</span>
+<span class="nc" id="L68">        return &quot;p&quot;;</span>
     }
 
 }

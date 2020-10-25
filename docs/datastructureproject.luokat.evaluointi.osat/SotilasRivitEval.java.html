@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SotilasRivitEval.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.evaluointi.osat</a> &gt; <span class="el_source">SotilasRivitEval.java</span></div><h1>SotilasRivitEval.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.evaluointi.osat;
+
+import chess.model.Side;
+import datastructureproject.luokat.Pelilauta;
+import datastructureproject.luokat.nappulat.Nappula;
+import datastructureproject.luokat.nappulat.Sotilas;
+import datastructureproject.luokat.tietorakenteet.Lista;
+
+public class SotilasRivitEval implements OsaEvaluaattori {
+    private static final double PAINOARVO = 0.5d; 
+    private Side puoli;
+
+    private Lista&lt;Sotilas&gt; oSotilaat;
+    private Lista&lt;Sotilas&gt; vSotilaat;
+    private int[] oSotilasRivit;
+    private int[] vSotilasRivit;
+
+<span class="fc" id="L18">    public SotilasRivitEval(Side puoli) {</span>
+<span class="fc" id="L19">        oSotilaat = new Lista&lt;&gt;();</span>
+<span class="fc" id="L20">        vSotilaat = new Lista&lt;&gt;();</span>
+<span class="fc" id="L21">        oSotilasRivit = new int[Pelilauta.ALKUTILANNE.length];</span>
+<span class="fc" id="L22">        vSotilasRivit = new int[Pelilauta.ALKUTILANNE.length];</span>
+<span class="fc" id="L23">        this.puoli = puoli;</span>
+<span class="fc" id="L24">    }</span>
+
+    public void prosessoiNappula(Nappula n) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (n instanceof Sotilas) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (n.getPuoli() == puoli) {</span>
+<span class="fc" id="L29">                oSotilasRivit[n.getX()]++;</span>
+<span class="fc" id="L30">                oSotilaat.add((Sotilas) n);</span>
+            } else {
+<span class="fc" id="L32">                vSotilasRivit[n.getX()]++;</span>
+<span class="fc" id="L33">                vSotilaat.add((Sotilas) n);</span>
+            }
+        }
+<span class="fc" id="L36">    }</span>
+
+    private double getArvo(int[] rivit, Lista&lt;Sotilas&gt; sotilaat) {
+<span class="fc" id="L39">        double d = 0d;</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int x = 0; x &lt; rivit.length; x++) {</span>
+            //Tuplattu sotilas - Katsotaan onko samalla rivillÃ¤ useampi saman puolen sotilas
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (rivit[x] &gt;= 2) {</span>
+<span class="fc" id="L44">                d -= rivit[x] / 2d * PAINOARVO; // tuplattu: -0.5, triplattu: -0.75, quadruplattu: -1</span>
+            }
+        }
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (int i = 0; i &lt; sotilaat.size(); i++) {</span>
+<span class="fc" id="L49">            Sotilas sotilas = sotilaat.get(i);</span>
+<span class="fc" id="L50">            int x = sotilas.getX();</span>
+            
+            //YksinÃ¤inen sotilas - Katsotaan onko viereisillÃ¤ riveillÃ¤ sotilaalle kavereita
+<span class="fc" id="L53">            int kaveriAste = 0;</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">            if (x &gt; 0 &amp;&amp; rivit[x - 1] &gt; 0) {</span>
+<span class="fc" id="L55">                kaveriAste++;</span>
+            }
+<span class="fc bfc" id="L57" title="All 4 branches covered.">            if (x &lt; oSotilasRivit.length - 1 &amp;&amp; rivit[x + 1] &gt; 0) {</span>
+<span class="fc" id="L58">                kaveriAste++;</span>
+            }
+
+            //Jos sotilaalla ei ole kavereita, pienennetÃ¤Ã¤n arvoa kertoimen verran
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (kaveriAste == 0) {</span>
+<span class="fc" id="L63">                d -= PAINOARVO;</span>
+            }
+        }
+
+<span class="fc" id="L67">        return d;</span>
+    }
+
+    public double getArvo() {
+<span class="fc" id="L71">        return getArvo(oSotilasRivit, oSotilaat) - getArvo(vSotilasRivit, vSotilaat);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

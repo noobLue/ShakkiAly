@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NappulaParitEval.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.evaluointi.osat</a> &gt; <span class="el_source">NappulaParitEval.java</span></div><h1>NappulaParitEval.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.evaluointi.osat;
+
+import chess.model.Side;
+import datastructureproject.luokat.nappulat.Lahetti;
+import datastructureproject.luokat.nappulat.Nappula;
+import datastructureproject.luokat.nappulat.Ratsu;
+import datastructureproject.luokat.nappulat.Torni;
+
+public class NappulaParitEval implements OsaEvaluaattori {
+    private static final double ARVOKERROIN = 0.1d; 
+    private Side puoli;
+
+    private int oTornit;
+    private int oRatsut;
+    private int oLahetit;
+    private int vTornit;
+    private int vRatsut;
+    private int vLahetit;
+
+<span class="fc" id="L20">    public NappulaParitEval(Side puoli) {</span>
+<span class="fc" id="L21">        this.puoli = puoli;</span>
+
+<span class="fc" id="L23">        this.oTornit = 0;</span>
+<span class="fc" id="L24">        this.oRatsut = 0;</span>
+<span class="fc" id="L25">        this.oLahetit = 0;</span>
+
+<span class="fc" id="L27">        this.vTornit = 0;</span>
+<span class="fc" id="L28">        this.vRatsut = 0;</span>
+<span class="fc" id="L29">        this.vLahetit = 0;</span>
+<span class="fc" id="L30">    }</span>
+
+    private void oProsessointi(Nappula nappula) {
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (nappula instanceof Torni) {</span>
+<span class="fc" id="L34">            oTornit++;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        } else if (nappula instanceof Ratsu) {</span>
+<span class="fc" id="L36">            oRatsut++;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        } else if (nappula instanceof Lahetti) {</span>
+<span class="fc" id="L38">            oLahetit++;</span>
+        }
+<span class="fc" id="L40">    }</span>
+
+    private void vProsessointi(Nappula nappula) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (nappula instanceof Torni) {</span>
+<span class="fc" id="L44">            vTornit++;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        } else if (nappula instanceof Ratsu) {</span>
+<span class="fc" id="L46">            vRatsut++;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        } else if (nappula instanceof Lahetti) {</span>
+<span class="fc" id="L48">            vLahetit++;</span>
+        }
+<span class="fc" id="L50">    }</span>
+
+    @Override
+    public void prosessoiNappula(Nappula nappula) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (nappula.getPuoli() == puoli) {</span>
+<span class="fc" id="L55">            oProsessointi(nappula);</span>
+        } else {
+<span class="fc" id="L57">            vProsessointi(nappula);</span>
+        }
+<span class="fc" id="L59">    }</span>
+
+    @Override
+    public double getArvo() {
+
+<span class="fc" id="L64">        int laskuri = 0;</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (oTornit == 2) {</span>
+<span class="fc" id="L66">            laskuri--;</span>
+        }
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (oRatsut == 2) {</span>
+<span class="fc" id="L69">            laskuri--;</span>
+        } 
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (oLahetit == 2) {</span>
+<span class="fc" id="L72">            laskuri++;</span>
+        }
+
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (vTornit == 2) {</span>
+<span class="fc" id="L76">            laskuri++;</span>
+        }
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (vRatsut == 2) {</span>
+<span class="fc" id="L79">            laskuri++;</span>
+        } 
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (vLahetit == 2) {</span>
+<span class="fc" id="L82">            laskuri--;</span>
+        }
+
+<span class="fc" id="L85">        return (double)laskuri * ARVOKERROIN ;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -18,22 +18,37 @@ public class Siirto {
      * @param kohde siirron kohderuutu
      */
 <span class="fc" id="L20">    public Siirto(Ruutu alku, Ruutu kohde) {</span>
-<span class="fc" id="L21">        this.alku = alku;</span>
-<span class="fc" id="L22">        this.kohde = kohde;</span>
+<span class="fc" id="L21">        this.alku = alku.kopioi();</span>
+<span class="fc" id="L22">        this.kohde = kohde.kopioi();</span>
 <span class="fc" id="L23">        this.ylennys = EI_YLENNYSTA;</span>
 <span class="fc" id="L24">    }</span>
 
-<span class="fc" id="L26">    public Siirto(int x, int y, int x2, int y2) {</span>
-<span class="fc" id="L27">        this.alku = new Ruutu(x, y);</span>
-<span class="fc" id="L28">        this.kohde = new Ruutu(x2, y2);</span>
-<span class="fc" id="L29">        this.ylennys = EI_YLENNYSTA;</span>
-<span class="fc" id="L30">    }</span>
+    /**
+     * 
+     * @param x ensimmaisen ruudun x koordinaatti
+     * @param y ensimmaisen ruudun y koordinaatti
+     * @param x2 toisen ruudun x koordinaatti
+     * @param y2 toisen ruudun y koordinaatti
+     */
+<span class="fc" id="L33">    public Siirto(int x, int y, int x2, int y2) {</span>
+<span class="fc" id="L34">        this.alku = new Ruutu(x, y);</span>
+<span class="fc" id="L35">        this.kohde = new Ruutu(x2, y2);</span>
+<span class="fc" id="L36">        this.ylennys = EI_YLENNYSTA;</span>
+<span class="fc" id="L37">    }</span>
     
-<span class="fc" id="L32">    public Siirto(int x, int y, int x2, int y2, char ylennys) {</span>
-<span class="fc" id="L33">        this.alku = new Ruutu(x, y);</span>
-<span class="fc" id="L34">        this.kohde = new Ruutu(x2, y2);</span>
-<span class="fc" id="L35">        this.ylennys = ylennys;</span>
-<span class="fc" id="L36">    }</span>
+    /**
+     * 
+     * @param x ensimmaisen ruudun x koordinaatti
+     * @param y ensimmaisen ruudun y koordinaatti
+     * @param x2 toisen ruudun x koordinaatti
+     * @param y2 toisen ruudun y koordinaatti
+     * @param ylennys sotilaan ylennys merkki
+     */
+<span class="fc" id="L47">    public Siirto(int x, int y, int x2, int y2, char ylennys) {</span>
+<span class="fc" id="L48">        this.alku = new Ruutu(x, y);</span>
+<span class="fc" id="L49">        this.kohde = new Ruutu(x2, y2);</span>
+<span class="fc" id="L50">        this.ylennys = ylennys;</span>
+<span class="fc" id="L51">    }</span>
 
     /**
      * 
@@ -41,24 +56,24 @@ public class Siirto {
      * @param kohde siirron kohderuutu
      * @param ylennys mahdollisen ylennyksen merkki UCI-formaatissa
      */
-<span class="fc" id="L44">    public Siirto(Ruutu alku, Ruutu kohde, char ylennys) {</span>
-<span class="fc" id="L45">        this.alku = alku;</span>
-<span class="fc" id="L46">        this.kohde = kohde;</span>
-<span class="fc" id="L47">        this.ylennys = ylennys;</span>
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L59">    public Siirto(Ruutu alku, Ruutu kohde, char ylennys) {</span>
+<span class="fc" id="L60">        this.alku = alku.kopioi();</span>
+<span class="fc" id="L61">        this.kohde = kohde.kopioi();</span>
+<span class="fc" id="L62">        this.ylennys = ylennys;</span>
+<span class="fc" id="L63">    }</span>
 
     /**
      * 
      * @param siirto UCI-formaatin mukaisesti
      */
-<span class="fc" id="L54">    public Siirto(String siirto) {</span>
-<span class="fc" id="L55">        alku = new Ruutu(siirto.substring(0, 2));</span>
-<span class="fc" id="L56">        kohde = new Ruutu(siirto.substring(2, 4));</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        ylennys = siirto.length() == 5 ? siirto.charAt(4) : EI_YLENNYSTA;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L69">    public Siirto(String siirto) {</span>
+<span class="fc" id="L70">        alku = new Ruutu(siirto.substring(0, 2));</span>
+<span class="fc" id="L71">        kohde = new Ruutu(siirto.substring(2, 4));</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        ylennys = siirto.length() == 5 ? siirto.charAt(4) : EI_YLENNYSTA;</span>
+<span class="fc" id="L73">    }</span>
 
     public String getUCIString() {
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : &quot;&quot;);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        return alku.getAsString() + kohde.getAsString() + (this.ylennys != EI_YLENNYSTA ? ylennys : &quot;&quot;);</span>
     }
 
     /**
@@ -66,24 +81,24 @@ public class Siirto {
      * @return sisaltaako tama siirto ylennyksen
      */
     public boolean onYlennys() {
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        return ylennys != EI_YLENNYSTA;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        return ylennys != EI_YLENNYSTA;</span>
     }
 
     public char getYlennys() {
-<span class="fc" id="L73">        return ylennys;</span>
+<span class="fc" id="L88">        return ylennys;</span>
     }
 
     public Ruutu getAlku() {
-<span class="fc" id="L77">        return alku;</span>
+<span class="fc" id="L92">        return alku;</span>
     }
 
     public Ruutu getKohde() {
-<span class="fc" id="L81">        return kohde;</span>
+<span class="fc" id="L96">        return kohde;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L86">        return getUCIString();</span>
+<span class="fc" id="L101">        return getUCIString();</span>
     }
 
     

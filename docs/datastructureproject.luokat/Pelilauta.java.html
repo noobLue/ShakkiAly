@@ -12,29 +12,20 @@ import datastructureproject.luokat.nappulat.Torni;
 import datastructureproject.luokat.tietorakenteet.*;
 
 public class Pelilauta {
-
     /** 
      * Laudan alkutilan esitys. Versaalit kuvaavat mustan pelaajan nappuloita.
      * r = torni, n = ratsu, b = lÃ¤hetti, q = kuningatar, k = kuningas, p = sotilas
      */
-<span class="fc" id="L20">    public static final char[][] ALKUTILANNE = new char[][] {</span>
+<span class="fc" id="L19">    public static final char[][] ALKUTILANNE = new char[][] {</span>
         {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }, 
         {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
-        {'0', '0', '0', '0', '0', '0', '0', '0' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' }, 
         {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' }, 
         {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
     };
-
-    /**
-     * Palauttaa laudan leveyden / pituuden
-     * @return laudan koko
-     */
-    public int getKoko() {
-<span class="fc" id="L36">        return lauta.length;</span>
-    }
 
     /**
      * Kuvaa shakkilaudan tilannetta
@@ -43,78 +34,76 @@ public class Pelilauta {
     private Ruutu valkoinenKuningas;
     private Ruutu mustaKuningas;
 
+
+<span class="fc" id="L38">    private Lista&lt;Lista&lt;Tupla&lt;Ruutu, Nappula&gt;&gt;&gt; historia = new Lista&lt;&gt;();</span>
+
     /**
      * Luo uuden pelilaudan shakin aloitustilanteelle
      */
-<span class="fc" id="L49">    public Pelilauta() {</span>
-<span class="fc" id="L50">        lauta = new Nappula[ALKUTILANNE.length][ALKUTILANNE[0].length];</span>
-<span class="fc" id="L51">        alusta(ALKUTILANNE);</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L43">    public Pelilauta() {</span>
+<span class="fc" id="L44">        lauta = new Nappula[ALKUTILANNE.length][ALKUTILANNE[0].length];</span>
+<span class="fc" id="L45">        alusta(ALKUTILANNE);</span>
+<span class="fc" id="L46">    }</span>
 
     /**
-     * Luo uuden pelilaudan
+     * Luo uuden pelilaudan testitilanteen tarkastelua varten
      * @param templaatti pelin alkutilanne tai keskenerÃ¤isen pelin tilanne
      */
-<span class="fc" id="L58">    public Pelilauta(char[][] templaatti) {</span>
-<span class="fc" id="L59">        lauta = new Nappula[templaatti.length][templaatti[0].length];</span>
-<span class="fc" id="L60">        alusta(templaatti);</span>
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L52">    public Pelilauta(char[][] templaatti) {</span>
+<span class="fc" id="L53">        lauta = new Nappula[templaatti.length][templaatti[0].length];</span>
+<span class="fc" id="L54">        alusta(templaatti);</span>
+<span class="fc" id="L55">    }</span>
 
-    /**
-     * Tekee syvÃ¤kopion aiemmasta pelilaudan tilanteesta.
-     * 
-     * @param edellinen edellinen laudan tilanne
-     */
-<span class="fc" id="L68">    public Pelilauta(Pelilauta edellinen) {</span>
-<span class="fc" id="L69">        lauta = new Nappula[edellinen.lauta.length][edellinen.lauta[0].length];</span>
-<span class="pc bpc" id="L70" title="1 of 4 branches missed.">        if (edellinen.valkoinenKuningas != null &amp;&amp; edellinen.mustaKuningas != null) {</span>
-<span class="fc" id="L71">            valkoinenKuningas = edellinen.valkoinenKuningas.kopioi();</span>
-<span class="fc" id="L72">            mustaKuningas = edellinen.mustaKuningas.kopioi();</span>
-        }
-
-<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (int y = 0; y &lt; edellinen.lauta.length; y++) {</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">            for (int x = 0; x &lt; edellinen.lauta[y].length; x++) {</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">                if (edellinen.lauta[y][x] == null) {</span>
-<span class="fc" id="L78">                    lauta[y][x] = null;</span>
-                } else {
-<span class="fc" id="L80">                    lauta[y][x] = edellinen.lauta[y][x].kopioi();</span>
-                }
+    private void talletaKuningasMuistiin (Nappula n, Ruutu kohde) {
+        //Tallennetaan kuninkaan sijainti muistiin
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (n instanceof Kuningas) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (n.getPuoli() == Side.WHITE) { </span>
+<span class="fc" id="L61">                valkoinenKuningas = kohde.kopioi(); </span>
+            } else {
+<span class="fc" id="L63">                mustaKuningas = kohde.kopioi(); </span>
             }
         }
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L66">    }</span>
 
     /**
      * Toteuttaa siirron tÃ¤llÃ¤ laudalla
      * 
      * @param siirto
      */
-    private void siirto(Siirto siirto) {
-<span class="fc" id="L92">        Nappula siirrettava = getNappula(siirto.getAlku());</span>
-<span class="fc" id="L93">        nollaaRuutu(siirto.getAlku());</span>
+    public void siirto(Siirto siirto) {
+<span class="fc" id="L74">        Nappula siirrettava = getNappula(siirto.getAlku());</span>
+<span class="fc" id="L75">        Lista&lt;Tupla&lt;Ruutu, Nappula&gt;&gt; historiaSiirrot = new Lista&lt;&gt;();</span>
+
+        //talleta liikkeen alkuruutu
+<span class="fc" id="L78">        historiaSiirrot.add(new Tupla&lt;&gt;(siirto.getAlku().kopioi(), siirrettava.kopioi()));</span>
+        //talleta liikkeen kohderuutu
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (getNappula(siirto.getKohde()) != null) {</span>
+<span class="fc" id="L81">            historiaSiirrot.add(new Tupla&lt;&gt;(siirto.getKohde().kopioi(), getNappula(siirto.getKohde()).kopioi()));</span>
+        } else {
+<span class="fc" id="L83">            historiaSiirrot.add(new Tupla&lt;&gt;(siirto.getKohde().kopioi(), (Nappula) null));</span>
+        }
+
+<span class="fc" id="L86">        nollaaRuutu(siirto.getAlku());</span>
 
         //Tallennetaan kuninkaan sijainti muistiin
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (siirrettava instanceof Kuningas) {</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (siirrettava.getPuoli() == Side.WHITE) { </span>
-<span class="fc" id="L98">                valkoinenKuningas = siirto.getKohde(); </span>
-            } else {
-<span class="nc" id="L100">                mustaKuningas = siirto.getKohde(); </span>
-            }
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (siirrettava instanceof Kuningas) {</span>
+<span class="fc" id="L90">            talletaKuningasMuistiin(siirrettava, siirto.getKohde());</span>
         }
 
         //Erikoissiirrot:
         //https://fi.wikipedia.org/wiki/Tornitus
         //Tornitus
-<span class="fc" id="L107">        int siirronPituusX = Matikka.itseisarvo(siirto.getAlku().getX() - siirto.getKohde().getX());</span>
-<span class="fc" id="L108">        int siirronPituusY = Matikka.itseisarvo(siirto.getAlku().getY() - siirto.getKohde().getY());</span>
+<span class="fc" id="L96">        int siirronPituusX = Matikka.itseisarvo(siirto.getAlku().getX() - siirto.getKohde().getX());</span>
+<span class="fc" id="L97">        int siirronPituusY = Matikka.itseisarvo(siirto.getAlku().getY() - siirto.getKohde().getY());</span>
 
-<span class="pc bpc" id="L110" title="1 of 4 branches missed.">        if (siirrettava instanceof Kuningas &amp;&amp; siirronPituusX &gt; 1) {</span>
-<span class="pc bpc" id="L111" title="1 of 2 branches missed.">            boolean kohdeIsompi  = (siirto.getKohde().getX() - siirto.getAlku().getX() &gt; 0);</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            int torniX = kohdeIsompi ? getKoko() - 1 : 0;</span>
-<span class="pc bpc" id="L113" title="1 of 2 branches missed.">            int torniUusiX = 1 + (kohdeIsompi ? siirto.getAlku().getX() : siirto.getKohde().getX());</span>
+<span class="fc bfc" id="L99" title="All 4 branches covered.">        if (siirrettava instanceof Kuningas &amp;&amp; siirronPituusX &gt; 1) {</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">            boolean kohdeIsompi  = (siirto.getKohde().getX() - siirto.getAlku().getX() &gt; 0);</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">            int torniX = kohdeIsompi ? getKoko() - 1 : 0;</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            int torniUusiX = 1 + (kohdeIsompi ? siirto.getAlku().getX() : siirto.getKohde().getX());</span>
 
-<span class="fc" id="L115">            Nappula torni = lauta[siirto.getAlku().getY()][torniX];</span>
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">            if (!(torni instanceof Torni)) {</span>
-<span class="nc" id="L117">                throw new Error(&quot;Joku yritti tornittaa ilman tornia&quot;);</span>
+<span class="fc" id="L104">            Nappula torni = lauta[siirto.getAlku().getY()][torniX];</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">            if (!(torni instanceof Torni)) {</span>
+<span class="nc" id="L106">                throw new Error(&quot;Joku yritti tornittaa ilman tornia&quot;);</span>
             }
                 
             // Tornituksen sÃ¤Ã¤ntÃ¶jen mukaan torni ei saa uudessa ruudussa tulla uhatuksi 
@@ -124,46 +113,83 @@ public class Pelilauta {
             // liikkeitÃ¤, eikÃ¤ itse tehdÃ¤ tornituksia
             // Jos tornitukset sisÃ¤lletÃ¤Ã¤n omaan liikehdintÃ¤Ã¤n, tulee silloin tarkastaa ettei torni tule uhatuksi
 
+            //Talletetaan tornin alkuruutu historiaan
+<span class="fc" id="L117">            historiaSiirrot.add(new Tupla&lt;&gt;(torni.getRuutu().kopioi(), torni.kopioi()));</span>
+
             //SiirretÃ¤Ã¤n torni 
-<span class="fc" id="L128">            lauta[siirto.getAlku().getY()][torniX] = null;</span>
-<span class="fc" id="L129">            torni.setRuutu(torniUusiX, siirto.getAlku().getY());</span>
-<span class="fc" id="L130">            lauta[siirto.getAlku().getY()][torniUusiX] = torni;</span>
+<span class="fc" id="L120">            lauta[siirto.getAlku().getY()][torniX] = null;</span>
+<span class="fc" id="L121">            torni.setRuutu(torniUusiX, siirto.getAlku().getY());</span>
+<span class="fc" id="L122">            lauta[siirto.getAlku().getY()][torniUusiX] = torni;</span>
+
+            //Talletetaan tornin kohderuutu historiaan
+<span class="fc" id="L125">            historiaSiirrot.add(new Tupla&lt;&gt;(torni.getRuutu().kopioi(), (Nappula) null));</span>
         }
 
         //https://fi.wikipedia.org/wiki/Ohestaly%C3%B6nti
-        //Prosessoi OhestalyÃ¶nit - liike, olettaen ettei vastustaja tee laittomia liikkeitÃ¤
-<span class="fc bfc" id="L135" title="All 6 branches covered.">        if (siirronPituusY &gt;= 1</span>
+        //Prosessoi OhestalyÃ¶nti liike, olettaen ettei vastustaja tee laittomia liikkeitÃ¤
+<span class="fc bfc" id="L130" title="All 6 branches covered.">        if (siirronPituusY &gt;= 1</span>
                 &amp;&amp; siirronPituusX &gt;= 1
                 &amp;&amp; siirrettava instanceof Sotilas
-<span class="fc bfc" id="L138" title="All 2 branches covered.">                &amp;&amp; getNappula(siirto.getKohde()) == null) {</span>
-<span class="fc" id="L139">            int uusiY = siirto.getKohde().getEteenpainY(siirrettava.getPuoli(), -1);</span>
-<span class="fc" id="L140">            lauta[uusiY][siirto.getKohde().getX()] = null;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">                &amp;&amp; getNappula(siirto.getKohde()) == null) {</span>
+<span class="fc" id="L134">            int uusiY = siirto.getKohde().getEteenpainY(siirrettava.getPuoli(), -1);</span>
+<span class="fc" id="L135">            Ruutu ohestaLyoty = new Ruutu(siirto.getKohde().getX(), uusiY);</span>
+
+            //Talletetaan ohestalyÃ¶ty nappula historiaan
+<span class="fc" id="L138">            historiaSiirrot.add(new Tupla&lt;&gt;(ohestaLyoty.kopioi(), getNappula(ohestaLyoty).kopioi()));</span>
+
+<span class="fc" id="L140">            lauta[ohestaLyoty.getY()][ohestaLyoty.getX()] = null;</span>
         }
 
+        
         //https://fi.wikipedia.org/wiki/Sotilas_(shakki)
         //Prosessoi sotilaan ylennys
-<span class="fc bfc" id="L145" title="All 4 branches covered.">        if (siirrettava instanceof Sotilas &amp;&amp; siirto.onYlennys()) {</span>
+<span class="fc bfc" id="L146" title="All 4 branches covered.">        if (siirrettava instanceof Sotilas &amp;&amp; siirto.onYlennys()) {</span>
 
-<span class="fc" id="L147">            Side puoli = siirrettava.getPuoli();</span>
-<span class="fc" id="L148">            Ruutu ruutu = siirto.getKohde();</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">            if (siirto.getYlennys() == 'q') {</span>
-<span class="fc" id="L150">                siirrettava = new Kuningatar(puoli, ruutu);</span>
-<span class="fc bfc" id="L151" title="All 2 branches covered.">            } else if (siirto.getYlennys() == 'n') {</span>
-<span class="fc" id="L152">                siirrettava = new Ratsu(puoli, ruutu);</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">            } else if (siirto.getYlennys() == 'b') {</span>
-<span class="fc" id="L154">                siirrettava = new Lahetti(puoli, ruutu);</span>
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">            } else if (siirto.getYlennys() == 'r') {</span>
-<span class="fc" id="L156">                siirrettava = new Torni(puoli, ruutu);</span>
+<span class="fc" id="L148">            Side puoli = siirrettava.getPuoli();</span>
+<span class="fc" id="L149">            Ruutu ruutu = siirto.getKohde().kopioi();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            if (siirto.getYlennys() == 'q') {</span>
+<span class="fc" id="L151">                siirrettava = new Kuningatar(puoli, ruutu);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">            } else if (siirto.getYlennys() == 'n') {</span>
+<span class="fc" id="L153">                siirrettava = new Ratsu(puoli, ruutu);</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            } else if (siirto.getYlennys() == 'b') {</span>
+<span class="fc" id="L155">                siirrettava = new Lahetti(puoli, ruutu);</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">            } else if (siirto.getYlennys() == 'r') {</span>
+<span class="fc" id="L157">                siirrettava = new Torni(puoli, ruutu);</span>
             } else {
-<span class="nc" id="L158">                throw new Error(&quot;Joku yritti ylentÃ¤Ã¤ sotilaan sallimattomaksi nappulaksi (&quot; </span>
-<span class="nc" id="L159">                    + siirto.getYlennys() + &quot;)&quot;);</span>
+<span class="nc" id="L159">                throw new Error(&quot;Joku yritti ylentÃ¤Ã¤ sotilaan sallimattomaksi nappulaksi (&quot; </span>
+<span class="nc" id="L160">                    + siirto.getYlennys() + &quot;)&quot;);</span>
             }
-<span class="fc" id="L161">            lauta[siirto.getKohde().getY()][siirto.getKohde().getX()] = siirrettava;</span>
+            
         } 
 
         //Sijoittaa nappulan laudalle ja pÃ¤ivittÃ¤Ã¤ nappulan oman sijainnin tiedon
-<span class="fc" id="L165">        sijoitaNappula(siirrettava, siirto.getKohde());</span>
-<span class="fc" id="L166">    }</span>
+<span class="fc" id="L166">        sijoitaNappula(siirrettava, siirto.getKohde().kopioi());</span>
+
+        //LisÃ¤tÃ¤Ã¤n tÃ¤mÃ¤n siirron vaikutukset historialistaan
+<span class="fc" id="L169">        historia.add(historiaSiirrot);</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * Peruutetaan viimeksi toteutettu siirto (toimii vastakohtana siirto(Siirto s) funktiolle)
+     */
+    public void peruutaSiirto() {
+<span class="fc" id="L176">        Lista&lt;Tupla&lt;Ruutu, Nappula&gt;&gt; historiaLista = historia.pop();</span>
+
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        for (int i = 0; i &lt; historiaLista.size(); i++) {</span>
+<span class="fc" id="L179">            Tupla&lt;Ruutu, Nappula&gt; hs = historiaLista.get(i);</span>
+
+<span class="fc" id="L181">            Ruutu r = hs.getEka();</span>
+<span class="fc" id="L182">            Nappula n = hs.getToka();</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">            if (n != null) {</span>
+<span class="fc" id="L184">                n.setRuutu(r);</span>
+            }
+<span class="fc" id="L186">            lauta[r.getY()][r.getX()] = n;</span>
+
+<span class="fc bfc" id="L188" title="All 2 branches covered.">            if (n instanceof Kuningas) {</span>
+<span class="fc" id="L189">                talletaKuningasMuistiin(n, r);</span>
+            }
+        }
+<span class="fc" id="L192">    }</span>
 
     /**
      * Palauttaa pelaajan Kuningas-nappulan
@@ -172,20 +198,8 @@ public class Pelilauta {
      * @return tÃ¤mÃ¤n pelaajan kuningas
      */
     public Kuningas etsiKuningas(Side puoli) {
-<span class="fc bfc" id="L175" title="All 2 branches covered.">        Nappula kuningas = puoli == Side.WHITE ? getNappula(valkoinenKuningas) : getNappula(mustaKuningas);</span>
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        return (kuningas instanceof Kuningas) ? (Kuningas) kuningas : null;</span>
-    }
-
-    /**
-     * Toteuttaa syÃ¶tteessÃ¤ annetun siirron pelilaudalle
-     * 
-     * @param siirto Siirto joka halutaan tehdÃ¤
-     * @return Uusi pelilaudan tilanne siirron jÃ¤lkeen
-     */
-    public Pelilauta toteutaSiirto(Siirto siirto) {
-<span class="fc" id="L186">        Pelilauta lautaUusi = new Pelilauta(this);</span>
-<span class="fc" id="L187">        lautaUusi.siirto(siirto);</span>
-<span class="fc" id="L188">        return lautaUusi;</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        Nappula kuningas = puoli == Side.WHITE ? getNappula(valkoinenKuningas) : getNappula(mustaKuningas);</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        return (kuningas instanceof Kuningas) ? (Kuningas) kuningas : null;</span>
     }
 
     /**
@@ -195,16 +209,25 @@ public class Pelilauta {
      * @return koordinaateissa olevan nappulan
      */
     public Nappula getNappula(int x, int y) {
-<span class="fc" id="L198">        return lauta[y][x];</span>
+<span class="fc" id="L212">        return lauta[y][x];</span>
     }
 
+    /**
+     * 
+     * @param ruutu ruutu jossa oleva nappula halutaan loytaa
+     * @return nappulan joka on ruudussa
+     */
     public Nappula getNappula(Ruutu ruutu) {
-<span class="fc" id="L202">        return lauta[ruutu.getY()][ruutu.getX()];</span>
+<span class="fc" id="L221">        return lauta[ruutu.getY()][ruutu.getX()];</span>
     }
 
+    /**
+     * Poistaa ruudussa olevan nappulan
+     * @param ruutu ruutu, jossa oleva nappula halutaan poistaa
+     */
     public void nollaaRuutu(Ruutu ruutu) {
-<span class="fc" id="L206">        lauta[ruutu.getY()][ruutu.getX()] = null;</span>
-<span class="fc" id="L207">    }</span>
+<span class="fc" id="L229">        lauta[ruutu.getY()][ruutu.getX()] = null;</span>
+<span class="fc" id="L230">    }</span>
 
     /**
      * 
@@ -212,11 +235,11 @@ public class Pelilauta {
      * @param ruutu Ruutu johon nappula laitetaan
      */
     private void sijoitaNappula(Nappula nappula, Ruutu ruutu) {
-<span class="fc" id="L215">        lauta[ruutu.getY()][ruutu.getX()] = nappula;</span>
-<span class="pc bpc" id="L216" title="1 of 2 branches missed.">        if (nappula != null) {</span>
-<span class="fc" id="L217">            nappula.setRuutu(ruutu.getX(), ruutu.getY());</span>
+<span class="fc" id="L238">        lauta[ruutu.getY()][ruutu.getX()] = nappula;</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (nappula != null) {</span>
+<span class="fc" id="L240">            nappula.setRuutu(ruutu.getX(), ruutu.getY());</span>
         }
-<span class="fc" id="L219">    }</span>
+<span class="fc" id="L242">    }</span>
 
     /**
      * Generoi tietyn puolen pelaajan kaikkien nappuloiden liikkeet.
@@ -224,73 +247,105 @@ public class Pelilauta {
      * @param puoli kumman pelaajan vuoro on. 
      * @return listan siirroista jotka pelaaja voi tehdÃ¤. 
      */
-    public SiirtoLista generoiSiirrot(Side puoli) {
-<span class="fc" id="L228">        SiirtoLista siirrot = new SiirtoLista();</span>
+    public Lista&lt;Siirto&gt; generoiSiirrot(Side puoli) {
+<span class="fc" id="L251">        Lista&lt;Siirto&gt; siirrot = new Lista&lt;&gt;();</span>
         
-<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (int y = 0; y &lt; getKoko(); y++) {</span>
-<span class="fc bfc" id="L231" title="All 2 branches covered.">            for (int x = 0; x &lt; getKoko(); x++) {</span>
-<span class="fc" id="L232">                Nappula n = lauta[y][x];</span>
-<span class="fc bfc" id="L233" title="All 4 branches covered.">                if (n != null &amp;&amp; n.getPuoli() == puoli) {</span>
-<span class="fc" id="L234">                    siirrot.addAll(n.generoiSiirrot(this));</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">        for (int y = 0; y &lt; getKoko(); y++) {</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            for (int x = 0; x &lt; getKoko(); x++) {</span>
+<span class="fc" id="L255">                Nappula n = lauta[y][x];</span>
+<span class="fc bfc" id="L256" title="All 4 branches covered.">                if (n != null &amp;&amp; n.getPuoli() == puoli) {</span>
+<span class="fc" id="L257">                    Lista&lt;Siirto&gt; tSiirrot = n.generoiSiirrot(this);</span>
+<span class="fc" id="L258">                    siirrot.addAll(tSiirrot);</span>
                 }
             }
         }
 
-<span class="fc" id="L239">        return siirrot;</span>
+<span class="fc" id="L263">        return siirrot;</span>
     } 
 
     /**
      * Alustaa pelilaudan templaatin mukaiseen alkuasentoon
      */
     private void alusta(char[][] templaatti) {
-<span class="fc bfc" id="L246" title="All 2 branches covered.">        for (int y = 0; y &lt; templaatti.length; y++) {</span>
-<span class="fc bfc" id="L247" title="All 2 branches covered.">            for (int x = 0; x &lt; templaatti[0].length; x++) {</span>
-<span class="fc bfc" id="L248" title="All 13 branches covered.">                switch (templaatti[y][x]) {</span>
+<span class="fc bfc" id="L270" title="All 2 branches covered.">        for (int y = 0; y &lt; templaatti.length; y++) {</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">            for (int x = 0; x &lt; templaatti[0].length; x++) {</span>
+<span class="fc bfc" id="L272" title="All 13 branches covered.">                switch (templaatti[y][x]) {</span>
                     case 'r':
-<span class="fc" id="L250">                        lauta[y][x] = new Torni(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L251">                        break;</span>
+<span class="fc" id="L274">                        lauta[y][x] = new Torni(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L275">                        break;</span>
                     case 'n':
-<span class="fc" id="L253">                        lauta[y][x] = new Ratsu(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L254">                        break;</span>
+<span class="fc" id="L277">                        lauta[y][x] = new Ratsu(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L278">                        break;</span>
                     case 'b':
-<span class="fc" id="L256">                        lauta[y][x] = new Lahetti(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L257">                        break;</span>
+<span class="fc" id="L280">                        lauta[y][x] = new Lahetti(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L281">                        break;</span>
                     case 'q':
-<span class="fc" id="L259">                        lauta[y][x] = new Kuningatar(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L260">                        break;</span>
+<span class="fc" id="L283">                        lauta[y][x] = new Kuningatar(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L284">                        break;</span>
                     case 'k':
-<span class="fc" id="L262">                        valkoinenKuningas = new Ruutu(x, y);</span>
-<span class="fc" id="L263">                        lauta[y][x] = new Kuningas(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L264">                        break;</span>
+<span class="fc" id="L286">                        valkoinenKuningas = new Ruutu(x, y);</span>
+<span class="fc" id="L287">                        lauta[y][x] = new Kuningas(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L288">                        break;</span>
                     case 'p':
-<span class="fc" id="L266">                        lauta[y][x] = new Sotilas(Side.WHITE, new Ruutu(x, y));</span>
-<span class="fc" id="L267">                        break;</span>
+<span class="fc" id="L290">                        lauta[y][x] = new Sotilas(Side.WHITE, new Ruutu(x, y));</span>
+<span class="fc" id="L291">                        break;</span>
 
                     case 'R':
-<span class="fc" id="L270">                        lauta[y][x] = new Torni(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L271">                        break;</span>
+<span class="fc" id="L294">                        lauta[y][x] = new Torni(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L295">                        break;</span>
                     case 'N':
-<span class="fc" id="L273">                        lauta[y][x] = new Ratsu(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L274">                        break;</span>
+<span class="fc" id="L297">                        lauta[y][x] = new Ratsu(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L298">                        break;</span>
                     case 'B':
-<span class="fc" id="L276">                        lauta[y][x] = new Lahetti(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L277">                        break;</span>
+<span class="fc" id="L300">                        lauta[y][x] = new Lahetti(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L301">                        break;</span>
                     case 'Q':
-<span class="fc" id="L279">                        lauta[y][x] = new Kuningatar(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L280">                        break;</span>
+<span class="fc" id="L303">                        lauta[y][x] = new Kuningatar(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L304">                        break;</span>
                     case 'K':
-<span class="fc" id="L282">                        mustaKuningas = new Ruutu(x, y);</span>
-<span class="fc" id="L283">                        lauta[y][x] = new Kuningas(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L284">                        break;</span>
+<span class="fc" id="L306">                        mustaKuningas = new Ruutu(x, y);</span>
+<span class="fc" id="L307">                        lauta[y][x] = new Kuningas(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L308">                        break;</span>
                     case 'P':
-<span class="fc" id="L286">                        lauta[y][x] = new Sotilas(Side.BLACK, new Ruutu(x, y));</span>
-<span class="fc" id="L287">                        break;</span>
+<span class="fc" id="L310">                        lauta[y][x] = new Sotilas(Side.BLACK, new Ruutu(x, y));</span>
+<span class="fc" id="L311">                        break;</span>
                     default:
                         break;
                 }
 
             }
         }
-<span class="fc" id="L294">    }</span>
+<span class="fc" id="L318">    }</span>
+
+
+    /**
+     * Palauttaa laudan leveyden / pituuden
+     * @return laudan koko
+     */
+    public int getKoko() {
+<span class="fc" id="L326">        return lauta.length;</span>
+    }
+
+    public boolean onShakissa(Side puoli) {
+<span class="fc" id="L330">        Kuningas k = etsiKuningas(puoli);</span>
+<span class="pc bpc" id="L331" title="1 of 4 branches missed.">        return k == null || k.olenUhattuna(this);</span>
+    }
+
+    public boolean onMatissa(Side vuoro) {
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">        if (!onShakissa(vuoro)) {</span>
+<span class="nc" id="L336">            return false;</span>
+        }
+<span class="fc" id="L338">        Lista&lt;Siirto&gt; siirrot = generoiSiirrot(vuoro);</span>
+
+<span class="fc bfc" id="L340" title="All 2 branches covered.">        for (int i = 0; i &lt; siirrot.size(); i++) {</span>
+<span class="fc" id="L341">            siirto(siirrot.get(i));</span>
+<span class="pc bpc" id="L342" title="1 of 2 branches missed.">            if (!onShakissa(vuoro)) {</span>
+<span class="nc" id="L343">                return false;</span>
+            }
+<span class="fc" id="L345">            peruutaSiirto();</span>
+        }
+
+<span class="fc" id="L348">        return true;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

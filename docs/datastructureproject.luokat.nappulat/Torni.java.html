@@ -10,20 +10,21 @@ public class Torni extends Nappula {
     };
 
     public Torni(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L13">        super('r', puoli, ruutu, 3);</span>
+<span class="fc" id="L13">        super('r', puoli, ruutu);</span>
 <span class="fc" id="L14">    }</span>
 
     public Nappula kopioi() {
 <span class="fc" id="L17">        return new Torni(getPuoli(), getRuutu().kopioi());</span>
     }
 
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L21">        return generoiSuoratSiirrot(lauta, suunnat);</span>
+    @Override
+    public Lista&lt;Siirto&gt; generoiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L22">        return generoiSuoratSiirrot(lauta, suunnat);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L26">        return &quot;r&quot;;</span>
+<span class="nc" id="L27">        return &quot;r&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

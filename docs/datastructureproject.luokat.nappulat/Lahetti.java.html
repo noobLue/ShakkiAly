@@ -10,14 +10,14 @@ public class Lahetti extends Nappula {
     };
 
     public Lahetti(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L13">        super('b', puoli, ruutu, 6);</span>
+<span class="fc" id="L13">        super('b', puoli, ruutu);</span>
 <span class="fc" id="L14">    }</span>
 
     public Nappula kopioi() {
 <span class="fc" id="L17">        return new Lahetti(getPuoli(), getRuutu().kopioi());</span>
     }
 
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
+    public Lista&lt;Siirto&gt; generoiSiirrot(Pelilauta lauta) {
 <span class="fc" id="L21">        return generoiSuoratSiirrot(lauta, suunnat);</span>
     }
 

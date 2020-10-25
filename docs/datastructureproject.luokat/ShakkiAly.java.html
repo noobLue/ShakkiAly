@@ -5,41 +5,43 @@ import chess.engine.GameState;
 import chess.model.Side;
 import datastructureproject.luokat.apulaiset.Matikka;
 import datastructureproject.luokat.apulaiset.ShakkiApu;
+import datastructureproject.luokat.evaluointi.Evaluaattori;
+import datastructureproject.luokat.evaluointi.OmaEvaluaattori;
 import datastructureproject.luokat.tietorakenteet.*;
 import datastructureproject.luokat.nappulat.Kuningas;
-import datastructureproject.luokat.nappulat.Nappula;
 
 public class ShakkiAly implements ChessBot {
-    public static final String LUOVUTUS = &quot;luovutus&quot;;
+<span class="fc" id="L14">    public static final String LUOVUTUS = null;</span>
+    private Evaluaattori evaluaattori;
+
     private int syvyysMax;
     private boolean alphaBeta;
 
-    private Pelilauta lauta;
-    private Siirto viimeSiirto;
+    private Pelilauta pelilauta;
     
-<span class="pc" id="L20">    private long haarat = 0;</span>
+<span class="pc" id="L22">    private long haarat = 0;</span>
 
-<span class="nc" id="L22">    public ShakkiAly(boolean alphaBeta) {</span>
-<span class="nc" id="L23">        alusta(alphaBeta, 4);</span>
-<span class="nc" id="L24">    }</span>
+<span class="nc" id="L24">    public ShakkiAly(boolean alphaBeta) {</span>
+<span class="nc" id="L25">        alusta(alphaBeta, 4); </span>
+<span class="nc" id="L26">    }</span>
 
-<span class="fc" id="L26">    public ShakkiAly(boolean alphaBeta, int syvyysMax) {</span>
-<span class="fc" id="L27">        alusta(alphaBeta, syvyysMax);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L28">    public ShakkiAly(boolean alphaBeta, int syvyysMax) {</span>
+<span class="fc" id="L29">        alusta(alphaBeta, syvyysMax);</span>
+<span class="fc" id="L30">    }</span>
 
     private void alusta(boolean alphaBeta, int syvyysMax) {
-<span class="fc" id="L31">        this.lauta = new Pelilauta();</span>
-<span class="fc" id="L32">        this.alphaBeta = alphaBeta;</span>
-<span class="fc" id="L33">        this.syvyysMax = syvyysMax;</span>
-<span class="fc" id="L34">        viimeSiirto = null;</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L33">        evaluaattori = new OmaEvaluaattori();</span>
+<span class="fc" id="L34">        this.pelilauta = new Pelilauta();</span>
+<span class="fc" id="L35">        this.alphaBeta = alphaBeta;</span>
+<span class="fc" id="L36">        this.syvyysMax = syvyysMax;</span>
+<span class="fc" id="L37">    }</span>
 
     /**
      * Kertoo kÃ¤yttÃ¤Ã¤kÃ¶ tÃ¤mÃ¤ instanssi AlphaBeta-karsintaa vai ei. 
      * @return onko kÃ¤ytÃ¶ssÃ¤ AlphaBeta vai ei
      */
     public boolean onAlphaBeta() {
-<span class="nc" id="L42">        return alphaBeta;</span>
+<span class="nc" id="L44">        return alphaBeta;</span>
     }
 
     /**
@@ -47,7 +49,7 @@ public class ShakkiAly implements ChessBot {
      * @return MiniMaxille asetettu syvyys
      */
     public int getSyvyysMax() {
-<span class="nc" id="L50">        return syvyysMax;</span>
+<span class="nc" id="L52">        return syvyysMax;</span>
     }
 
     /**
@@ -56,7 +58,7 @@ public class ShakkiAly implements ChessBot {
      * @return tarkasteltujen siirtojen mÃ¤Ã¤rÃ¤
      */
     public long getHaarat() {
-<span class="nc" id="L59">        return haarat;</span>
+<span class="nc" id="L61">        return haarat;</span>
     }
 
     /**
@@ -67,22 +69,20 @@ public class ShakkiAly implements ChessBot {
     @Override
     public String nextMove(GameState gamestate) {
         //Luetaan koko pelitilanne laudalle, esim. keskeytyneen pelin vuoksi
-<span class="fc" id="L70">        this.lauta = new Pelilauta();</span>
-<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (String siirto: gamestate.moves) {</span>
-<span class="fc" id="L72">            lauta = lauta.toteutaSiirto(new Siirto(siirto));</span>
-<span class="fc" id="L73">        }</span>
+<span class="fc" id="L72">        this.pelilauta = new Pelilauta();</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (String siirto: gamestate.moves) {</span>
+<span class="fc" id="L74">            pelilauta.siirto(new Siirto(siirto));</span>
+<span class="fc" id="L75">        }</span>
 
-<span class="fc" id="L75">        haarat = 0;</span>
+<span class="fc" id="L77">        haarat = 0;</span>
         // PistetÃ¤Ã¤n MiniMax algoritmi pyÃ¶rimÃ¤Ã¤n
-<span class="fc" id="L77">        ArvoSiirto arvoSiirto = maxArvo(lauta, gamestate.playing, Integer.MIN_VALUE, Integer.MAX_VALUE, syvyysMax);</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (arvoSiirto.getSiirto() == null) {</span>
-<span class="nc" id="L79">            return LUOVUTUS;</span>
+<span class="fc" id="L79">        Tupla&lt;Double, Siirto&gt; arvoSiirto = negaMax(pelilauta, gamestate.playing);</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (arvoSiirto.getToka() == null) {</span>
+<span class="nc" id="L81">            return LUOVUTUS;</span>
         }
-        
-        //Toteutetaan siirto omalla laudalla
-<span class="fc" id="L83">        lauta = lauta.toteutaSiirto(arvoSiirto.getSiirto());</span>
+
         //Palautetaan siirto rajapinnan mukaan
-<span class="fc" id="L85">        return arvoSiirto.getSiirto().getUCIString();</span>
+<span class="fc" id="L85">        return arvoSiirto.getToka().getUCIString();</span>
     }
 
     /**
@@ -92,114 +92,84 @@ public class ShakkiAly implements ChessBot {
      * @param puoli pelaaja jonka vuoro on
      * @return listan siirroista josta on filtterÃ¶ity pois shakkitilanteen sÃ¤ilyttÃ¤vÃ¤t / aiheuttavat siirrot
      */
-    public SiirtoLista vainSallitut(Pelilauta lauta, SiirtoLista kaikkiSiirrot, Side puoli) {
-<span class="fc" id="L96">        SiirtoLista siirrot = new SiirtoLista();</span>
+    public Lista&lt;Siirto&gt; vainSallitut(Pelilauta lauta, Lista&lt;Siirto&gt; kaikkiSiirrot, Side puoli) {
+<span class="fc" id="L96">        Lista&lt;Siirto&gt; siirrot = new Lista&lt;&gt;();</span>
 
 <span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; kaikkiSiirrot.size(); i++) {</span>
 <span class="fc" id="L99">            Siirto siirto = kaikkiSiirrot.get(i);</span>
-<span class="fc" id="L100">            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);</span>
-<span class="fc" id="L101">            Kuningas k = uusiLauta.etsiKuningas(puoli);</span>
-<span class="pc bpc" id="L102" title="2 of 4 branches missed.">            if (k != null &amp;&amp; !(k.olenUhattuna(uusiLauta))) {</span>
-<span class="fc" id="L103">                siirrot.add(siirto);</span>
+
+
+<span class="fc" id="L102">            lauta.siirto(siirto);</span>
+<span class="fc" id="L103">            Kuningas k = lauta.etsiKuningas(puoli);</span>
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">            if (k != null &amp;&amp; !(k.olenUhattuna(lauta))) {</span>
+<span class="fc" id="L105">                siirrot.add(siirto);</span>
             }
+<span class="fc" id="L107">            lauta.peruutaSiirto();</span>
         }
 
-<span class="fc" id="L107">        return siirrot;</span>
+<span class="fc" id="L110">        return siirrot;</span>
     }
 
+    public static final double MAX = 1_000_000d;
+    public static final double MIN = -MAX;
+    public static final double DELTA = 0.0001d;
+
     /**
-     * Simuloidaan omaa vuoroa minmaxissa
+     * Aloitetaan rekursiivinen negaMax algoritmi
      * 
      * @param lauta tamanhetkinen pelitilanne
-     * @param puoli max-pelaajan puoli
+     * @param vuoro kumman pelaajan siirto halutaan etsiÃ¤
+     * @return 
+     */
+    public Tupla&lt;Double, Siirto&gt; negaMax(Pelilauta lauta, Side vuoro) {
+<span class="fc" id="L125">        return negaMax(lauta, vuoro, MIN, MAX, syvyysMax);</span>
+    } 
+
+    /**
+     * MiniMaxin yksi rekursio
+     * 
+     * @param lauta tamanhetkinen pelitilanne
+     * @param vuoro kumman vuoro
      * @param alpha alphabeta karsinnan alpha-arvo
      * @param beta alphabeta karsinnan beta-arvo
      * @param syvyys syvyys jota tarkastellaan pelipuussa
-     * @return max-pelaajan valitseman haaran 'arvo'
+     * @return 
      */
-    public ArvoSiirto maxArvo(Pelilauta lauta, Side puoli, int alpha, int beta, int syvyys) {
-        SiirtoLista siirrot;
-<span class="pc bpc" id="L122" title="1 of 4 branches missed.">        if (syvyys &lt;= 0 || (siirrot = vainSallitut(lauta, lauta.generoiSiirrot(puoli), puoli)).isEmpty()) {</span>
-<span class="fc" id="L123">            return new ArvoSiirto(laudanArvo(lauta, puoli), null);</span>
-        }
-<span class="fc" id="L125">        ArvoSiirto maxinSiirto = new ArvoSiirto(Integer.MIN_VALUE, null);</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (int i = 0; i &lt; siirrot.size(); i++) {</span>
-<span class="fc" id="L127">            haarat++;</span>
-<span class="fc" id="L128">            Siirto siirto = siirrot.get(i);</span>
-<span class="fc" id="L129">            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);</span>
-<span class="fc" id="L130">            ArvoSiirto minninSiirto = minArvo(uusiLauta, ShakkiApu.vastustaja(puoli), alpha, beta, syvyys - 1);</span>
-
-            //PÃ¤ivitetÃ¤Ã¤n maxin parasta siirtoa, jos tÃ¤mÃ¤ haara on johtanut minnille huonomman arvon kuin aiemmassa
-<span class="fc bfc" id="L133" title="All 2 branches covered.">            if (maxinSiirto.getArvo() &lt; minninSiirto.getArvo()) {</span>
-<span class="fc" id="L134">                maxinSiirto.set(minninSiirto.getArvo(), siirto);</span>
-            }
-
-<span class="fc" id="L137">            alpha = Matikka.maksimi(alpha, minninSiirto.getArvo());</span>
-<span class="pc bpc" id="L138" title="2 of 4 branches missed.">            if (alphaBeta &amp;&amp; alpha &gt;= beta) {</span>
-<span class="nc" id="L139">                return maxinSiirto;</span>
-            }
+    private Tupla&lt;Double, Siirto&gt; negaMax(Pelilauta lauta, Side vuoro, double alpha, double beta, int syvyys) {
+<span class="fc" id="L139">        Lista&lt;Siirto&gt; siirrot = lauta.generoiSiirrot(vuoro);</span>
+<span class="fc" id="L140">        siirrot = vainSallitut(lauta, siirrot, vuoro);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (siirrot.size() == 0) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">            return new Tupla&lt;&gt;(lauta.onShakissa(vuoro) ? MIN - syvyys : 0, null);</span>
         }
 
-<span class="fc" id="L143">        return maxinSiirto;</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (syvyys &lt;= 0) {</span>
+<span class="fc" id="L146">            double laudanArvo = evaluaattori.getLaudanArvo(lauta, vuoro);</span>
+<span class="fc" id="L147">            return new Tupla&lt;&gt;(laudanArvo, null);</span>
+        }
+        
+<span class="fc" id="L150">        Tupla&lt;Double, Siirto&gt; parasSiirto = new Tupla&lt;&gt;(MIN, null);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        for (int i = 0; i &lt; siirrot.size(); i++) {</span>
+<span class="fc" id="L152">            haarat++;</span>
+<span class="fc" id="L153">            Siirto siirto = siirrot.get(i);</span>
+<span class="fc" id="L154">            lauta.siirto(siirto);</span>
+<span class="fc" id="L155">            Tupla&lt;Double, Siirto&gt; vastustajanSiirto = negaMax(lauta, ShakkiApu.vastustaja(vuoro), -beta, -alpha, syvyys - 1);</span>
+
+            //PÃ¤ivitetÃ¤Ã¤n tÃ¤mÃ¤n pelaajan parasta siirtoa, 
+            //jos tÃ¤mÃ¤ haara on johtanut toiselle pelaajalle huonomman arvon kuin aiemmassa
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            if (-vastustajanSiirto.getEka() &gt; parasSiirto.getEka()) {</span>
+<span class="fc" id="L160">                parasSiirto.set(-vastustajanSiirto.getEka(), siirto);</span>
+            }
+<span class="fc" id="L162">            lauta.peruutaSiirto();</span>
+
+<span class="fc" id="L164">            alpha = Matikka.maksimi(alpha, parasSiirto.getEka());</span>
+<span class="fc bfc" id="L165" title="All 4 branches covered.">            if (alphaBeta &amp;&amp; alpha &gt;= beta) {</span>
+<span class="fc" id="L166">                break;</span>
+            }
+        }
+
+<span class="fc" id="L170">        return parasSiirto;</span>
     }
 
-    /**
-     * Simuloidaan vastustajan vuoroa minmaxissa
-     * 
-     * @param lauta tamanhetkinen pelitilanne
-     * @param puoli min-pelaajan puoli
-     * @param alpha alphabeta karsinnan alpha-arvo
-     * @param beta alphabeta karsinnan beta-arvo
-     * @param syvyys syvyys jota tarkastellaan pelipuussa
-     * @return min-pelaajan valitseman haaran 'arvo'
-     */
-    public ArvoSiirto minArvo(Pelilauta lauta, Side puoli, int alpha, int beta, int syvyys) {
-<span class="fc" id="L157">        Side vastustajanPuoli = ShakkiApu.vastustaja(puoli);</span>
-        SiirtoLista siirrot;
-<span class="pc bpc" id="L159" title="1 of 4 branches missed.">        if (syvyys &lt;= 0 || (siirrot = vainSallitut(lauta, lauta.generoiSiirrot(puoli), puoli)).isEmpty()) {</span>
-<span class="fc" id="L160">            return new ArvoSiirto(laudanArvo(lauta, puoli), null);</span>
-        }
 
-<span class="fc" id="L163">        ArvoSiirto minninSiirto = new ArvoSiirto(Integer.MAX_VALUE, null);</span>
-<span class="fc bfc" id="L164" title="All 2 branches covered.">        for (int i = 0; i &lt; siirrot.size(); i++) {</span>
-<span class="fc" id="L165">            haarat++;</span>
-<span class="fc" id="L166">            Siirto siirto = siirrot.get(i);</span>
-<span class="fc" id="L167">            Pelilauta uusiLauta = lauta.toteutaSiirto(siirto);</span>
-<span class="fc" id="L168">            ArvoSiirto maxinSiirto = maxArvo(uusiLauta, vastustajanPuoli, alpha, beta, syvyys - 1);</span>
-
-            //PÃ¤ivitetÃ¤Ã¤n minnin parasta siirtoa, jos tÃ¤mÃ¤ haara on johtanut maxille huonomman arvon kuin aiemmassa
-<span class="fc bfc" id="L171" title="All 2 branches covered.">            if (minninSiirto.getArvo() &gt; maxinSiirto.getArvo()) {</span>
-<span class="fc" id="L172">                minninSiirto.set(maxinSiirto.getArvo(), siirto);</span>
-            }
-
-<span class="fc" id="L175">            beta = Matikka.minimi(beta, maxinSiirto.getArvo());</span>
-<span class="pc bpc" id="L176" title="1 of 4 branches missed.">            if (alphaBeta &amp;&amp; alpha &gt;= beta) {</span>
-<span class="fc" id="L177">                return minninSiirto;</span>
-            }
-        }
-
-<span class="fc" id="L181">        return minninSiirto;</span>
-    }
-
-    /**
-     * Heuristiikka jolla arvioidaan pelitilanteen 'arvoa' jommankumman puolen pelaajan kannalta
-     * 
-     * @param lauta pelilaudan tilanne, jota tarkastellaan
-     * @param puoli kumman puolen pelaajan kannalta tilannetta tarkastellaan
-     * @return laudan arvo kokonaislukuna. Jos arvo isompi kuin 0, niin tilanne on hyvÃ¤
-     */
-    public static int laudanArvo(Pelilauta lauta, Side puoli) {
-<span class="fc" id="L192">        int i = 0;</span>
-<span class="fc bfc" id="L193" title="All 2 branches covered.">        for (int y = 0; y &lt; lauta.getKoko(); y++) {</span>
-<span class="fc bfc" id="L194" title="All 2 branches covered.">            for (int x = 0; x &lt; lauta.getKoko(); x++) {</span>
-<span class="fc" id="L195">                Nappula nappula = lauta.lauta[y][x];</span>
-<span class="fc bfc" id="L196" title="All 2 branches covered.">                if (nappula != null) {</span>
-<span class="fc bfc" id="L197" title="All 2 branches covered.">                    i += (nappula.getPuoli() == puoli ? +1 : -1) * nappula.getArvo();</span>
-                }
-            }
-        }
-<span class="fc" id="L201">        return i;</span>
-    }
-    
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

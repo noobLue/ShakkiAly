@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RuutuPainotEval.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.evaluointi.osat</a> &gt; <span class="el_source">RuutuPainotEval.java</span></div><h1>RuutuPainotEval.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.evaluointi.osat;
+
+import chess.model.Side;
+import datastructureproject.luokat.nappulat.Kuningas;
+import datastructureproject.luokat.nappulat.Kuningatar;
+import datastructureproject.luokat.nappulat.Lahetti;
+import datastructureproject.luokat.nappulat.Nappula;
+import datastructureproject.luokat.nappulat.Ratsu;
+import datastructureproject.luokat.nappulat.Sotilas;
+import datastructureproject.luokat.nappulat.Torni;
+
+public class RuutuPainotEval implements OsaEvaluaattori {
+    private Side puoli;
+
+    private static final double SKAALA = 250d;
+    /**
+     * https://www.chessprogramming.org/Simplified_Evaluation_Function#Piece-Square_Tables
+    */
+<span class="fc" id="L19">    private static final int[][] SOTILAS_PAINOT = new int[][]{</span>
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {5, 10, 10, -20, -20, 10, 10, 5},
+        {5, -5, -10, 0, 0, -10, -5, 5},
+        {0, 0, 0, 20, 20, 0, 0, 0},
+        {5, 5, 10, 25, 25, 10, 5, 5},
+        {10, 10, 20, 30, 30, 20, 10, 10},
+        {50, 50, 50, 50, 50, 50, 50, 50},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+<span class="fc" id="L29">    private static final int[][] RATSU_PAINOT = new int[][]{</span>
+        {-50, -40, -30, -30, -30, -30, -40, -50},
+        {-40, -20,  0,  5,  5,  0, -20, -40},
+        {-30, 5, 10, 15, 15, 10, 5, -30},
+        {-30, 0, 15, 20, 20, 15, 0, -30},
+        {-30, 5, 15, 20, 20, 15, 5, -30},
+        {-30, 0, 10, 15, 15, 10, 0, -30},
+        {-40, -20, 0, 0, 0, 0, -20, -40},
+        {-50, -40, -30, -30, -30, -30, -40, -50},
+    };
+<span class="fc" id="L39">    private static final int[][] LAHETTI_PAINOT = new int[][]{</span>
+        {-20, -10, -10, -10, -10, -10, -10, -20},
+        {-10,  5,  0,  0,  0,  0,  5, -10},
+        {-10, 10, 10, 10, 10, 10, 10, -10},
+        {-10,  0, 10, 10, 10, 10,  0, -10},
+        {-10,  5,  5, 10, 10,  5,  5, -10},
+        {-10,  0,  5, 10, 10,  5,  0, -10},
+        {-10,  0,  0,  0,  0,  0,  0, -10},
+        {-20, -10, -10, -10, -10, -10, -10, -20},
+    };
+<span class="fc" id="L49">    private static final int[][] TORNI_PAINOT = new int[][]{</span>
+        {0, 0, 0, 5, 5, 0, 0, 0},
+        {-5, 0, 0, 0, 0, 0, 0, -5},
+        {-5, 0, 0, 0, 0, 0, 0, -5},
+        {-5, 0, 0, 0, 0, 0, 0, -5},
+        {-5, 0, 0, 0, 0, 0, 0, -5},
+        {-5, 0, 0, 0, 0, 0, 0, -5},
+        {5, 10, 10, 10, 10, 10, 10, 5},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+        
+<span class="fc" id="L60">    private static final int[][] KUNINGATAR_PAINOT = new int[][]{</span>
+        {-20, -10, -10, -5, -5, -10, -10, -20},
+        {-10, 0, 5, 0, 0, 0, 0, -10},
+        {-10, 5, 5, 5, 5, 5, 0, -10},
+        {0, 0, 5, 5, 5, 5, 0, -5},
+        {-5, 0, 5, 5, 5, 5, 0, -5},
+        {-10, 0, 5, 5, 5, 5, 0, -10},
+        {-10, 0, 0, 0, 0, 0, 0, -10},
+        {-20, -10, -10, -5, -5, -10, -10, -20},
+    };
+<span class="fc" id="L70">    private static final int[][] KUNINGAS_ALKU_PAINOT = new int[][]{</span>
+        {20, 30, 10,  0,  0, 10, 30, 20},
+        {20, 20,  0,  0,  0,  0, 20, 20},
+        {-10, -20, -20, -20, -20, -20, -20, -10},
+        {-20, -30, -30, -40, -40, -30, -30, -20},
+        {-30, -40, -40, -50, -50, -40, -40, -30},
+        {-30, -40, -40, -50, -50, -40, -40, -30},
+        {-30, -40, -40, -50, -50, -40, -40, -30},
+        {-30, -40, -40, -50, -50, -40, -40, -30},
+    };
+<span class="fc" id="L80">    private static final int[][] KUNINGAS_LOPPU_PAINOT = new int[][]{</span>
+        {-50, -30, -30, -30, -30, -30, -30, -50},
+        {-30, -30,  0,  0,  0,  0, -30, -30},
+        {-30, -10, 20, 30, 30, 20, -10, -30},
+        {-30, -10, 30, 40, 40, 30, -10, -30},
+        {-30, -10, 30, 40, 40, 30, -10, -30},
+        {-30, -10, 20, 30, 30, 20, -10, -30},
+        {-30, -20, -10,  0,  0, -10, -20, -30},
+        {-50, -40, -30, -20, -20, -30, -40, -50},
+    };
+
+<span class="fc" id="L91">    public RuutuPainotEval(Side puoli) {</span>
+<span class="fc" id="L92">        this.puoli = puoli;</span>
+<span class="fc" id="L93">    }</span>
+
+
+<span class="fc" id="L96">    private int arvo = 0;</span>
+<span class="fc" id="L97">    private int oSotilaat = 0;</span>
+<span class="fc" id="L98">    private int vSotilaat = 0;</span>
+<span class="fc" id="L99">    private Nappula oKuningas = null;</span>
+<span class="fc" id="L100">    private Nappula vKuningas = null;</span>
+
+    @Override
+    public void prosessoiNappula(Nappula n) {
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        int y = (n.getPuoli() == Side.WHITE ? n.getY() : 7 - n.getY());</span>
+
+<span class="fc" id="L106">        int tArvo = 0;</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (n instanceof Sotilas) {</span>
+<span class="fc" id="L108">            tArvo += SOTILAS_PAINOT[y][n.getX()];</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (puoli == n.getPuoli()) {</span>
+<span class="fc" id="L110">                oSotilaat++;</span>
+            } else {
+<span class="fc" id="L112">                vSotilaat++;</span>
+            }
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        } else if (n instanceof Ratsu) {</span>
+<span class="fc" id="L115">            tArvo += RATSU_PAINOT[y][n.getX()];</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        } else if (n instanceof Lahetti) {</span>
+<span class="fc" id="L117">            tArvo += LAHETTI_PAINOT[y][n.getX()];</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        } else if (n instanceof Torni) {</span>
+<span class="fc" id="L119">            tArvo += TORNI_PAINOT[y][n.getX()];</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        } else if (n instanceof Kuningatar) {</span>
+<span class="fc" id="L121">            tArvo += KUNINGATAR_PAINOT[y][n.getX()];</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        } else if (n instanceof Kuningas) {</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            if (puoli == n.getPuoli()) {</span>
+<span class="fc" id="L124">                oKuningas = n;</span>
+            } else {
+<span class="fc" id="L126">                vKuningas = n;</span>
+            }
+        }
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        arvo += (n.getPuoli() == puoli ? +1 : -1) * tArvo;</span>
+<span class="fc" id="L131">    }</span>
+
+    @Override
+    public double getArvo() {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (oKuningas != null) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">            int yOma = (oKuningas.getPuoli() == Side.WHITE ? oKuningas.getY() : 7 - oKuningas.getY());</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            if (oSotilaat &gt; 4) {</span>
+<span class="fc" id="L138">                arvo += KUNINGAS_ALKU_PAINOT[yOma][oKuningas.getX()];</span>
+            } else {
+<span class="fc" id="L140">                arvo += KUNINGAS_LOPPU_PAINOT[yOma][oKuningas.getX()];</span>
+            }
+        }
+        
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (vKuningas != null) {</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            int yVastus = (vKuningas.getPuoli() == Side.WHITE ? vKuningas.getY() : 7 - vKuningas.getY());</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            if (vSotilaat &gt; 4) {</span>
+<span class="fc" id="L147">                arvo -= KUNINGAS_ALKU_PAINOT[yVastus][vKuningas.getX()];</span>
+            } else {
+<span class="fc" id="L149">                arvo -= KUNINGAS_LOPPU_PAINOT[yVastus][vKuningas.getX()];</span>
+            }
+        }
+<span class="fc" id="L152">        return arvo / SKAALA;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LahettiParitEval.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">chess</a> &gt; <a href="index.source.html" class="el_package">datastructureproject.luokat.evaluointi.osat</a> &gt; <span class="el_source">LahettiParitEval.java</span></div><h1>LahettiParitEval.java</h1><pre class="source lang-java linenums">package datastructureproject.luokat.evaluointi.osat;
+
+import chess.model.Side;
+import datastructureproject.luokat.nappulat.Lahetti;
+import datastructureproject.luokat.nappulat.Nappula;
+
+public class LahettiParitEval implements OsaEvaluaattori {
+    private static final double PAINOARVO = 1d; 
+    private Side puoli;
+
+    private int oLahetit;
+    private int vLahetit;
+
+<span class="fc" id="L14">    public LahettiParitEval(Side puoli) {</span>
+<span class="fc" id="L15">        this.puoli = puoli;</span>
+
+<span class="fc" id="L17">        this.oLahetit = 0;</span>
+<span class="fc" id="L18">        this.vLahetit = 0;</span>
+<span class="fc" id="L19">    }</span>
+
+    @Override
+    public void prosessoiNappula(Nappula nappula) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (nappula.getPuoli() == puoli) {</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">            if (nappula instanceof Lahetti) {</span>
+<span class="fc" id="L25">                oLahetit++;</span>
+            }
+        } else {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (nappula instanceof Lahetti) {</span>
+<span class="fc" id="L29">                vLahetit++;</span>
+            }
+        }
+<span class="fc" id="L32">    }</span>
+
+    @Override
+    public double getArvo() {
+<span class="fc" id="L36">        double arvo = 0;</span>
+        
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (oLahetit == 2) {</span>
+<span class="fc" id="L39">            arvo += PAINOARVO;</span>
+        }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (vLahetit == 2) {</span>
+<span class="fc" id="L43">            arvo -= PAINOARVO;</span>
+        }
+
+<span class="fc" id="L46">        return arvo;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

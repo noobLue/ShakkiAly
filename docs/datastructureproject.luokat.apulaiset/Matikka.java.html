@@ -14,15 +14,39 @@
     }
 
     /**
-     * Palauttaa parametreista suurimman arvon.
+     * Palauttaa parametreista pienimmÃ¤n arvon. 
      * Jos molemman arvot ovat samoja, myÃ¶s sama arvo palautetaan.
      * 
      * @param a ensimmÃ¤inen numero
      * @param b toinen numero
+     * @return pienemmÃ¤n arvon muuttujista a ja b
+     */
+    public static double minimi(double a, double b) {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        return a &lt;= b ? a : b;</span>
+    }
+
+    /**
+     * Palauttaa parametreista suurimman arvon.
+     * Jos molemman arvot ovat samoja, palautetaan ensimmÃ¤inen parametri.
+     * 
+     * @param a ensimmÃ¤inen int-tyyppinen numero
+     * @param b toinen int-tyyppinen numero
      * @return suurin arvon muuttujista a ja b
      */
     public static int maksimi(int a, int b) {
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        return a &gt;= b ? a : b;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        return a &gt;= b ? a : b;</span>
+    }
+
+    /**
+     * Palauttaa parametreista suurimman arvon.
+     * Jos molemman arvot ovat samoja, palautetaan ensimmÃ¤inen parametri.
+     * 
+     * @param a ensimmÃ¤inen double-tyyppinen numero
+     * @param b toinen double-tyyppinen numero
+     * @return suurin arvon muuttujista a ja b
+     */
+    public static double maksimi(double a, double b) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        return a &gt;= b ? a : b;</span>
     }
 
     /**
@@ -34,7 +58,7 @@
      * @return parametrin a itseisarvo
      */
     public static int itseisarvo(int a) {
-<span class="fc bfc" id="L37" title="All 2 branches covered.">        return a &gt;= 0 ? a : -a;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        return a &gt;= 0 ? a : -a;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

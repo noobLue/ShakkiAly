@@ -25,22 +25,45 @@ public class SiirtoLista {
 <span class="pc bpc" id="L25" title="1 of 2 branches missed.">        return indeksi == 0;</span>
     }
 
+    /**
+     * Siirron lisÃ¤Ã¤minen listaan.
+     * @param siirto lisÃ¤ttÃ¤vÃ¤ siirto
+     */
     public void add(Siirto siirto) {
-<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (indeksi &gt;= siirrot.length) {</span>
-<span class="fc" id="L30">            Siirto[] uusiSiirrot = new Siirto[siirrot.length * 2];</span>
-<span class="fc bfc" id="L31" title="All 2 branches covered.">            for (int i = 0; i &lt; indeksi; i++) {</span>
-<span class="fc" id="L32">                uusiSiirrot[i] = siirrot[i];</span>
-            }
-<span class="fc" id="L34">            siirrot = uusiSiirrot;</span>
+        // Tarvittaessa suurennetaan taulukkoa
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (indeksi &gt;= siirrot.length) {</span>
+<span class="fc" id="L35">            lisaaTilaa(siirrot.length);</span>
         }
 
-<span class="fc" id="L37">        siirrot[indeksi++] = siirto;</span>
-<span class="fc" id="L38">    }</span>
+<span class="fc" id="L38">        siirrot[indeksi++] = siirto;</span>
+<span class="fc" id="L39">    }</span>
 
+    /**
+     * LisÃ¤tÃ¤Ã¤n toisen listan arvot tÃ¤hÃ¤n listaan. 
+     * @param lista lista, jonka arvot halutaan lisÃ¤tÃ¤ tÃ¤hÃ¤n listaan
+     */
     public void addAll(SiirtoLista lista) {
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; lista.size(); i++) {</span>
-<span class="fc" id="L42">            add(lista.get(i));</span>
+        // LisÃ¤tÃ¤Ã¤n tarvittaessa tilaa
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (indeksi + lista.size() &gt;= siirrot.length) {</span>
+            // Ennakoidaan hieman ja lisÃ¤tÃ¤Ã¤n vielÃ¤ enemmÃ¤n tilaa kun tarvitaan
+<span class="fc" id="L49">            lisaaTilaa(lista.size() + siirrot.length / 2);</span>
         }
-<span class="fc" id="L44">    }</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (int i = 0; i &lt; lista.size(); i++) {</span>
+<span class="fc" id="L53">            add(lista.get(i));</span>
+        }
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Suurennetaan taulukon kokoa parametrina annettun luvun verran.
+     * @param koko Kuinka paljon tilaa halutaan lisÃ¤tÃ¤
+     */
+    private void lisaaTilaa (int koko) {
+<span class="fc" id="L62">        Siirto[] uusiSiirrot = new Siirto[siirrot.length + koko];</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (int i = 0; i &lt; indeksi; i++) {</span>
+<span class="fc" id="L64">            uusiSiirrot[i] = siirrot[i];</span>
+        }
+<span class="fc" id="L66">        siirrot = uusiSiirrot;</span>
+<span class="fc" id="L67">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

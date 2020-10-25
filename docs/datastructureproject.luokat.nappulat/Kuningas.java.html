@@ -6,7 +6,7 @@ import datastructureproject.luokat.tietorakenteet.*;
 
 public class Kuningas extends Nappula {
     public Kuningas(Side puoli, Ruutu ruutu) {
-<span class="fc" id="L9">        super('k', puoli, ruutu, Integer.MAX_VALUE / 2);</span>
+<span class="fc" id="L9">        super('k', puoli, ruutu);</span>
 <span class="fc" id="L10">    }</span>
 
     
@@ -15,8 +15,8 @@ public class Kuningas extends Nappula {
     }
 
     @Override
-    public SiirtoLista generoiSiirrot(Pelilauta lauta) {
-<span class="fc" id="L19">        SiirtoLista siirrot = new SiirtoLista();</span>
+    public Lista&lt;Siirto&gt; generoiSiirrot(Pelilauta lauta) {
+<span class="fc" id="L19">        Lista&lt;Siirto&gt; siirrot = new Lista&lt;&gt;();</span>
 
 <span class="fc bfc" id="L21" title="All 2 branches covered.">        for (int y = -1; y &lt;= 1; y++) {</span>
 <span class="fc bfc" id="L22" title="All 2 branches covered.">            for (int x = -1; x &lt;= 1; x++) {</span>
@@ -25,7 +25,7 @@ public class Kuningas extends Nappula {
 <span class="fc" id="L25">                    continue;</span>
                 }
 <span class="fc" id="L27">                Nappula n = lauta.lauta[ruutu.getY()][ruutu.getX()];</span>
-<span class="pc bpc" id="L28" title="1 of 4 branches missed.">                if (n == null || n.getPuoli() != this.getPuoli()) {</span>
+<span class="fc bfc" id="L28" title="All 4 branches covered.">                if (n == null || n.getPuoli() != this.getPuoli()) {</span>
 <span class="fc" id="L29">                    siirrot.add(new Siirto(getX(), getY(), ruutu.getX(), ruutu.getY()));</span>
                 }
             }
